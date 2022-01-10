@@ -1,0 +1,21 @@
+{
+  "name": "tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tailwindcss-cli build -i ../accounts/static/assets/css/tailwind.css -o ../accounts/static/assets/css/style.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.0.12"
+  },
+  "dependencies": {
+    "@themesberg/flowbite": "^1.3.0",
+    "autoprefixer": "^10.4.2",
+    "postcss": "^8.4.5",
+    "tailwindcss-cli": "^0.1.2"
+  }
+}

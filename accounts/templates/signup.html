@@ -1,5 +1,5 @@
-{%load static%}
-{%load widget_tweaks%}
+{% load static %}
+{% load widget_tweaks %}
 
 <html lang="en">
 
@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>sign up</title>
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/@themesberg/flowbite@1.3.0/dist/flowbite.min.css" /> -->
 </head>
 
 
@@ -30,7 +31,8 @@
                             <div class="grid grid-cols-1 gap-4 text-sm gap-y-2 md:grid-cols-6">
                                 <div class="md:col-span-3">
                                     <label for="full_name">First Name</label>
-                                    {{user_fm.first_name| attr:'placeholder:First Name' |add_class:'w-full h-10 px-4 mt-1 border rounded bg-gray-50 focus:outline-none'}}
+                                    <input type="text" class="w-full h-10 px-4 mt-1 border rounded bg-gray-50 focus:border-black-400 ">
+                                    <!-- {{user_fm.first_name| attr:'placeholder:First Name' |add_class:'w-full h-10 px-4 mt-1 border rounded bg-gray-50 focus:outline-none'}} -->
                                     <p class="text-red-500 text-xs">{{user_fm.first_name.errors|striptags}}</p>
                                 </div>
                                 <div class="md:col-span-3">

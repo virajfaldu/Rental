@@ -10,6 +10,6 @@ from .forms import *
 @login_required(login_url='/account/signin')
 @allowed_users(allowed_roles=['admin'])
 def adminpannel(request):
-    return render(request,'admin.html')
+    return render(request,'index.html')
 
 
