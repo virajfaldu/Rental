@@ -3,6 +3,7 @@ from . import models
 # Register your models here.
 
 admin.site.register(models.Customer)
+admin.site.register(models.Admin)
 admin.site.register(models.AuthUser)
 admin.site.register(models.DeliveryBoy)
 admin.site.register(models.Area)

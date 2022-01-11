@@ -9,7 +9,7 @@ from .forms import *
 from .models import Customer
 # Create your views here.
 
-# @isAuthenticated
+@isAuthenticated
 def signup(request):
 
  

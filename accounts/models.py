@@ -52,6 +52,19 @@ class AuthUser(models.Model):
 class Customer(models.Model):
     company_name = models.CharField(max_length=45,blank=False)
     company_address = models.TextField()
+    contact=models.CharField(max_length=10)
+    image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
+    user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)  # Field name made lowercase.
+    area = models.ForeignKey(Area,on_delete=models.CASCADE)
+    state = models.ForeignKey(State,on_delete=models.CASCADE)
+    city=models.ForeignKey(City,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+        
+class Admin(models.Model):
+    address = models.TextField()
+    contact=models.CharField(max_length=10)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
     user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)  # Field name made lowercase.
     area = models.ForeignKey(Area,on_delete=models.CASCADE)
@@ -63,8 +76,9 @@ class Customer(models.Model):
         
 
 class DeliveryBoy(models.Model):
-    address = models.CharField(max_length=45)
-    is_approved = models.IntegerField(blank=True, null=True)
+    address = models.TextField()
+    contact=models.CharField(max_length=10)
+    image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
     user_iduser = models.ForeignKey(AuthUser, db_column='User_idUser',on_delete=models.CASCADE)  # Field name made lowercase.
 
     def __str__(self):

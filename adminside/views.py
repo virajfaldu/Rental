@@ -6,10 +6,22 @@ from django.contrib.auth.decorators import login_required
 
 from accounts.decorators import allowed_users # for use a decorators
 from .forms import *
+from accounts.models import *
 # Create your views here.
 @login_required(login_url='/account/signin')
 @allowed_users(allowed_roles=['admin'])
 def adminpannel(request):
     return render(request,'index.html')
+
+@login_required(login_url='/account/signin')
+@allowed_users(allowed_roles=['admin'])
+def profile(request):
+
+    admin=Admin.objects.filter(user=request.user).first()
+    print(admin.user.groups.all)
+    return render(request,'profile.html',{'admin':admin})
+
+
+
 
 
