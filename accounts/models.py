@@ -65,7 +65,7 @@ class Customer(models.Model):
 class Admin(models.Model):
     address = models.TextField()
     contact=models.CharField(max_length=10)
-    image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
+    image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png',null=True,blank=True)
     user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)  # Field name made lowercase.
     area = models.ForeignKey(Area,on_delete=models.CASCADE)
     state = models.ForeignKey(State,on_delete=models.CASCADE)

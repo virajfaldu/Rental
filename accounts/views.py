@@ -36,7 +36,6 @@ def signup(request):
             return render(request,'signup.html',{'user_fm':u_fm,'profileForm':p_fm})
 
         # checking for all form details are valid or not
-        print(u_fm.is_valid(),p_fm.is_valid())
         if u_fm.is_valid() and p_fm.is_valid():
 
             user=u_fm.save() # save all details from fm to user table and create user object
@@ -50,7 +49,7 @@ def signup(request):
             Profile.user=user
             Profile.save()
 
-            return render(request,'signin.html')        
+        return render(request,'signup.html',{'registered':True,'user_fm':u_fm,'profileForm':p_fm})
 
     return render(request,'signup.html',{'user_fm':u_fm,'profileForm':p_fm})
 
