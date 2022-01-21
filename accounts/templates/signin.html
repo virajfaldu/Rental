@@ -7,10 +7,69 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{%static 'assets/css/style.css'%}">
+    <link rel="stylesheet" href="{%static 'assets/css/sweetalert2.min.css'%}" />
+
+  <script src="{%static 'assets/js/sweetalert2.all.min.js'%}"></script>
+
+
     <title>login</title>
 </head>
 
 <body class="flex items-center justify-center h-screen bg-gray-100">
+    {% if messages %}
+          {% for message in messages %}
+              <script>
+                  var toastMixinSuccess = Swal.mixin({
+                      toast: true,
+                      icon: 'success',
+                      title: '{{message}}!',
+                      animation: false,
+                      position: 'top-right',
+                      showConfirmButton: false,
+                      timer: 3000,
+                      timerProgressBar: true,
+                      background: '#d4edda',
+                      color:'#155724',
+                      didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                      }
+                  });
+
+                  var toastMixinError = Swal.mixin({
+                      toast: true,
+                      icon: 'error',
+                      title: '{{message}}!',
+                      animation: false,
+                      position: 'top-right',
+                      showConfirmButton: false,
+                      timer: 3000,
+                      timerProgressBar: true,
+                      background: '#f8d7da',
+                      color: '#721c24',
+                      didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                      }
+                  });
+              </script>
+              {% if message.tags == 'success' %}
+                  <script>
+                      toastMixinSuccess.fire({
+                      animation: true,
+                      title: '{{message}}!'
+                      });
+                  </script>
+              {% elif message.tags == 'warning' %}
+                  <script>
+                      toastMixinError.fire({
+                      animation: true,
+                      title: '{{message}}!'
+                      });
+                  </script>
+              {% endif %}
+          {% endfor %}
+      {% endif %}
     <div class="flex items-center justify-center min-h-screen p-6">
         <div class="container max-w-screen-md mx-auto ">
             <div>
@@ -28,14 +87,7 @@
                         </div>
                         <form action="{% url 'signin' %}" class="lg:mt-24" method="post">
                             {%csrf_token%}
-                            {% if messages %}
-                                {% for message in messages %}
-                                    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
-                                        role="alert">
-                                        {{message}}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                           
 
                             <label for="" class="block">Username</label>
                             <input type="text" class="w-full h-10 px-3 mb-1 border rounded-md" name="username"

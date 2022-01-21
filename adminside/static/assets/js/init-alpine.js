@@ -47,6 +47,20 @@ function data() {
     togglePagesMenu() {
       this.isPagesMenuOpen = !this.isPagesMenuOpen
     },
+    isPagesMenuOpen1: false,
+    togglePagesMenu1() {
+      this.isPagesMenuOpen1 = !this.isPagesMenuOpen1
+    },
+    isPagesMenuOpen2: false,
+    togglePagesMenu2() {
+      this.isPagesMenuOpen2= !this.isPagesMenuOpen2
+    },
+    isPagesMenuOpen3: false,
+    togglePagesMenu3() {
+      this.isPagesMenuOpen3= !this.isPagesMenuOpen3
+    },
+
+   
     // Modal
     isModalOpen: false,
     trapCleanup: null,
@@ -60,3 +74,8 @@ function data() {
     },
   }
 }
+
+modalBtn = document.getElementsByClassName("modalButton");
+
+for(let i=0; i< modalBtn.length; i++ ){
+    modalBtn[i].addEventListener('click',(e)=>{})}

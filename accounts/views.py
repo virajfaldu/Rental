@@ -44,12 +44,11 @@ def signup(request):
 
             group=Group.objects.get(name='customer') #for add user into customer group
             user.groups.add(group)
-            print(p_fm.save().user)
             Profile=p_fm.save()
             Profile.user=user
             Profile.save()
 
-        return render(request,'signup.html',{'registered':True,'user_fm':u_fm,'profileForm':p_fm})
+            return render(request,'signup.html',{'registered':True,'user_fm':u_fm,'profileForm':p_fm})
 
     return render(request,'signup.html',{'user_fm':u_fm,'profileForm':p_fm})
 

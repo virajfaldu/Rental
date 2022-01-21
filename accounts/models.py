@@ -54,10 +54,11 @@ class Customer(models.Model):
     company_address = models.TextField()
     contact=models.CharField(max_length=10)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
+    is_panding = models.IntegerField(default=True)
     user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)  # Field name made lowercase.
-    area = models.ForeignKey(Area,on_delete=models.CASCADE)
-    state = models.ForeignKey(State,on_delete=models.CASCADE)
-    city=models.ForeignKey(City,on_delete=models.CASCADE)
+    area = models.ForeignKey(Area,on_delete=models.CASCADE,blank=False)
+    state = models.ForeignKey(State,on_delete=models.CASCADE,blank=False)
+    city=models.ForeignKey(City,on_delete=models.CASCADE,blank=False)
 
     def __str__(self):
         return self.user.username
@@ -80,6 +81,9 @@ class DeliveryBoy(models.Model):
     contact=models.CharField(max_length=10)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
     user_iduser = models.ForeignKey(AuthUser, db_column='User_idUser',on_delete=models.CASCADE)  # Field name made lowercase.
+    area = models.ForeignKey(Area,on_delete=models.CASCADE)
+    state = models.ForeignKey(State,on_delete=models.CASCADE)
+    city=models.ForeignKey(City,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user_iduser.username
@@ -139,13 +143,12 @@ class Cart(models.Model):
 
 
 class Category(models.Model):
-    cat_name = models.CharField(max_length=15)
-    cat_des = models.CharField(max_length=25, blank=True, null=True)
-    productimg_idproductimg = models.ForeignKey('ProductImg', blank=True, null=True,on_delete=models.CASCADE)
+    name = models.CharField(max_length=15,blank=False)
+    image = models.ImageField(upload_to ='category/',blank=True,null=True)
     subcategory_idcategory = models.ForeignKey('self', db_column='subcategory_idcategory', blank=True, null=True,on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.cat_name
+        return self.name
 
 
 class Customize(models.Model):
@@ -278,7 +281,7 @@ class ProductHasOrder(models.Model):
     given_deposit_iddeposit = models.ForeignKey('ReturnDeposit', db_column='given_deposit_iddeposit', blank=True, null=True,on_delete=models.CASCADE)
 
 
-class ProductImg(models.Model):
+class Image(models.Model):
     image = models.ImageField(upload_to ='uploads/')
     product_idproduct = models.ForeignKey(Product, db_column='product_idproduct', blank=True, null=True,on_delete=models.CASCADE)
     

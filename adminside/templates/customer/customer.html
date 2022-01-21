@@ -1,0 +1,177 @@
+{% extends 'basic.html' %}
+{%load static %}
+{% block title %}
+Customers
+{% endblock %}
+
+{%block body%}
+
+<div class="p-8 rounded-md w-full">
+    <div class="w-full mb-8 overflow-hidden rounded shadow-md">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full whitespace-no-wrap">
+                <thead>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-white dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">Customer</th>
+                        <th class="px-4 py-3">Company</th>
+                        <th class="px-4 py-3">City</th>
+                        <th class="px-4 py-3">Area</th>
+                        <th class="px-4 py-3">Status</th>
+                        <!-- <th class="px-4 py-3">join At</th> -->
+                        <th class="px-4 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for customer in customers%}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <!-- Avatar with inset shadow -->
+                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                                    <img class="object-cover w-full h-full rounded-full" src={{customer.image.url}}
+                                        alt="" loading="lazy" />
+                                    <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">{{customer.user.username}}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                                        {{customer.user.email}}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{customer.company_name}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{customer.city}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{customer.area}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {%if customer.user.is_active %}
+                            <span
+                                class="px-2 py-1 text-sm leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                                Approved
+                            </span>
+                            {%else%}
+                            <span
+                                class="px-2 py-1 text-sm leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
+                                Blocked
+                            </span>
+                            {%endif%}
+                        </td>
+                        <!-- <td class="px-4 py-3 text-sm">
+                            {{customer.user.date_joined}}
+                        </td> -->
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex items-center space-x-4 text-sm">
+                                {% if customer.user.is_active %}
+                                <form action="{% url 'action' customer.id 'block' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor"
+                                            class="bi bi-person-x-fill text-red-700 dark:text-red-600 dark:hover:text-red-700  w-6 h-6"
+                                            viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </button>
+                                </form>
+                                {%else%}
+                                <form action="{% url 'action' customer.id 'unblock' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-person-check-fill text-green-700 w-6 h-6"
+                                            viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+                                            <path
+                                                d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                        </svg>
+                                    </button>
+                                </form>
+                                {%endif%}
+                                <button type="submit" data-uid="{{customer.user.id }}" data-token="{{ csrf_token }}" data-url="{% url 'action' customer.user.id 'delete' %}" data-return="{% url 'manageCustomer' %}" class="userDeleteBtn focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-trash-fill text-gray-600 w-5 h-5 dark:text-gray-300"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"
+                                            data-uid="{{customer.user.id }}" data-token="{{ csrf_token }}" data-url="{% url 'action' customer.user.id 'delete' %}" data-return="{% url 'manageCustomer' %}"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {%endfor%}
+
+                </tbody>
+            </table>
+        </div>
+        <div
+            class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span class="flex items-center col-span-3">
+                Showing {{ customers.start_index }}-{{ customers.end_index }} of {{customers.paginator.count}}
+            </span>
+            <span class="col-span-2"></span>
+            <!-- Pagination -->
+            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center">
+                        {%if customers.has_previous%}
+                        <li>
+                            <a href="?page={{customers.previous_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-l-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{customers.previous_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{customers.previous_page_number}}
+                            </a>
+                        </li>
+                        {%endif%}
+                        <li>
+                            <a href="?page={{customers.number}}"
+                                class="px-3 pr-5 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{customers.number}}
+                            </a>
+                        </li>
+                        {%if customers.has_next%}
+                        <li>
+                            <a href="?page={{customers.next_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{customers.next_page_number}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{customers.next_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-r-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
