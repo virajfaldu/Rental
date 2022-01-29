@@ -1,11 +1,9 @@
-from asyncio.windows_events import NULL
-from cgi import print_directory
-from multiprocessing import context
+from telnetlib import NAOCRD
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, JsonResponse
 import json
@@ -18,41 +16,53 @@ from accounts.models import *
 
 
 @admin_only
-def adminpannel(request):
+def adminpanel(request):
 
-    return render(request, 'index.html', {'index': True})
+    customer = Customer.objects.filter(is_pending=False).count()
+    pending_customer = Customer.objects.filter(is_pending=True).count()
+    sales = ProductHasOrder.objects.filter(order_status="delivered").count()
+
+    context = {
+        'customers': customer,
+        'pCustomers': pending_customer,
+        'sales': sales,
+        'index': True,
+    }
+
+    return render(request, 'index.html', context)
 
 
 @admin_only
 def manageCustomer(request):
 
-    # customers=Customer.objects.filter(is_panding=False).all()
-    customers = get_page(request, Customer.objects.filter(is_panding=False))
-    content = {
+    customers = get_page(request, Customer.objects.filter(
+        is_pending=False).order_by('id').reverse(), 10)
+    context = {
         'customers': customers,
         'mcustomer': True
     }
-    return render(request, 'customer/customer.html', content)
+    return render(request, 'customer/customer.html', context)
 
 
 @admin_only
 def customerRQ(request):
 
-    customers = get_page(request, Customer.objects.filter(is_panding=True))
-    content = {
+    customers = get_page(request, Customer.objects.filter(
+        is_pending=True).order_by('id').reverse(), 10)
+    context = {
         'customers': customers,
         'mcustomer': True
     }
-    return render(request, 'customer/customerRQ.html', content)
+    return render(request, 'customer/customerRQ.html', context)
 
 
 @admin_only
-def action(request, pk, permission,model):
+def action(request, pk, permission, model=None):
 
     if request.method == 'POST':
         if permission == "accept":
             customer = Customer.objects.get(id=pk)
-            customer.is_panding = False
+            customer.is_pending = False
             customer.user.is_active = True
             customer.user.save()
             customer.save()
@@ -60,12 +70,11 @@ def action(request, pk, permission,model):
 
         elif permission == "delete":
             data = json.loads(request.body)
-            print(model)
             try:
-                if model == 'User':        
+                if model == 'User':
                     User.objects.filter(id=data['uid']).delete()
                 else:
-                    Model = apps.get_model('accounts', model)  
+                    Model = apps.get_model('accounts', model)
                     Model.objects.filter(id=data['uid']).delete()
 
                 messages.success(request, f"{model} deleted successfully")
@@ -74,24 +83,21 @@ def action(request, pk, permission,model):
                 }
                 return JsonResponse(context)
             except Exception as e:
-                print(e)
                 messages.warning(request, "user not deleted")
                 context = {
                     'success': False
                 }
                 return JsonResponse(context)
 
-        elif permission == "block":
-            customer = Customer.objects.get(id=pk)
-            customer.user.is_active = False
-            customer.user.save()
-            messages.success(request, "User Blocked Successfully")
-
-        elif permission == "unblock":
-            customer = Customer.objects.get(id=pk)
-            customer.user.is_active = True
-            customer.user.save()
-            messages.success(request, "User Activated Successfully")
+        elif permission == "userstatus":
+            print(pk)
+            user =  User.objects.get(id=pk)
+            user.is_active = not user.is_active
+            user.save()
+            if user.is_active:
+                messages.success(request, "User Approved Successfully")
+            else:
+                messages.success(request, "User Blocked Successfully")
 
         return redirect(request.META['HTTP_REFERER'])
     return redirect(request.META['HTTP_REFERER'])
@@ -99,17 +105,140 @@ def action(request, pk, permission,model):
 
 @admin_only
 def manageDeliveryBoy(request):
-    return render(request, 'deliveryboy/manageDeliveryBoy.html', {'mdeliveryboy': True})
+    
+    d_fm = DeliveryBoyForm()
+    p_fm = ProfileForm()
+    deliveryboy= get_page(request,DeliveryBoy.objects.all(),10)
+    if request.method == 'POST':
+
+        # fill the details in form from post request for set the data after error
+        d_fm = DeliveryBoyForm(request.POST)
+        p_fm = ProfileForm(request.POST)
+        
+        context={
+            'modaldeliveryboy':True,
+            'deliveryboy_fm': d_fm, 
+            'profileForm': p_fm
+        }
+
+        email = request.POST['email']
+
+        # checking for email exist or not
+        if email != '':
+            if User.objects.filter(email=email).exists():
+                messages.warning(request, "Email already exist")
+                return render(request, 'deliveryboy/manageDeliveryBoy.html',context)
+
+        # checking for all form details are valid or not
+        if d_fm.is_valid() and p_fm.is_valid():
+
+            d_fm.save()  # save all details from fm to deliveryboy table and create deliveryboy object
+
+            # for add deliveryboy into customer group
+            group = Group.objects.get(name='deliveryboy')
+            deliveryboy.groups.add(group)
+            Profile = p_fm.save()
+            Profile.user = deliveryboy
+            Profile.save()
+            messages.success(request, "DeliveryBoy Added Successfully")
+            return redirect('manageDeliveryBoy')
+
+        else:
+            return render(request, 'deliveryboy/manageDeliveryBoy.html',context)
+
+    context={
+            'deliveryboy_fm': d_fm, 
+            'profileForm': p_fm,
+            'deliveryboy':deliveryboy,
+            'modaldeliveryboy':False,
+    }
+    return render(request, 'deliveryboy/manageDeliveryBoy.html',context)
 
 
-@admin_only
-def addDeliveryBoy(request):
-    return render(request, 'deliveryboy/addDeliveryBoy.html', {'mdeliveryboy': True})
+def load_cities(request):
+    state_id = request.GET.get('state')
+    print("helo")
+    cities = City.objects.filter(state_idstate=state_id)
+    return render(request, 'load_cities.html', {'cities': cities})
+
+
+def load_area(request):
+    city_id = request.GET.get('city')
+    area = Area.objects.filter(city_idcity=city_id)
+    return render(request, 'load_area.html', {'areas': area})
 
 
 @admin_only
 def manageOrder(request):
-    return render(request, 'order/manageOrder.html', {'morder': True})
+
+    orders = Order.objects.all()
+
+    context = {
+        'orders': orders,
+        'morder': True
+    }
+    return render(request, 'order/manageOrder.html', context)
+
+
+@admin_only
+def manageOrderDetails(request, orderid):
+
+    order = Order.objects.filter(id=orderid).first()
+    orderDetails = ProductHasOrder.objects.filter(order=orderid).all()
+    
+    area_has_deliveryboy=AreaHasDeliveryBoy.objects.filter(area=order.customer.area).all()
+    deliveryBoy=[]
+    for i in range(0,len(area_has_deliveryboy)):
+        deliveryBoy.append(DeliveryBoy.objects.filter(id= area_has_deliveryboy[i].deliveryboy.id).first())
+    
+    tot_rent = 0
+    tot_delivery = 0
+    tot_deposit = 0
+
+    for product in orderDetails:
+        tot_rent += product.rent_price
+        tot_delivery += product.deposit
+        tot_deposit += product.delivery_pickup_charge
+
+    tot_amount = tot_rent+tot_delivery+tot_deposit
+
+    context = {
+        'order': order,
+        'orderDetails': orderDetails,
+        'deliveryboy': deliveryBoy,
+        'tot_rent': tot_rent,
+        'tot_delivery': tot_delivery,
+        'tot_deposit': tot_deposit,
+        'tot_amount': tot_amount,
+        'morder': True,
+    }
+    return render(request, 'order/manageOrderDetails.html', context)
+
+
+@admin_only
+def asignDelivery(request):
+    data = json.loads(request.body)
+    print(data['pid'])
+    order = Order.objects.get(id=data['oid'])
+    product=Product.objects.get(id=data['pid'])
+    deliveryboy = DeliveryBoy.objects.get(id=data['id'])
+
+    productHasOrder=ProductHasOrder.objects.get(order=order,product=product)
+    productHasOrder.deliveryboy = deliveryboy
+    productHasOrder.save()
+    messages.success(request, "deliveryboy asigned!")
+    return JsonResponse({"data": "running"})
+
+
+@admin_only
+def changeStatus(request):
+    data = json.loads(request.body)
+    order=Order.objects.get()
+    order = ProductHasOrder.objects.get(order__id=data['oid'],product__id=data['pid'])
+    order.order_status=data['ostatus']
+    order.save()
+    messages.success(request, "status updated")
+    return JsonResponse({"data": "running"})
 
 
 @admin_only
@@ -123,63 +252,188 @@ def extendRent(request):
 
 
 @admin_only
-def manageProduct(request):
-    return render(request, 'product/manageProduct.html', {'mproduct': True})
+def manageProduct(request, proid=None):
+    products = get_page(
+        request, Product.objects.all().order_by('id').reverse(), 10)
+    prodForm = productForm()
+    imgForm = imageForm()
+
+    if proid != None:
+        proData = Product.objects.filter(id=proid).first()
+        prodForm = productForm(instance=proData)
+        imgData = Image.objects.filter(product=proid).first()
+        imgForm = imageForm(instance=imgData)
+
+        if request.method == 'POST':
+            prodForm = productForm(request.POST, instance=proData)
+            imgForm = imageForm(request.POST, request.FILES, instance=imgData)
+            print(imgForm)
+            images = request.FILES.getlist('image')
+            print(imgForm.errors)
+            if prodForm.is_valid() and imgForm.is_valid():
+                pro = prodForm.save()
+                if len(images) > 0:
+                    for img in images:
+                        Image.objects.create(image=img, product=pro)
+                    imgForm.save(commit=False)
+                messages.success(request, "Product Updated Successfully")
+                return redirect('manageProduct')
+            else:
+                messages.warning(request, "Something Went Wrong")
+
+        context = {
+            'products': products,
+            'productForm': prodForm,
+            'imgForm': imgForm,
+            'proid': proid,
+            'modalProduct': True,
+            'mproduct': True,
+        }
+        return render(request, 'product/manageProduct.html', context)
+
+    else:
+        if request.method == 'POST':
+            prodForm = productForm(request.POST)
+            imgForm = imageForm(request.POST, request.FILES)
+            images = request.FILES.getlist('image')
+
+            if prodForm.is_valid() and imgForm.is_valid():
+                pro = prodForm.save()
+                img = imgForm.save(commit=False)
+                for img in images:
+                    Image.objects.create(image=img, product=pro)
+                img.save()
+                messages.success(request, "Product Added Successfully")
+                return redirect('manageProduct')
+            else:
+                messages.warning(request, "Something Went Wrong")
+
+    context = {
+        'products': products,
+        'productForm': prodForm,
+        'imgForm': imgForm,
+        'proid': proid,
+        'modalProduct': False,
+        'mproduct': True,
+    }
+    return render(request, 'product/manageProduct.html', context)
 
 
 @admin_only
-def manageCategory(request):
-    print("category")
-    category=Category.objects.filter(subcategory_idcategory=None).all()
-    subCategory=Category.objects.exclude(subcategory_idcategory=None).all()
+def categoryPage(request):
+    category = Category.objects.filter(subcategory_idcategory=None).all()
+    subCategory = Category.objects.exclude(subcategory_idcategory=None).all()
     catForm = categoryForm()
     subCatForm = subCategoryForm()
 
-    if request.method == 'POST':
-        catForm = categoryForm(request.POST,request.FILES)
-
-        if catForm.is_valid():
-            catForm.save()
-            messages.success(request, "Category Added Successfully")
-            return redirect('manageCategory')
-
-    content = {
-    'catForm': catForm,
-    'subCatForm': subCatForm,
-    'category':category,
-    'subCategory':subCategory,
-    'mproduct': True,
+    context = {
+        'catForm': catForm,
+        'subCatForm': subCatForm,
+        'category': category,
+        'subCategory': subCategory,
     }
-
-    return render(request, 'product/manageCategory.html', content)
+    return render(request, 'product/manageCategory.html', context)
 
 
 @admin_only
-def manageSubCategory(request):
+def manageCategory(request, catid=None):
+    if catid is None:
+        if request.method == 'POST':
+            catForm = categoryForm(request.POST, request.FILES)
+            if catForm.is_valid():
+                catForm.save()
+                messages.success(request, "Category Added Successfully")
+            return redirect('categoryPage')
+        else:
+            return HttpResponse("Operation not allowed")
 
-    category=Category.objects.filter(subcategory_idcategory=None).all()
-    subCategory=Category.objects.exclude(subcategory_idcategory=None).all()
-    subCatForm = subCategoryForm()
-    catForm = categoryForm()
+    else:
+        category = Category.objects.filter(subcategory_idcategory=None).all()
+        subCategory = Category.objects.exclude(
+            subcategory_idcategory=None).all()
+        subCatForm = subCategoryForm()
+        catData = Category.objects.get(id=catid)
+        catForm = categoryForm(instance=catData)
 
-    if request.method == 'POST':
-        subCatForm = subCategoryForm(request.POST,request.FILES)
+        if request.method == "POST":
+            cateForm = categoryForm(
+                request.POST, request.FILES, instance=catData)
+            if cateForm.is_valid():
+                cateForm.save()
+                messages.success(request, "Category updated successfully")
+                return redirect('categoryPage')
+            else:
+                messages.warning(request, "All fields are required!")
 
-        if subCatForm.is_valid():
-            subCatForm.save()
-            messages.success(request, "SubCategory Added Successfully")
-            return redirect('manageCategory')
-        return redirect('manageCategory')
+        context = {
+            'catForm': catForm,
+            'subCatForm': subCatForm,
+            'category': category,
+            'subCategory': subCategory,
+            "edit": True,
+            "modalCat": True,
+            "catid": catid,
+            'mproduct': True,
+        }
+        return render(request, 'product/manageCategory.html', context)
 
-    content = {
-    'catForm': catForm,
-    'subCatForm': subCatForm,
-    'category':category,
-    'subCategory':subCategory,
-    'mproduct': True,
-    }
 
-    return render(request, 'product/manageCategory.html', content)
+@admin_only
+def load_subCategory(request):
+
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            sub_categories = Category.objects.filter(
+                subcategory_idcategory=data['category'])
+        except Exception as e:
+            sub_categories = []
+        return render(request, 'product/load_subCategory.html', {'subcategories': sub_categories})
+    else:
+        return HttpResponse("Operation not allowed")
+
+
+@admin_only
+def manageSubCategory(request, scatid=None):
+    if scatid is None:
+        if request.method == 'POST':
+            subCatForm = subCategoryForm(request.POST, request.FILES)
+            if subCatForm.is_valid():
+                subCatForm.save()
+                messages.success(request, "SubCategory Added Successfully")
+            return redirect('categoryPage')
+        else:
+            return HttpResponse("Operation not allowed")
+
+    else:
+        category = Category.objects.filter(subcategory_idcategory=None).all()
+        subCategory = Category.objects.exclude(
+            subcategory_idcategory=None).all()
+        catForm = categoryForm()
+        scatData = Category.objects.get(id=scatid)
+        subCateForm = subCategoryForm(instance=scatData)
+
+        if request.method == "POST":
+            subCateForm = subCategoryForm(
+                request.POST, request.FILES, instance=scatData)
+            if subCateForm.is_valid():
+                subCateForm.save()
+                messages.success(request, "SubCategory updated successfully")
+                return redirect('categoryPage')
+            else:
+                messages.warning(request, "All fields are required!")
+
+        context = {
+            'catForm': catForm,
+            'subCatForm': subCateForm,
+            'category': category,
+            'subCategory': subCategory,
+            "edit": True,
+            "modalScat": True,
+            "scatid": scatid,
+            'mproduct': True,
+        }
+        return render(request, 'product/manageCategory.html', context)
 
 
 @admin_only
@@ -188,13 +442,82 @@ def manageOffers(request):
 
 
 @admin_only
-def manageBrand(request):
-    return render(request, 'product/manageBrand.html', {'mproduct': True})
+def manageBrand(request, brandid=None):
+    brands = get_page(request, Brand.objects.all(), 5)
+    bForm = brandForm()
+
+    if brandid == None:
+        if request.method == "POST":
+            bForm = brandForm(request.POST)
+
+            if bForm.is_valid():
+                bForm.save()
+                messages.success(request, "Brand Added Successfully")
+                return redirect('manageBrand')
+            else:
+                messages.warning(request, "Something Went Wrong")
+
+    else:
+        brand = Brand.objects.filter(id=brandid).first()
+        bForm = brandForm(instance=brand)
+
+        if request.method == "POST":
+            bForm = brandForm(request.POST, instance=brand)
+            if bForm.is_valid():
+                bForm.save()
+                messages.success(request, "Brand Updated Successfully")
+                return redirect('manageBrand')
+            else:
+                messages.warning(request, "Something Went Wrong")
+        context = {
+            'brands': brands,
+            'brandForm': bForm,
+            'brandid': brandid,
+            'modalBrand': True,
+            'mproduct': True
+        }
+        return render(request, 'product/manageBrand.html', context)
+
+    context = {
+        'brands': brands,
+        'brandForm': bForm,
+        'brandid': brandid,
+        'modalBrand': False,
+        'mproduct': True
+    }
+    return render(request, 'product/manageBrand.html', context)
 
 
 @admin_only
-def manageProductReview(request):
-    return render(request, 'product/manageReview.html', {'mproduct': True})
+def publish(request):
+    data = json.loads(request.body)
+    review = FeedbackRating.objects.get(id=data['id'])
+    review.publish = not review.publish
+    review.save()
+    messages.success(request, "Record Saved Successfully")
+    return JsonResponse({"data": "running"})
+
+
+@admin_only
+def manageProductReview(request, reviewid=None):
+
+    reviews = FeedbackRating.objects.filter()
+    if reviewid != None:
+        print(reviewid)
+        comment = FeedbackRating.objects.get(id=reviewid)
+        context = {
+            'reviews': reviews,
+            'comment': comment,
+            'modalComment': True,
+            'mproduct': True
+        }
+        return render(request, 'product/manageReview.html', context)
+
+    context = {
+        'reviews': reviews,
+        'mproduct': True
+    }
+    return render(request, 'product/manageReview.html', context)
 
 
 @admin_only
@@ -208,12 +531,12 @@ def profile(request):
     admin = Admin.objects.filter(user=request.user).first()
     admin_fm = adminForm(instance=admin)
     user_fm = userForm(instance=request.user)
-    pass_Form=passwordForm()
+    pass_Form = passwordForm()
 
     if request.method == 'POST':
 
         if "password1" in request.POST:
-            pass_Form=passwordForm(request.POST,instance=request.user)
+            pass_Form = passwordForm(request.POST, instance=request.user)
 
             if pass_Form.is_valid():
                 pass_Form.save()
@@ -232,13 +555,13 @@ def profile(request):
                 'userForm': user_fm,
                 'adminForm': admin_fm,
                 'admin': admin,
-                'passForm':pass_Form
+                'passForm': pass_Form
             }
 
             email = request.POST['email']
             if email == '':
-                    messages.warning(request, "Email Cannot Empty")
-                    return render(request, 'profile.html', context)
+                messages.warning(request, "Email Cannot Empty")
+                return render(request, 'profile.html', context)
             else:
                 if User.objects.filter(email=email).exists() and request.user.email != email:
                     messages.warning(request, "Email already exist")
@@ -254,8 +577,8 @@ def profile(request):
         'userForm': user_fm,
         'adminForm': admin_fm,
         'admin': admin,
-        'passForm':pass_Form
-    }             
+        'passForm': pass_Form
+    }
     return render(request, 'profile.html', context)
 
 
@@ -270,8 +593,8 @@ def imageUpload(request):
     return redirect('profile')
 
 
-def get_page(request, user_obj):
-    all_user = Paginator(user_obj.all(), 1)
+def get_page(request, user_obj, pages):
+    all_user = Paginator(user_obj.all(), pages)
     page = request.GET.get('page')
 
     try:

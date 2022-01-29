@@ -5,6 +5,7 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from msilib.schema import PublishComponent
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -27,6 +28,7 @@ class State(models.Model):
 
 class Area(models.Model):
     area_name = models.CharField(max_length=45)
+    pincode = models.CharField(max_length=6)
     city_idcity = models.ForeignKey('City', db_column='city_idcity',on_delete=models.CASCADE)
 
     def __str__(self):
@@ -54,23 +56,23 @@ class Customer(models.Model):
     company_address = models.TextField()
     contact=models.CharField(max_length=10)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
-    is_panding = models.IntegerField(default=True)
+    is_pending = models.BooleanField(default=True)
     user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)  # Field name made lowercase.
-    area = models.ForeignKey(Area,on_delete=models.CASCADE,blank=False)
-    state = models.ForeignKey(State,on_delete=models.CASCADE,blank=False)
-    city=models.ForeignKey(City,on_delete=models.CASCADE,blank=False)
+    area = models.ForeignKey(Area,on_delete=models.DO_NOTHING,blank=False)
+    state = models.ForeignKey(State,on_delete=models.DO_NOTHING,blank=False)
+    city=models.ForeignKey(City,on_delete=models.DO_NOTHING,blank=False)
 
     def __str__(self):
-        return self.user.username
+        return self.company_name
         
 class Admin(models.Model):
     address = models.TextField()
     contact=models.CharField(max_length=10)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png',null=True,blank=True)
     user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)  # Field name made lowercase.
-    area = models.ForeignKey(Area,on_delete=models.CASCADE)
-    state = models.ForeignKey(State,on_delete=models.CASCADE)
-    city=models.ForeignKey(City,on_delete=models.CASCADE)
+    area = models.ForeignKey(Area,on_delete=models.DO_NOTHING,blank=False)
+    state = models.ForeignKey(State,on_delete=models.DO_NOTHING,blank=False)
+    city=models.ForeignKey(City,on_delete=models.DO_NOTHING,blank=False)
 
     def __str__(self):
         return self.user.username
@@ -78,23 +80,26 @@ class Admin(models.Model):
 
 class DeliveryBoy(models.Model):
     address = models.TextField()
-    contact=models.CharField(max_length=10)
+    contact=models.CharField(max_length=10,blank=True)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
-    user_iduser = models.ForeignKey(AuthUser, db_column='User_idUser',on_delete=models.CASCADE)  # Field name made lowercase.
-    area = models.ForeignKey(Area,on_delete=models.CASCADE)
-    state = models.ForeignKey(State,on_delete=models.CASCADE)
-    city=models.ForeignKey(City,on_delete=models.CASCADE)
+    user=models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)
+    state = models.ForeignKey(State,on_delete=models.DO_NOTHING,blank=False)
+    city=models.ForeignKey(City,on_delete=models.DO_NOTHING,blank=False)
+    area = models.ForeignKey(Area,on_delete=models.DO_NOTHING,blank=False)
 
     def __str__(self):
-        return self.user_iduser.username
+        return self.user.username
 
 class AreaHasDeliveryBoy(models.Model):    
-    area_idarea = models.OneToOneField(Area, db_column='area_idarea', primary_key=True,on_delete=models.CASCADE)
-    delivery_boy_iddelivery_boy = models.ForeignKey('DeliveryBoy', db_column='delivery_boy_idDelivery_boy',on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = (('deliveryboy', 'area'),)
+
+    area = models.ForeignKey(Area,on_delete=models.CASCADE)
+    deliveryboy = models.ForeignKey('DeliveryBoy',on_delete=models.CASCADE)
 
     def __str__(self):
-        return  f"{self.area_idarea.area} has {self.delivery_boy_iddelivery_boy.user_iduser}"
+        return  f"{self.deliveryboy.user.username} has {self.area.area_name}"
 
 
 class AuthGroup(models.Model):
@@ -167,8 +172,8 @@ class CustomizeHasHardwares(models.Model):
 
 class DeliveryPickup(models.Model):
     pickup = models.IntegerField()
-    delivery_boy_iddelivery_boy = models.ForeignKey(DeliveryBoy, db_column='delivery_boy_idDelivery_boy',on_delete=models.CASCADE)  # Field name made lowercase.
-    order_idorder = models.ForeignKey('Order', db_column='order_idorder',on_delete=models.CASCADE)
+    deliveryboy = models.ForeignKey(DeliveryBoy, db_column='delivery_boy_idDelivery_boy',on_delete=models.DO_NOTHING)  # Field name made lowercase.
+    order = models.ForeignKey('Order', db_column='order_idorder',on_delete=models.CASCADE)
 
 
 class DjangoAdminLog(models.Model):
@@ -198,11 +203,13 @@ class DjangoSession(models.Model):
     expire_date = models.DateTimeField()
 
 class FeedbackRating(models.Model):
-    feedback_date = models.DateField(blank=True, null=True)
-    desc = models.CharField(max_length=45, blank=True, null=True)
+    date = models.DateField()
+    comment = models.TextField(max_length=200, blank=True, null=True)
     rating = models.FloatField(blank=True, null=True)
-    customer_idcustomer = models.ForeignKey(Customer, db_column='customer_idCustomer',on_delete=models.CASCADE)  # Field name made lowercase.
-    product_idproduct = models.ForeignKey('Product', db_column='product_idproduct',on_delete=models.CASCADE)
+    publish=models.BooleanField()
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)  # Field name made lowercase.
+    product = models.ForeignKey('Product',on_delete=models.CASCADE)
+
 
 
 class HardwareDetails(models.Model):
@@ -225,19 +232,23 @@ class Offers(models.Model):
 
 
 class Order(models.Model):
-    order_date = models.DateField()
-    delivery_address = models.CharField(max_length=75)
+    date = models.DateField()
+    # delivery_address = models.CharField(max_length=75)
     tot_amount = models.IntegerField()
-    customer_idcustomer = models.ForeignKey(Customer, db_column='customer_idCustomer',on_delete=models.CASCADE)  # Field name made lowercase.
+    # order_status = models.CharField(max_length=15)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)  # Field name made lowercase.
+    # deliveryboy = models.ForeignKey(DeliveryBoy,on_delete=models.DO_NOTHING)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.customer.company_name
 
 class Payment(models.Model):
     date = models.DateField()
     tot_amount = models.IntegerField()
     transaction_id = models.CharField(max_length=45)
     bank_ref_num = models.CharField(max_length=45)
-    order_idorder = models.ForeignKey(Order, db_column='order_idorder',on_delete=models.CASCADE)
-    payment_method_idpayment_method = models.ForeignKey('PaymentMethod', db_column='payment_method_idpayment_method',on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, db_column='order_idorder',on_delete=models.CASCADE)
+    payment_method = models.ForeignKey('PaymentMethod', db_column='payment_method_idpayment_method',on_delete=models.CASCADE)
 
 
 class PaymentMethod(models.Model):
@@ -245,16 +256,20 @@ class PaymentMethod(models.Model):
 
 
 class Product(models.Model):
-    product_name = models.CharField(max_length=45)
-    product_desc = models.TextField(max_length=100, blank=True, null=True)
+    name = models.CharField(max_length=45)
+    desc = models.TextField(max_length=100, blank=True, null=True)
     quantity = models.IntegerField()
     rent_per_day = models.FloatField(blank=True, null=True)
     rent_per_week = models.FloatField(blank=True, null=True)
     rent_per_month = models.FloatField(blank=True, null=True)
     deposit = models.IntegerField()
     delivery_pickup_charges = models.IntegerField()
-    brand_idbrand = models.ForeignKey(Brand, db_column='brand_idbrand',on_delete=models.CASCADE)
-    category_idcategory = models.ForeignKey(Category, db_column='category_idcategory',on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand,on_delete=models.SET_NULL,null=True)
+    category = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
+    subcategory = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,related_name='subcategory')
+
+    def __str__(self):
+        return self.name
 
 
 class ProductHasHardwares(models.Model):
@@ -268,8 +283,8 @@ class ProductHasOffers(models.Model):
 
 
 class ProductHasOrder(models.Model):
-    product_idproduct = models.OneToOneField(Product, db_column='product_idproduct', primary_key=True,on_delete=models.CASCADE)
-    order_idorder = models.ForeignKey(Order, db_column='order_idorder',on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, db_column='product_idproduct', primary_key=True,on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, db_column='order_idorder',on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     rent_price = models.IntegerField()
@@ -278,12 +293,15 @@ class ProductHasOrder(models.Model):
     quantity = models.IntegerField()
     order_status = models.CharField(max_length=15)
     cancel_date = models.DateField(blank=True, null=True)
-    given_deposit_iddeposit = models.ForeignKey('ReturnDeposit', db_column='given_deposit_iddeposit', blank=True, null=True,on_delete=models.CASCADE)
+    deliveryboy=models.ForeignKey(DeliveryBoy,on_delete=models.DO_NOTHING,blank=True,null=True)
+    given_deposit = models.ForeignKey('ReturnDeposit', db_column='given_deposit_iddeposit', blank=True, null=True,on_delete=models.DO_NOTHING)
 
+    def __str__(self):
+        return f"{self.order.customer.company_name} ordered {self.product.name}"
 
 class Image(models.Model):
-    image = models.ImageField(upload_to ='uploads/')
-    product_idproduct = models.ForeignKey(Product, db_column='product_idproduct', blank=True, null=True,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to ='product/')
+    product = models.ForeignKey(Product, db_column='product', blank=True, null=True,on_delete=models.CASCADE)
     
 
 class ReturnDeposit(models.Model):

@@ -79,3 +79,4 @@ modalBtn = document.getElementsByClassName("modalButton");
 
 for(let i=0; i< modalBtn.length; i++ ){
     modalBtn[i].addEventListener('click',(e)=>{})}
+

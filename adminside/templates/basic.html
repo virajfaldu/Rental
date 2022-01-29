@@ -36,10 +36,11 @@
 <body>
   <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
     <!-- Desktop sidebar -->
-    <aside class="z-20 hidden w-72 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0 border-r-2 border-gray-100">
+    <aside
+      class="z-20 hidden w-72 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0 border-r-2 border-gray-100 dark:border-gray-800 ">
       <div class="py-4 text-gray-500 dark:text-gray-400">
         <a class="ml-4 text-2xl font-bold text-gray-700 dark:text-gray-200" href="#">
-         <span class="text-purple-700"> Rental </span> Appliances
+          <span class="text-purple-700 dark:text-purple-500"> Rental </span> Appliances
         </a>
         <ul class="mt-6">
           <li class="relative px-6 py-3">
@@ -47,16 +48,15 @@
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
               aria-hidden="true"></span>{%endif%}
             <a class="inline-flex items-center w-full text-sm font-semibold {% if index %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 "
-              href="{%url 'adminpannel'%}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door w-5 h-5" viewBox="0 0 16 16">
-                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+              href="{%url 'adminpanel'%}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-house-door w-5 h-5" viewBox="0 0 16 16">
+                <path
+                  d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z" />
               </svg>
               <span class="ml-4">Dashboard</span>
             </a>
           </li>
-        </ul>
-
-        <ul>
           <li class="relative px-6 py-3">
             {%if mcustomer%}
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
@@ -65,8 +65,10 @@
               class="toggleButton inline-flex items-center justify-between focus:outline-none w-full text-sm font-semibold {% if mcustomer %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 "
               @click="togglePagesMenu3" aria-haspopup="true">
               <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people w-5 h-5" viewBox="0 0 16 16">
-                  <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-people w-5 h-5" viewBox="0 0 16 16">
+                  <path
+                    d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
                 </svg>
                 <span class="ml-4">Customer</span>
               </span>
@@ -98,17 +100,35 @@
             </template>
           </li>
           <li class="relative px-6 py-3">
-            {%if mdeliveryboy%}
+            {%if mdeliveryboy %}
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
+              aria-hidden="true"></span>{%endif%}
+            <a class="inline-flex items-center w-full text-sm font-semibold {% if mdeliveryboy %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 "
+              href="{%url 'manageDeliveryBoy'%}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-truck w-5 h-5" viewBox="0 0 16 16">
+                <path
+                  d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+              </svg>
+              <span class="ml-4">DeliveryBoy</span>
+            </a>
+          </li>
+          <li class="relative px-6 py-3">
+            {%if mproduct%}
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
               aria-hidden="true"></span>{%endif%}
             <button
-              class="inline-flex items-center justify-between w-full text-sm font-semibold {% if mdeliveryboy %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 focus:outline-none"
-              @click="togglePagesMenu" aria-haspopup="true">
+              class="inline-flex items-center focus:outline-none justify-between w-full text-sm font-semibold {% if mproduct %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+              @click="togglePagesMenu2" aria-haspopup="true">
               <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-truck w-5 h-5" viewBox="0 0 16 16">
-                  <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-cast w-5 h-5" viewBox="0 0 16 16">
+                  <path
+                    d="m7.646 9.354-3.792 3.792a.5.5 0 0 0 .353.854h7.586a.5.5 0 0 0 .354-.854L8.354 9.354a.5.5 0 0 0-.708 0z" />
+                  <path
+                    d="M11.414 11H14.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5h-13a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h3.086l-1 1H1.5A1.5 1.5 0 0 1 0 10.5v-7A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v7a1.5 1.5 0 0 1-1.5 1.5h-2.086l-1-1z" />
                 </svg>
-                <span class="ml-4">Delivery</span>
+                <span class="ml-4">Products</span>
               </span>
               <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
@@ -116,7 +136,7 @@
                   clip-rule="evenodd"></path>
               </svg>
             </button>
-            <template x-if="isPagesMenuOpen">
+            <template x-if="isPagesMenuOpen2">
               <ul x-transition:enter="transition-all ease-in-out duration-300"
                 x-transition:enter-start="opacity-25 max-h-0" x-transition:enter-end="opacity-100 max-h-xl"
                 x-transition:leave="transition-all ease-in-out duration-300"
@@ -125,13 +145,28 @@
                 aria-label="submenu">
 
                 <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{%url 'manageDeliveryBoy'%}">
-                    All DeliveryBoy
+                  <a class="w-full" href="{% url 'manageProduct'%}">
+                    All Product
                   </a>
                 </li>
                 <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{%url 'addDeliveryBoy'%}">
-                    Add DeliveryBoy
+                  <a class="w-full" href="{% url 'categoryPage'%}">
+                    Manage Category
+                  </a>
+                </li>
+                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                  <a class="w-full" href="{% url 'manageOffers'%}">
+                    Manage Offers
+                  </a>
+                </li>
+                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                  <a class="w-full" href="{% url 'manageBrand'%}">
+                    Manage Brand
+                  </a>
+                </li>
+                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                  <a class="w-full" href="{% url 'manageProductReview'%}">
+                    Product Review
                   </a>
                 </li>
               </ul>
@@ -145,8 +180,10 @@
               class="inline-flex items-center focus:outline-none justify-between w-full text-sm font-semibold {% if morder %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 "
               @click="togglePagesMenu1" aria-haspopup="true">
               <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam w-5 h-5" viewBox="0 0 16 16">
-                  <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-box-seam w-5 h-5" viewBox="0 0 16 16">
+                  <path
+                    d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
                 </svg>
                 <span class="ml-4">Orders</span>
               </span>
@@ -183,74 +220,15 @@
             </template>
           </li>
           <li class="relative px-6 py-3">
-            {%if mproduct%}
-            <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
-              aria-hidden="true"></span>{%endif%}
-            <button
-              class="inline-flex items-center focus:outline-none justify-between w-full text-sm font-semibold {% if mproduct %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-              @click="togglePagesMenu2" aria-haspopup="true">
-              <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cast w-5 h-5" viewBox="0 0 16 16">
-                  <path d="m7.646 9.354-3.792 3.792a.5.5 0 0 0 .353.854h7.586a.5.5 0 0 0 .354-.854L8.354 9.354a.5.5 0 0 0-.708 0z"/>
-                  <path d="M11.414 11H14.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5h-13a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h3.086l-1 1H1.5A1.5 1.5 0 0 1 0 10.5v-7A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v7a1.5 1.5 0 0 1-1.5 1.5h-2.086l-1-1z"/>
-                </svg>
-                <span class="ml-4">Products</span>
-              </span>
-              <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clip-rule="evenodd"></path>
-              </svg>
-            </button>
-            <template x-if="isPagesMenuOpen2">
-              <ul x-transition:enter="transition-all ease-in-out duration-300"
-                x-transition:enter-start="opacity-25 max-h-0" x-transition:enter-end="opacity-100 max-h-xl"
-                x-transition:leave="transition-all ease-in-out duration-300"
-                x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
-                class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
-                aria-label="submenu">
-
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageProduct'%}">
-                    All Product
-                  </a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageCategory'%}">
-                    Manage Category
-                  </a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageSubCategory'%}">
-                    Manage Subcategory
-                  </a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageOffers'%}">
-                    Manage Offers
-                  </a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageBrand'%}">
-                    Manage Brand
-                  </a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageProductReview'%}">
-                    Product Review
-                  </a>
-                </li>
-              </ul>
-            </template>
-          </li>
-          <li class="relative px-6 py-3">
             {%if mcustomerRQ%}
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
               aria-hidden="true"></span>{%endif%}
             <a class="inline-flex items-center w-full text-sm font-semibold {% if mcustomerRQ %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
               href="{%url 'cutomizeProductRq'%}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sliders w-5 h-5" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-sliders w-5 h-5" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z" />
               </svg>
               <span class="ml-4">Cutomization Product Request</span>
             </a>
@@ -282,16 +260,15 @@
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
               aria-hidden="true"></span>{%endif%}
             <a class="inline-flex items-center w-full text-sm font-semibold {% if index %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-              href="{%url 'adminpannel'%}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door w-5 h-5" viewBox="0 0 16 16">
-                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+              href="{%url 'adminpanel'%}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-house-door w-5 h-5" viewBox="0 0 16 16">
+                <path
+                  d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z" />
               </svg>
               <span class="ml-4">Dashboard</span>
             </a>
           </li>
-        </ul>
-
-        <ul>
           <li class="relative px-6 py-3">
             {%if mcustomer%}
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
@@ -300,8 +277,10 @@
               class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 {% if mcustomer %}text-gray-800 dark:text-gray-100{% endif %} hover:text-gray-800 dark:hover:text-gray-200"
               @click="togglePagesMenu" aria-haspopup="true">
               <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people w-5 h-5" viewBox="0 0 16 16">
-                  <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-people w-5 h-5" viewBox="0 0 16 16">
+                  <path
+                    d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
                 </svg>
                 <span class="ml-4">Manage Customer</span>
               </span>
@@ -333,17 +312,36 @@
             </template>
           </li>
           <li class="relative px-6 py-3">
-            {%if mdeliveryboy%}
+            {%if mdeliveryboy %}
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
+              aria-hidden="true"></span>{%endif%}
+            <a class="inline-flex items-center w-full text-sm font-semibold {% if mdeliveyboy %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+              href="{%url 'manageDeliveryBoy'%}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-truck w-5 h-5" viewBox="0 0 16 16">
+                <path
+                  d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+              </svg>
+              <span class="ml-4">DeliveryBoy</span>
+            </a>
+          </li>
+
+          <li class="relative px-6 py-3">
+            {%if mproduct%}
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
               aria-hidden="true"></span>{%endif%}
             <button
-              class="inline-flex items-center justify-between w-full text-sm font-semibold {% if mdeliveryboy %}text-gray-800 dark:text-gray-100{% endif %} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-              @click="togglePagesMenu1" aria-haspopup="true">
+              class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 {% if mproduct %}text-gray-800 dark:text-gray-100{% endif %} hover:text-gray-800 dark:hover:text-gray-200"
+              @click="togglePagesMenu3" aria-haspopup="true">
               <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-truck w-5 h-5" viewBox="0 0 16 16">
-                  <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-cast w-5 h-5" viewBox="0 0 16 16">
+                  <path
+                    d="m7.646 9.354-3.792 3.792a.5.5 0 0 0 .353.854h7.586a.5.5 0 0 0 .354-.854L8.354 9.354a.5.5 0 0 0-.708 0z" />
+                  <path
+                    d="M11.414 11H14.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5h-13a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h3.086l-1 1H1.5A1.5 1.5 0 0 1 0 10.5v-7A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v7a1.5 1.5 0 0 1-1.5 1.5h-2.086l-1-1z" />
                 </svg>
-                <span class="ml-4">Manage DeliveryBoy</span>
+                <span class="ml-4">Manage Product</span>
               </span>
               <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
@@ -351,7 +349,7 @@
                   clip-rule="evenodd"></path>
               </svg>
             </button>
-            <template x-if="isPagesMenuOpen1">
+            <template x-if="isPagesMenuOpen3">
               <ul x-transition:enter="transition-all ease-in-out duration-300"
                 x-transition:enter-start="opacity-25 max-h-0" x-transition:enter-end="opacity-100 max-h-xl"
                 x-transition:leave="transition-all ease-in-out duration-300"
@@ -359,12 +357,21 @@
                 class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
                 aria-label="submenu">
                 <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{%url 'manageDeliveryBoy'%}">All DeliveryBoy</a>
+                  <a class="w-full" href="{% url 'manageProduct'%}">All Product</a>
                 </li>
                 <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{%url 'addDeliveryBoy'%}">
-                    Add Deliveryboy
+                  <a class="w-full" href="{% url 'categoryPage'%}">
+                    Manage Category
                   </a>
+                </li>
+                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                  <a class="w-full" href="{% url 'manageOffers'%}">Manage Offers</a>
+                </li>
+                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                  <a class="w-full" href="{% url 'manageBrand'%}">Manage Brand</a>
+                </li>
+                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
+                  <a class="w-full" href="{% url 'manageProductReview'%}">Product Review</a>
                 </li>
               </ul>
             </template>
@@ -377,8 +384,10 @@
               class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 {% if morder %}text-gray-800 dark:text-gray-100{% endif %} hover:text-gray-800 dark:hover:text-gray-200"
               @click="togglePagesMenu2" aria-haspopup="true">
               <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam w-5 h-5" viewBox="0 0 16 16">
-                  <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-box-seam w-5 h-5" viewBox="0 0 16 16">
+                  <path
+                    d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
                 </svg>
                 <span class="ml-4">Manage Orders</span>
               </span>
@@ -412,58 +421,6 @@
               </ul>
             </template>
           </li>
-          <li class="relative px-6 py-3">
-            {%if mproduct%}
-            <span class="absolute inset-y-0 left-0 w-1 bg-purple-500 rounded-tr-lg rounded-br-lg"
-              aria-hidden="true"></span>{%endif%}
-            <button
-              class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 {% if mproduct %}text-gray-800 dark:text-gray-100{% endif %} hover:text-gray-800 dark:hover:text-gray-200"
-              @click="togglePagesMenu3" aria-haspopup="true">
-              <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cast w-5 h-5" viewBox="0 0 16 16">
-                  <path d="m7.646 9.354-3.792 3.792a.5.5 0 0 0 .353.854h7.586a.5.5 0 0 0 .354-.854L8.354 9.354a.5.5 0 0 0-.708 0z"/>
-                  <path d="M11.414 11H14.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5h-13a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h3.086l-1 1H1.5A1.5 1.5 0 0 1 0 10.5v-7A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v7a1.5 1.5 0 0 1-1.5 1.5h-2.086l-1-1z"/>
-                </svg>
-                <span class="ml-4">Manage Product</span>
-              </span>
-              <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clip-rule="evenodd"></path>
-              </svg>
-            </button>
-            <template x-if="isPagesMenuOpen3">
-              <ul x-transition:enter="transition-all ease-in-out duration-300"
-                x-transition:enter-start="opacity-25 max-h-0" x-transition:enter-end="opacity-100 max-h-xl"
-                x-transition:leave="transition-all ease-in-out duration-300"
-                x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
-                class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
-                aria-label="submenu">
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageProduct'%}">All Product</a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageCategory'%}">
-                    Manage Category
-                  </a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageSubCategory'%}">
-                    Manage Sub Category
-                  </a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageOffers'%}">Manage Offers</a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageBrand'%}">Manage Brand</a>
-                </li>
-                <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
-                  <a class="w-full" href="{% url 'manageProductReview'%}">Product Review</a>
-                </li>
-              </ul>
-            </template>
-          </li>
         </ul>
         <ul class="">
           <li class="relative px-6 py-3">
@@ -472,8 +429,10 @@
               aria-hidden="true"></span>{%endif%}
             <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {% if mproduct %}text-gray-800 dark:text-gray-100{% endif %} hover:text-gray-800 dark:hover:text-gray-200"
               href="{%url 'cutomizeProductRq'%}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sliders w-5 h-5" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-sliders w-5 h-5" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z" />
               </svg>
               <span class="ml-4">Customization Product Requests</span>
             </a>
@@ -482,7 +441,7 @@
       </div>
     </aside>
     <div class="flex flex-col flex-1 w-full">
-      <header class="z-10 py-4 bg-white border-b-2 border-gray-100 dark:bg-gray-800">
+      <header class="z-10 py-4 bg-white border-b-2 border-gray-100 dark:bg-gray-800 dark:border-gray-800">
         <div
           class="container flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">
           <!-- Mobile hamburger -->
@@ -580,9 +539,8 @@
             <li class="relative">
               <button class="align-middle rounded-full focus:shadow-outline-purple focus:outline-none"
                 @click="toggleProfileMenu" @keydown.escape="closeProfileMenu" aria-label="Account" aria-haspopup="true">
-                <img class="object-cover w-8 h-8 rounded-full"
-                  src="{{user.admin.image.url}}"
-                  alt="" aria-hidden="true" />
+                <img class="object-cover w-8 h-8 rounded-full" src="{{user.admin.image.url}}" alt=""
+                  aria-hidden="true" />
               </button>
               <template x-if="isProfileMenuOpen">
                 <ul x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
@@ -635,59 +593,63 @@
     </div>
   </div>
   {% if messages %}
-          {% for message in messages %}
-              <script>
-                  var toastMixinSuccess = Swal.mixin({
-                      toast: true,
-                      icon: 'success',
-                      title: '{{message}}!',
-                      animation: false,
-                      position: 'top-right',
-                      showConfirmButton: false,
-                      timer: 3000,
-                      timerProgressBar: true,
-                      background: '#d4edda',
-                      color:'#155724',
-                      didOpen: (toast) => {
-                      toast.addEventListener('mouseenter', Swal.stopTimer)
-                      toast.addEventListener('mouseleave', Swal.resumeTimer)
-                      }
-                  });
+  {% for message in messages %}
+  <script>
+    var toastMixinSuccess = Swal.mixin({
+      toast: true,
+      icon: 'success',
+      title: '{{message}}!',
+      animation: false,
+      position: 'top-right',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      background: '#d4edda',
+      color: '#155724',
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    });
 
-                  var toastMixinError = Swal.mixin({
-                      toast: true,
-                      icon: 'error',
-                      title: '{{message}}!',
-                      animation: false,
-                      position: 'top-right',
-                      showConfirmButton: false,
-                      timer: 3000,
-                      timerProgressBar: true,
-                      background: '#f8d7da',
-                      color: '#721c24',
-                      didOpen: (toast) => {
-                      toast.addEventListener('mouseenter', Swal.stopTimer)
-                      toast.addEventListener('mouseleave', Swal.resumeTimer)
-                      }
-                  });
-              </script>
-              {% if message.tags == 'success' %}
-                  <script>
-                      toastMixinSuccess.fire({
-                      animation: true,
-                      title: '{{message}}!'
-                      });
-                  </script>
-              {% elif message.tags == 'warning' %}
-                  <script>
-                      toastMixinError.fire({
-                      animation: true,
-                      title: '{{message}}!'
-                      });
-                  </script>
-              {% endif %}
-          {% endfor %}
-      {% endif %}
+    var toastMixinError = Swal.mixin({
+      toast: true,
+      icon: 'error',
+      title: '{{message}}!',
+      animation: false,
+      position: 'top-right',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      background: '#f8d7da',
+      color: '#721c24',
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    });
+  </script>
+  {% if message.tags == 'success' %}
+  <script>
+    toastMixinSuccess.fire({
+      animation: true,
+      title: '{{message}}!'
+    });
+  </script>
+  {% elif message.tags == 'warning' %}
+  <script>
+    toastMixinError.fire({
+      animation: true,
+      title: '{{message}}!'
+    });
+  </script>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  {%block js%}
+
+  {%endblock%}
 </body>
 
 </html>

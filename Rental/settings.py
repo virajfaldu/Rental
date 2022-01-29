@@ -89,6 +89,11 @@ DATABASES = {
         'PASSWORD': '',              # <-- UPDATED line
         'HOST'    : 'localhost',                # <-- UPDATED line
         'PORT'    : '3306',
+        'STORAGE_ENGINE': 'MyISAM / INNODB / ETC',
+         'OPTIONS': {
+            "init_command": "SET foreign_key_checks = 0; \
+                            SET sql_mode='STRICT_TRANS_TABLES",
+        }
     }
 }
 

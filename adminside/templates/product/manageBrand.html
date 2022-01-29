@@ -1,16 +1,18 @@
 {% extends 'basic.html' %}
 {%load static %}
+{% load widget_tweaks %}
+
 {% block title %}
 Brand
 {% endblock %}
 
 {%block body%}
 
-<div class="p-8 rounded-md w-full">
+<div class="p-8 block">
 
     <button
         class="inline float-right text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        type="button" data-modal-toggle="authentication-modal">
+        type="button" data-modal-toggle="brand-modal">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-plus-lg inline text-white font-bold" viewBox="0 0 16 16">
             <path fill-rule="evenodd"
@@ -19,15 +21,16 @@ Brand
         Add Brand
     </button>
 
-    <div id="authentication-modal" aria-hidden="true"
-        class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
-        <div class="relative px-4 w-full max-w-md h-full md:h-auto">
+    <div id="brand-modal" aria-hidden="true"
+        class="hidden overflow-y-auto overflow-x-hidden fixed right-0  left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
+        <div class="relative px-4 w-full max-w-md h-full md:h-auto dark:bg-gray-700">
 
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                 <div class="">
-                    <button type="button"
+                    <button type="button" {% if modalBrand %} onclick="location.href='/adminpanel/managebrand'" {% else %}
+                    data-modal-toggle="brand-modal" {% endif %}
                         class="text-gray-400 float-right mr-2 mt-1 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-                        data-modal-toggle="authentication-modal">
+                        data-modal-toggle="brand-modal">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
                                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -35,15 +38,19 @@ Brand
                         </svg>
                     </button>
                 </div>
-                <form class="px-6 pb-6 pt-4 space-y-10 lg:px-8 sm:pb-6 xl:pb-8" action="#">
-                    <h3 class="text-xl font-medium text-gray-900 dark:text-white">Add Brand</h3>
+                {% if modalBrand %}
+                <form class="px-6 pb-6 pt-4 space-y-10 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'editBrand' brandid %}" method="post"
+                enctype="multipart/form-data">
+                {%else%}
+                <form class="px-6 pb-6 pt-4 space-y-10 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'manageBrand'%}" method="post"
+                enctype="multipart/form-data">
+                {%endif%}
+                {%csrf_token%}
+                    <h3 class="text-xl font-medium text-gray-900 dark:text-white">{% if modalBrand %}Edit{%else%}Add{%endif%} Brand</h3>
                     <div>
-                        <label for="email"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Brand
+                        <label for="" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Brand
                             Name</label>
-                        <input type="email" name="email" id="email"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                            placeholder="Computer" required>
+                            {{brandForm.name|add_class:'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white'}}
                     </div>
                     <div class="mt-16">
                         <button type="submit"
@@ -54,6 +61,110 @@ Brand
         </div>
     </div>
 </div>
+<!-- brand table -->
 
+<div class="px-4 rounded-md w-full">
+    <div class="w-2/5 p-4 bg-white overflow-hidden rounded-md shadow-md dark:bg-gray-800">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full whitespace-no-wrap">
+                <thead>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">Brand</th>
+                        <th class="px-4 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for brand in brands%}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3 text-sm">
+                            {{brand.name}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <p class="whitespace-nowrap">
+                                <a href="{%url 'editBrand' brand.id %}"
+                                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">edit</a>
+                                <button type="button" data-uid="{{brand.id }}" data-token="{{ csrf_token }}"
+                                    data-url="{% url 'action' brand.id 'delete' 'Brand'%}"
+                                    data-return="{% url 'manageBrand' %}"
+                                    class="userDeleteBtn text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">delete</button>
+                            </p>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        {%if brands.has_other_pages%}
+        <div
+            class="grid px-4 pt-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span class="flex items-center col-span-3">
+                Showing {{ brands.start_index }}-{{ brands.end_index }} of {{brands.paginator.count}}
+            </span>
+            <span class="col-span-2"></span>
+            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center">
+                        {%if brands.has_previous%}
+                        <li>
+                            <a href="?page={{brands.previous_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-l-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{brands.previous_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{brands.previous_page_number}}
+                            </a>
+                        </li>
+                        {%endif%}
+                        <li>
+                            <a href="?page={{brands.number}}"
+                                class="px-3 pr-5 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{brands.number}}
+                            </a>
+                        </li>
+                        {%if brands.has_next%}
+                        <li>
+                            <a href="?page={{brands.next_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{brands.next_page_number}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{brands.next_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-r-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        {%endif%}
+    </div>
+</div>
+{%block js%}
+
+{% if modalBrand %}
+<script>
+    window.addEventListener("load", ()=>{
+        toggleModal("brand-modal");
+    })
+</script>
+{% endif %}
+{%endblock%}
 
 {% endblock %}

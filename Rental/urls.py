@@ -24,6 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('rentalmain.urls')),
     path('account/',include('accounts.urls')),
-    path('adminpannel/',include('adminside.urls')),
+    path('adminpanel/',include('adminside.urls')),
     
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
