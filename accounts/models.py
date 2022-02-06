@@ -5,13 +5,15 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+import datetime
 from msilib.schema import PublishComponent
+from operator import truth
 from django.db import models
 from django.contrib.auth.models import User
 
 
 class City(models.Model):
-    city_name = models.CharField(max_length=45)
+    city_name = models.CharField(max_length=45,unique=True)
     state_idstate = models.ForeignKey('State',on_delete=models.CASCADE)
 
     def __str__(self):
@@ -19,7 +21,7 @@ class City(models.Model):
 
 
 class State(models.Model):
-    state_name = models.CharField(max_length=45)
+    state_name = models.CharField(max_length=45,unique=True)
 
     def __str__(self):
         return self.state_name
@@ -27,7 +29,7 @@ class State(models.Model):
 
 
 class Area(models.Model):
-    area_name = models.CharField(max_length=45)
+    area_name = models.CharField(max_length=45,unique=True)
     pincode = models.CharField(max_length=6)
     city_idcity = models.ForeignKey('City', db_column='city_idcity',on_delete=models.CASCADE)
 
@@ -58,9 +60,9 @@ class Customer(models.Model):
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
     is_pending = models.BooleanField(default=True)
     user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)  # Field name made lowercase.
-    area = models.ForeignKey(Area,on_delete=models.DO_NOTHING,blank=False)
-    state = models.ForeignKey(State,on_delete=models.DO_NOTHING,blank=False)
-    city=models.ForeignKey(City,on_delete=models.DO_NOTHING,blank=False)
+    area = models.ForeignKey(Area,on_delete=models.SET_NULL,blank=False,null=True)
+    state = models.ForeignKey(State,on_delete=models.SET_NULL,blank=False,null=True)
+    city=models.ForeignKey(City,on_delete=models.SET_NULL,blank=False,null=True)
 
     def __str__(self):
         return self.company_name
@@ -70,9 +72,9 @@ class Admin(models.Model):
     contact=models.CharField(max_length=10)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png',null=True,blank=True)
     user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)  # Field name made lowercase.
-    area = models.ForeignKey(Area,on_delete=models.DO_NOTHING,blank=False)
-    state = models.ForeignKey(State,on_delete=models.DO_NOTHING,blank=False)
-    city=models.ForeignKey(City,on_delete=models.DO_NOTHING,blank=False)
+    area = models.ForeignKey(Area,on_delete=models.SET_NULL,blank=False,null=True)
+    state = models.ForeignKey(State,on_delete=models.SET_NULL,blank=False,null=True)
+    city=models.ForeignKey(City,on_delete=models.SET_NULL,blank=False,null=True)
 
     def __str__(self):
         return self.user.username
@@ -83,9 +85,9 @@ class DeliveryBoy(models.Model):
     contact=models.CharField(max_length=10,blank=True)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
     user=models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)
-    state = models.ForeignKey(State,on_delete=models.DO_NOTHING,blank=False)
-    city=models.ForeignKey(City,on_delete=models.DO_NOTHING,blank=False)
-    area = models.ForeignKey(Area,on_delete=models.DO_NOTHING,blank=False)
+    state = models.ForeignKey(State,on_delete=models.SET_NULL,blank=False,null=True)
+    city=models.ForeignKey(City,on_delete=models.SET_NULL,blank=False,null=True)
+    area = models.ForeignKey(Area,on_delete=models.SET_NULL,blank=False,null=True)
 
     def __str__(self):
         return self.user.username
@@ -158,22 +160,27 @@ class Category(models.Model):
 
 class Customize(models.Model):
     date = models.DateField(blank=True, null=True)
-    user_iduser = models.ForeignKey(AuthUser, db_column='user_idUser',on_delete=models.CASCADE)  # Field name made lowercase.
-    product_idproduct = models.ForeignKey('Product', db_column='product_idproduct',on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=75)
+    description = models.TextField(max_length=350)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)  # Field name made lowercase.
+    status=models.CharField(max_length=10,default='pending',blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user_iduser.username} has requested for{self.product_idproduct.product_name}"
+        return f"{self.customer.user.username} has requested for {self.product_name}"
 
 
-class CustomizeHasHardwares(models.Model):
-    customize_idcustomize = models.OneToOneField(Customize, db_column='customize_idcustomize', primary_key=True,on_delete=models.CASCADE)
-    hardwares_idhardware = models.ForeignKey('Hardwares', db_column='hardwares_idhardware',on_delete=models.CASCADE)
+# class CustomizeHasHardwares(models.Model):
+#     customize_idcustomize = models.OneToOneField(Customize, db_column='customize_idcustomize', primary_key=True,on_delete=models.CASCADE)
+#     hardwares_idhardware = models.ForeignKey('Hardwares', db_column='hardwares_idhardware',on_delete=models.CASCADE)
 
 
 class DeliveryPickup(models.Model):
-    pickup = models.IntegerField()
-    deliveryboy = models.ForeignKey(DeliveryBoy, db_column='delivery_boy_idDelivery_boy',on_delete=models.DO_NOTHING)  # Field name made lowercase.
-    order = models.ForeignKey('Order', db_column='order_idorder',on_delete=models.CASCADE)
+    pickup = models.BooleanField(default=False)
+    deliveryboy = models.ForeignKey(DeliveryBoy,on_delete=models.CASCADE)  # Field name made lowercase.
+    order = models.ForeignKey('ProductHasOrder',on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"duty aisgn to {self.deliveryboy} for {self.order}"
 
 
 class DjangoAdminLog(models.Model):
@@ -212,14 +219,14 @@ class FeedbackRating(models.Model):
 
 
 
-class HardwareDetails(models.Model):
-    hardware_details = models.CharField(max_length=45, blank=True, null=True)
-    hardwares_idhardware = models.ForeignKey('Hardwares', db_column='hardwares_idhardware',on_delete=models.CASCADE)
+# class HardwareDetails(models.Model):
+#     hardware_details = models.CharField(max_length=45, blank=True, null=True)
+#     hardwares_idhardware = models.ForeignKey('Hardwares', db_column='hardwares_idhardware',on_delete=models.CASCADE)
 
 
 
-class Hardwares(models.Model):
-    hardware_name = models.CharField(max_length=15)
+# class Hardwares(models.Model):
+#     hardware_name = models.CharField(max_length=15)
 
 
 
@@ -249,10 +256,16 @@ class Payment(models.Model):
     bank_ref_num = models.CharField(max_length=45)
     order = models.ForeignKey(Order, db_column='order_idorder',on_delete=models.CASCADE)
     payment_method = models.ForeignKey('PaymentMethod', db_column='payment_method_idpayment_method',on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f'payment by {self.order.customer.company_name} for order date {self.order.date}'
 
 
 class PaymentMethod(models.Model):
     name = models.CharField(max_length=45)
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
@@ -272,29 +285,37 @@ class Product(models.Model):
         return self.name
 
 
-class ProductHasHardwares(models.Model):
-    product_idproduct = models.OneToOneField(Product, db_column='product_idproduct', primary_key=True,on_delete=models.CASCADE)
-    hardwares_idhardware = models.ForeignKey(Hardwares, db_column='hardwares_idhardware',on_delete=models.CASCADE)
+# class ProductHasHardwares(models.Model):
+#     product_idproduct = models.OneToOneField(Product, db_column='product_idproduct', primary_key=True,on_delete=models.CASCADE)
+#     hardwares_idhardware = models.ForeignKey(Hardwares, db_column='hardwares_idhardware',on_delete=models.CASCADE)
 
 
 class ProductHasOffers(models.Model):
     product_idproduct = models.OneToOneField(Product, db_column='product_idproduct', primary_key=True,on_delete=models.CASCADE)
     offers_id_offer = models.ForeignKey(Offers, db_column='offers_id_offer',on_delete=models.CASCADE)
 
+class OrderStatus(models.Model):
+    DEFAULT_PK=1
+    status = models.CharField(max_length=15,unique=True)
+    def __str__(self):
+        return self.status
 
 class ProductHasOrder(models.Model):
-    product = models.OneToOneField(Product, db_column='product_idproduct', primary_key=True,on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, db_column='order_idorder',on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = (('order', 'product'),)
+
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     rent_price = models.IntegerField()
     deposit = models.IntegerField()
     delivery_pickup_charge = models.IntegerField()
     quantity = models.IntegerField()
-    order_status = models.CharField(max_length=15)
+    status=models.ForeignKey(OrderStatus,default=OrderStatus.DEFAULT_PK,on_delete=models.SET_NULL,null=True)
     cancel_date = models.DateField(blank=True, null=True)
-    deliveryboy=models.ForeignKey(DeliveryBoy,on_delete=models.DO_NOTHING,blank=True,null=True)
-    given_deposit = models.ForeignKey('ReturnDeposit', db_column='given_deposit_iddeposit', blank=True, null=True,on_delete=models.DO_NOTHING)
+    # deliveryboy=models.ForeignKey(DeliveryBoy,on_delete=models.DO_NOTHING,blank=True,null=True)
 
     def __str__(self):
         return f"{self.order.customer.company_name} ordered {self.product.name}"
@@ -304,10 +325,13 @@ class Image(models.Model):
     product = models.ForeignKey(Product, db_column='product', blank=True, null=True,on_delete=models.CASCADE)
     
 
-class ReturnDeposit(models.Model):
-    date = models.DateField()
-    deposit_amount = models.IntegerField()
-    desc = models.CharField(max_length=45, blank=True, null=True)
+class PayBack(models.Model):
+    date = models.DateField(default=datetime.datetime.now,blank=True,null=True)
+    amount = models.IntegerField()
+    description = models.TextField(max_length=150, blank=True, null=True)
+    cancellation = models.BooleanField(default=True,blank=True,null=True)
     cheque_num = models.IntegerField()
+    order = models.ForeignKey(Order,on_delete=models.CASCADE,blank=True,null=True)
+
 
 

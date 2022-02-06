@@ -125,3 +125,9 @@ class brandForm(forms.ModelForm):
     class Meta:
         model = Brand
         fields = '__all__'
+
+class payBackForm(forms.ModelForm):
+
+    class Meta:
+        model = PayBack
+        fields = '__all__'

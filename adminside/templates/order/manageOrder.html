@@ -27,10 +27,10 @@ Manage order
                     {%for order in orders%}
                     <tr class="text-gray-700 dark:text-gray-400">
                         <td class="px-4 py-3 text-sm">
-                            {{order.date}}
+                            <p>{{order.date}}</p>
                         </td>
                         <td class="px-4 py-3 text-sm">
-                            {{order.customer.company_name}}
+                            <p>{{order.customer.company_name}}</p>
                         </td>
                         <td class="px-4 py-3 text-sm">
                             <p class="ml-10">{{order.producthasorder_set.all|length}}</p>
@@ -46,9 +46,9 @@ Manage order
                             {%endif%}
                         </td>
                       
-                        <td class="px-4 py-3 text-sm">
+                        <td class="px-4 py-3">
                             <a href="{%url 'manageOrderDetails' order.id %}"
-                            class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:underline">view</a>
+                            class="text-blue-600 hover:text-blue-900 dark:text-blue-500 text-md dark:hover:underline">view</a>
                         </td>
                     </tr>
                     {%endfor%}

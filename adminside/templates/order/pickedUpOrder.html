@@ -1,0 +1,201 @@
+{%extends 'basic.html'%}
+{% load widget_tweaks %}
+
+{%load static %}
+{% block title %}
+Return Deposit
+{% endblock %}
+
+{%block body%}
+
+<!-- payback modal -->
+{%if modalPayBack%}
+<div id="payback-modal" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
+    <div class="relative px-4 w-full max-w-md h-full md:h-auto">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="">
+                <button type="button" onclick="location.href='/adminpanel/pickeduporders'"
+                    class="text-gray-400 float-right mr-2 mt-1 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                    >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            {%if view%}
+                <h3 class="text-xl px-8 pt-8 font-medium text-gray-900 dark:text-white">
+                    Payback Details
+                </h3>
+                <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'returnDeposit' order %}" method="post" >
+                    {% csrf_token %}
+                    <div class="mt-4">
+                        <label class="text-gsray-700 dark:text-gray-200" for="username">Payment Date</label>
+                        {{payBackForm.date|attr:'disabled'|add_class:'text-sm block w-full mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    </div>
+                    <div class="mt-4">
+                        <label class="text-gsray-700 dark:text-gray-200" for="username">Amount To Pay</label>
+                        {{payBackForm.amount|attr:'disabled'|add_class:'text-sm block w-full mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    </div>
+                    <div class="mt-4">
+                        <label class="text-gray-700 dark:text-gray-200" for="username">Description</label>
+                        {{payBackForm.description|attr:'disabled'|add_class:'block w-full mt-2 h-24 resize-none px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    </div>
+                    <div class="sm:col-span-3 mt-4">
+                        <label class="text-gray-700 dark:text-gray-200" for="username">Cheque Number</label>
+                        {{payBackForm.cheque_num|attr:'disabled'|add_class:'text-sm block w-full mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    </div>
+                </form>
+            {%else%}
+                <h3 class="text-xl px-8 pt-8 font-medium text-gray-900 dark:text-white">
+                    Payback
+                </h3>
+                <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'returnDeposit' order %}" method="post" >
+                    {% csrf_token %}
+                    <div class="mt-4">
+                        <label class="text-gsray-700 dark:text-gray-200" for="username">Amount To Pay</label>
+                        {{payBackForm.amount|add_class:'text-sm block w-full mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                        <p class="text-red-500 text-xs">{{payBackForm.amount.errors|striptags}}</p>
+                    </div>
+                    <div class="mt-4">
+                        <label class="text-gray-700 dark:text-gray-200" for="username">Description</label>
+                        {{payBackForm.description|add_class:'block w-full mt-2 h-24 resize-none px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    </div>
+                    <div class="sm:col-span-3 mt-4">
+                        <label class="text-gray-700 dark:text-gray-200" for="username">Cheque Number</label>
+                        {{payBackForm.cheque_num|add_class:'text-sm block w-full mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                        <p class="text-red-500 text-xs">{{payBackForm.cheque_num.errors|striptags}}</p>
+                    </div>
+                    <div class="mt-8">
+                        <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                    </div>
+                </form>
+            {%endif%}
+        </div>
+    </div>
+</div>
+{%endif%}
+
+<div class="p-8 rounded-md w-full">
+    <div class="w-full p-4 bg-white overflow-hidden rounded-md shadow-md dark:bg-gray-800">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full whitespace-no-wrap">
+                <thead>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">order id</th>
+                        <th class="px-4 py-3">order date</th>
+                        <th class="px-4 py-3">company name</th>
+                        <th class="px-4 py-3">payment status</th>
+                        <th class="px-4 py-3">Details</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for order in orders%}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3 text-sm">
+                           <a href="{%url 'manageOrderDetails' order.id%}"><p class="ml-4">{{order.id}}</p></a>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <p>{{order.date}}</p>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <p class="">{{order.customer.company_name|capfirst}}</p>
+                        </td>
+                        <td class="px-4 py-3">
+                            {%if order.payback_set.all|length == 1 and order.payback_set.all.0.cancellation %}
+                            <a href="{%url 'returnDeposit' order.id %}"
+                            class="ml-8 text-blue-600 hover:text-blue-900 dark:text-blue-500 text-md dark:hover:underline">Pay</a>
+                            {%else%}
+                            <a href="{%url 'returnDeposit' order.id%}"
+                            class="ml-3 text-blue-600 hover:text-blue-900 dark:text-blue-500 text-md dark:hover:underline">Completed</a>
+                            {%endif%}
+                        </td>
+                        <td class="px-4 py-3">
+                            <a href="{%url 'pickedupOrderDetails' order.id %}"
+                            class="text-blue-600 hover:text-blue-900 dark:text-blue-500 text-md dark:hover:underline">View</a>
+                        </td>
+                    </tr>
+                    {%endfor%}
+
+                </tbody>
+            </table>
+        </div>
+        {%if orders.has_other_pages%}
+        <div
+            class="grid px-4 pt-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span class="flex items-center col-span-3">
+                Showing {{ orders.start_index }}-{{ orders.end_index }} of {{orders.paginator.count}}
+            </span>
+            <span class="col-span-2"></span>
+            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center">
+                        {%if orders.has_previous%}
+                        <li>
+                            <a href="?page={{orders.previous_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-l-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{orders.previous_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{orders.previous_page_number}}
+                            </a>
+                        </li>
+                        {%endif%}
+                        <li>
+                            <a href="?page={{orders.number}}"
+                                class="px-3 pr-5 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{orders.number}}
+                            </a>
+                        </li>
+                        {%if orders.has_next%}
+                        <li>
+                            <a href="?page={{orders.next_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{orders.next_page_number}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{orders.next_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-r-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        {%endif%}
+    </div>
+</div>
+
+{%block js%}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="{%static 'assets/js/load_subCategory.js'%}"></script>
+
+{%if modalPayBack %}
+<script>
+    window.addEventListener("load", () => {
+        toggleModal("payback-modal");
+    })
+</script>
+{%endif%}
+{%endblock%}
+{%endblock%}

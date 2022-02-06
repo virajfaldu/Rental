@@ -1,4 +1,5 @@
-from telnetlib import NAOCRD
+import datetime
+import imp
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -8,6 +9,12 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, JsonResponse
 import json
 from django.apps import apps
+from django.db.models import Q
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.core.mail import send_mail
+
+
 
 
 from accounts.decorators import admin_only  # for use a decorators
@@ -20,7 +27,7 @@ def adminpanel(request):
 
     customer = Customer.objects.filter(is_pending=False).count()
     pending_customer = Customer.objects.filter(is_pending=True).count()
-    sales = ProductHasOrder.objects.filter(order_status="delivered").count()
+    sales = ProductHasOrder.objects.filter(status__status="delivered").count()
 
     context = {
         'customers': customer,
@@ -90,7 +97,6 @@ def action(request, pk, permission, model=None):
                 return JsonResponse(context)
 
         elif permission == "userstatus":
-            print(pk)
             user =  User.objects.get(id=pk)
             user.is_active = not user.is_active
             user.save()
@@ -117,24 +123,22 @@ def manageDeliveryBoy(request):
         
         context={
             'modaldeliveryboy':True,
+            'deliveryboy':deliveryboy,
             'deliveryboy_fm': d_fm, 
             'profileForm': p_fm
         }
 
         email = request.POST['email']
 
-        # checking for email exist or not
         if email != '':
             if User.objects.filter(email=email).exists():
                 messages.warning(request, "Email already exist")
                 return render(request, 'deliveryboy/manageDeliveryBoy.html',context)
 
-        # checking for all form details are valid or not
         if d_fm.is_valid() and p_fm.is_valid():
 
-            d_fm.save()  # save all details from fm to deliveryboy table and create deliveryboy object
+            deliveryboy=d_fm.save()
 
-            # for add deliveryboy into customer group
             group = Group.objects.get(name='deliveryboy')
             deliveryboy.groups.add(group)
             Profile = p_fm.save()
@@ -155,9 +159,40 @@ def manageDeliveryBoy(request):
     return render(request, 'deliveryboy/manageDeliveryBoy.html',context)
 
 
+def asignArea(request,pk):
+    
+    deliveryboy= get_page(request,DeliveryBoy.objects.all(),10)
+    boy=DeliveryBoy.objects.get(id=pk)
+    boyHasArea=AreaHasDeliveryBoy.objects.filter(deliveryboy=boy).all()
+    if request.method=="POST":
+        list=request.POST.getlist('area')
+        AreaHasDeliveryBoy.objects.filter(deliveryboy=boy).delete()
+        for i in list:
+            area=Area.objects.get(id=i)
+            AreaHasDeliveryBoy.objects.create(area=area,deliveryboy=boy).save()
+        context={
+            'deliveryboy':deliveryboy,
+        }
+        messages.success(request,"Record Saved Succesfully")
+        return redirect('manageDeliveryBoy')
+
+    area=Area.objects.filter(city_idcity=boy.city).all()
+    asignedArea=[]
+    for boyarea in boyHasArea:
+        asignedArea.append(boyarea.area.area_name)
+
+    context={
+        'asignedArea':asignedArea,
+        'area':area,
+        'deliveryboy':deliveryboy,
+        'deliveryboyId':pk,
+        'modalAsign':True,
+    }
+
+    return render(request, 'deliveryboy/manageDeliveryBoy.html',context)
+
 def load_cities(request):
     state_id = request.GET.get('state')
-    print("helo")
     cities = City.objects.filter(state_idstate=state_id)
     return render(request, 'load_cities.html', {'cities': cities})
 
@@ -167,89 +202,7 @@ def load_area(request):
     area = Area.objects.filter(city_idcity=city_id)
     return render(request, 'load_area.html', {'areas': area})
 
-
-@admin_only
-def manageOrder(request):
-
-    orders = Order.objects.all()
-
-    context = {
-        'orders': orders,
-        'morder': True
-    }
-    return render(request, 'order/manageOrder.html', context)
-
-
-@admin_only
-def manageOrderDetails(request, orderid):
-
-    order = Order.objects.filter(id=orderid).first()
-    orderDetails = ProductHasOrder.objects.filter(order=orderid).all()
-    
-    area_has_deliveryboy=AreaHasDeliveryBoy.objects.filter(area=order.customer.area).all()
-    deliveryBoy=[]
-    for i in range(0,len(area_has_deliveryboy)):
-        deliveryBoy.append(DeliveryBoy.objects.filter(id= area_has_deliveryboy[i].deliveryboy.id).first())
-    
-    tot_rent = 0
-    tot_delivery = 0
-    tot_deposit = 0
-
-    for product in orderDetails:
-        tot_rent += product.rent_price
-        tot_delivery += product.deposit
-        tot_deposit += product.delivery_pickup_charge
-
-    tot_amount = tot_rent+tot_delivery+tot_deposit
-
-    context = {
-        'order': order,
-        'orderDetails': orderDetails,
-        'deliveryboy': deliveryBoy,
-        'tot_rent': tot_rent,
-        'tot_delivery': tot_delivery,
-        'tot_deposit': tot_deposit,
-        'tot_amount': tot_amount,
-        'morder': True,
-    }
-    return render(request, 'order/manageOrderDetails.html', context)
-
-
-@admin_only
-def asignDelivery(request):
-    data = json.loads(request.body)
-    print(data['pid'])
-    order = Order.objects.get(id=data['oid'])
-    product=Product.objects.get(id=data['pid'])
-    deliveryboy = DeliveryBoy.objects.get(id=data['id'])
-
-    productHasOrder=ProductHasOrder.objects.get(order=order,product=product)
-    productHasOrder.deliveryboy = deliveryboy
-    productHasOrder.save()
-    messages.success(request, "deliveryboy asigned!")
-    return JsonResponse({"data": "running"})
-
-
-@admin_only
-def changeStatus(request):
-    data = json.loads(request.body)
-    order=Order.objects.get()
-    order = ProductHasOrder.objects.get(order__id=data['oid'],product__id=data['pid'])
-    order.order_status=data['ostatus']
-    order.save()
-    messages.success(request, "status updated")
-    return JsonResponse({"data": "running"})
-
-
-@admin_only
-def cancelOrder(request):
-    return render(request, 'order/cancelOrder.html', {'morder': True})
-
-
-@admin_only
-def extendRent(request):
-    return render(request, 'order/exRentDur.html', {'morder': True})
-
+# ---------------------------- manage product ----------------------------
 
 @admin_only
 def manageProduct(request, proid=None):
@@ -267,9 +220,7 @@ def manageProduct(request, proid=None):
         if request.method == 'POST':
             prodForm = productForm(request.POST, instance=proData)
             imgForm = imageForm(request.POST, request.FILES, instance=imgData)
-            print(imgForm)
             images = request.FILES.getlist('image')
-            print(imgForm.errors)
             if prodForm.is_valid() and imgForm.is_valid():
                 pro = prodForm.save()
                 if len(images) > 0:
@@ -318,6 +269,15 @@ def manageProduct(request, proid=None):
     }
     return render(request, 'product/manageProduct.html', context)
 
+@admin_only
+def productDetails(request,pk):
+    product=Product.objects.get(id=pk)
+    images=Image.objects.filter(product=product)
+    context={
+        'images':images,
+        'product':product
+    }
+    return render(request,"product/productDetails.html",context)
 
 @admin_only
 def categoryPage(request):
@@ -435,11 +395,9 @@ def manageSubCategory(request, scatid=None):
         }
         return render(request, 'product/manageCategory.html', context)
 
-
 @admin_only
 def manageOffers(request):
     return render(request, 'product/manageOffer.html', {'mproduct': True})
-
 
 @admin_only
 def manageBrand(request, brandid=None):
@@ -503,7 +461,6 @@ def manageProductReview(request, reviewid=None):
 
     reviews = FeedbackRating.objects.filter()
     if reviewid != None:
-        print(reviewid)
         comment = FeedbackRating.objects.get(id=reviewid)
         context = {
             'reviews': reviews,
@@ -519,11 +476,359 @@ def manageProductReview(request, reviewid=None):
     }
     return render(request, 'product/manageReview.html', context)
 
+# ---------------------------- manage orders ----------------------------
 
 @admin_only
-def cutomizeProductRq(request):
-    return render(request, 'customizeRQ.html', {'mcustomerRQ': True})
+def manageOrder(request):
 
+    orders = Order.objects.all().order_by("-date")
+
+    context = {
+        'orders': orders,
+        'morder': True
+    }
+    return render(request, 'order/manageOrder.html', context)
+
+
+@admin_only
+def manageOrderDetails(request, orderid):
+
+    order = Order.objects.filter(id=orderid).first()
+    orderDetails = ProductHasOrder.objects.filter(order=orderid).all()
+    status=OrderStatus.objects.exclude(status="cancelled").order_by('-id').reverse()
+    
+    area_has_deliveryboy=AreaHasDeliveryBoy.objects.filter(area=order.customer.area).all()
+    deliveryBoy=[]
+    for i in range(0,len(area_has_deliveryboy)):
+        deliveryBoy.append(DeliveryBoy.objects.filter(id= area_has_deliveryboy[i].deliveryboy.id,user__is_active=True).first())
+
+    context = {
+        'order': order,
+        'orderDetails': orderDetails,
+        'status':status,
+        'deliveryboy': deliveryBoy,
+        'morder': True,
+    }
+    return render(request, 'order/manageOrderDetails.html', context)
+
+@admin_only
+def asignDelivery(request):
+    data = json.loads(request.body)
+    order = Order.objects.get(id=data['oid'])
+    product=Product.objects.get(id=data['pid'])
+
+    productHasOrder=ProductHasOrder.objects.get(order=order,product=product)
+    delivery=DeliveryPickup.objects.filter(order=productHasOrder,pickup=False).first()
+
+    if data['id']=="":
+        delivery.delete()
+        
+    else:
+        deliveryboy = DeliveryBoy.objects.get(id=data['id'])
+
+        if delivery!=None:
+            delivery.deliveryboy=deliveryboy
+            delivery.save()
+            
+        elif delivery==None:
+            DeliveryPickup.objects.create(deliveryboy=deliveryboy,order=productHasOrder).save()
+
+    messages.success(request, "Record Saved Succesfully!")
+    return JsonResponse({"data": "running"})
+
+@admin_only
+def asignPickup(request):
+    data = json.loads(request.body)
+    order = Order.objects.get(id=data['oid'])
+    product=Product.objects.get(id=data['pid'])
+
+    productHasOrder=ProductHasOrder.objects.get(order=order,product=product)
+    delivery=DeliveryPickup.objects.filter(order=productHasOrder,pickup=True).first()
+
+    if data['id']=="":
+        delivery.delete()
+        
+    else:
+        deliveryboy = DeliveryBoy.objects.get(id=data['id'])
+
+        if delivery!=None:
+            delivery.deliveryboy=deliveryboy
+            delivery.save()
+            
+        elif delivery==None:
+            obj=DeliveryPickup.objects.create(deliveryboy=deliveryboy,order=productHasOrder)
+            obj.pickup=True
+            obj.save()
+
+    messages.success(request, "Record Saved Succesfully!")
+    return JsonResponse({"data": "running"})
+
+
+@admin_only
+def changeStatus(request):
+    data = json.loads(request.body)
+
+    status=OrderStatus.objects.get(id=data['ostatus'])
+    order=Order.objects.get(id=data['oid'])
+    orderDetails = ProductHasOrder.objects.get(order=order,product__id=data['pid'])
+    product=Product.objects.get(id=orderDetails.product.id)
+
+    orderDetails.status=status
+    orderDetails.save()
+    
+    if orderDetails.status.status=='cancelled':
+        orderDetails.cancel_date=datetime.datetime.now()
+        orderDetails.save()
+
+        delivery=DeliveryPickup.objects.filter(order=orderDetails).first()
+        if delivery!=None:
+            delivery.delete()
+  
+        # order.tot_amount=order.tot_amount-orderDetails.rent_price-orderDetails.deposit-orderDetails.delivery_pickup_charge
+        # order.save()
+
+        product.quantity+=orderDetails.quantity
+        product.save()
+    messages.success(request, "status updated")
+    return JsonResponse({"data": "running"})
+
+
+@admin_only
+def cancelOrder(request):
+
+    orderDetails=ProductHasOrder.objects.filter(status__status="cancelled").order_by('-cancel_date').reverse()
+    orders=[]
+    for detail in orderDetails:
+        orders.append(Order.objects.get(id=detail.order.id))
+    for o in orders:
+        if orders.count(o)>1:
+            orders.remove(o)
+
+
+    context={
+        'orders':orders,
+        'morder': True,
+    }
+
+    return render(request, 'order/cancelOrder.html',context)
+
+@admin_only
+def cancelOrderDetails(request, orderid):
+
+    order = Order.objects.filter(id=orderid).first()
+    orderDetails = ProductHasOrder.objects.filter(order=orderid,status__status="cancelled").all()
+
+    context = {
+        'order': order,
+        'orderDetails': orderDetails,
+        'morder': True,
+    }
+    return render(request, 'order/cancelOrderDetails.html', context)
+
+@admin_only
+def payBack(request, orderid,view=None):
+
+    orderDetails=ProductHasOrder.objects.filter(status__status="cancelled").order_by('-cancel_date').reverse()
+    orders=[]
+    for detail in orderDetails:
+        orders.append(Order.objects.get(id=detail.order.id))
+    for o in orders:
+        if orders.count(o)>1:
+            orders.remove(o)
+
+
+    order = Order.objects.filter(id=orderid).first()
+    payback=PayBack.objects.filter(order=order,cancellation=True).first()
+
+    paybackForm=payBackForm()
+    if payback!=None:
+        paybackForm=payBackForm(instance=payback)
+        context = {
+            'payBackForm':paybackForm,
+            'orders': orders,
+            'order': order.id,
+            'view': True,
+            'modalPayBack':True,
+            'morder': True,
+        }
+        return render(request, 'order/cancelOrder.html', context)
+
+
+    if request.method=="POST":
+        paybackForm=payBackForm(request.POST)
+        if paybackForm.is_valid():
+            obj=paybackForm.save()
+            obj.order=order
+            obj.save()
+            messages.success(request, "record Saved Successfully")
+            return redirect('cancelOrder')
+    
+    context = {
+        'payBackForm':paybackForm,
+        'orders': orders,
+        'order': order.id,
+        'modalPayBack':True,
+        'morder': True,
+    }
+    return render(request, 'order/cancelOrder.html', context)
+
+@admin_only
+def pickedUpOrder(request):
+
+    order=Order.objects.all()
+    pickedUpOrder=[]
+    for o in order:
+        var=True
+        orderDetails=ProductHasOrder.objects.filter(order=o)
+        for detail in orderDetails:
+            if detail.status.status!= "cancelled" and detail.status.status!= "pickedup":
+                var=False
+                break
+        if var:
+            pickedUpOrder.append(o)
+    context={
+        'orders':pickedUpOrder,
+        'morder':True
+    }
+
+    return render(request, 'order/pickedUpOrder.html',context)
+
+
+@admin_only
+def returnDeposit(request, orderid):
+ 
+    orders=Order.objects.all()
+    pickedUpOrder=[]
+    for o in orders:
+        var=True
+        orderDetails=ProductHasOrder.objects.filter(order=o)
+        for detail in orderDetails:
+            if detail.status.status!= "cancelled" and detail.status.status!= "pickedup":
+                var=False
+                break
+        if var:
+            pickedUpOrder.append(o)
+
+
+    order = Order.objects.filter(id=orderid).first()
+    payback=PayBack.objects.filter(order=order,cancellation=False).first()
+    paybackForm=payBackForm()
+    if payback!=None:
+        paybackForm=payBackForm(instance=payback)
+        context = {
+            'payBackForm':paybackForm,
+            'orders': pickedUpOrder,
+            'order': order.id,
+            'view': True,
+            'modalPayBack':True,
+            'morder': True,
+        }
+        return render(request, 'order/pickedUpOrder.html', context)
+
+
+    if request.method=="POST":
+        paybackForm=payBackForm(request.POST)
+        if paybackForm.is_valid():
+            obj=paybackForm.save()
+            obj.order=order
+            obj.cancellation=False
+            obj.save()
+            messages.success(request, "record Saved Successfully")
+            return redirect('pickedUpOrder')
+    
+    context = {
+        'payBackForm':paybackForm,
+        'orders': pickedUpOrder,
+        'order': order.id,
+        'modalPayBack':True,
+        'morder': True,
+    }
+    return render(request, 'order/pickedUpOrder.html', context)
+
+@admin_only
+def extendRent(request):
+    return render(request, 'order/exRentDur.html', {'morder': True})
+
+
+
+@admin_only
+def customizeProductRq(request,pk=None):
+
+    productRQ=Customize.objects.filter(status="pending").order_by('-date')
+
+    if pk!=None:
+        detail=Customize.objects.get(id=pk)
+        context={
+            'detail':detail,
+            'requests':productRQ,
+            'modalDescription':True,
+            'mcustomerRQ': True,
+        }
+        return render(request, 'customizeRQ.html',context)
+
+
+    context={
+        'requests':productRQ,
+        'mcustomerRQ': True,
+    }
+    return render(request, 'customizeRQ.html',context)
+
+@admin_only
+def acceptProductRq(request,pk):
+
+    productRQ=Customize.objects.filter(status="pending").order_by('-date')
+    productform=productForm()
+    imageform=imageForm()
+
+    if request.method == 'POST':
+        RQ=Customize.objects.get(id=pk)
+        
+        prodForm = productForm(request.POST)
+        imgForm = imageForm(request.POST, request.FILES)
+        images = request.FILES.getlist('image')
+
+        if prodForm.is_valid() and imgForm.is_valid():
+            pro = prodForm.save()
+            img = imgForm.save(commit=False)
+            for img in images:
+                Image.objects.create(image=img, product=pro)
+            RQ.status="accepted"
+            RQ.save()
+
+            template=render_to_string('email/acceptProduct.html',{'name':RQ.customer.user.username})
+            sendEmail(request,RQ.customer.user,template)
+
+            messages.success(request, "Product Added Successfully")
+            return redirect('customizeProductRq')
+        else:
+            messages.warning(request, "Something Went Wrong")
+
+    context={
+        'requests':productRQ,
+        'productForm':productform,
+        'imgForm':imageform,
+        'id':pk,
+        'mcustomerRQ': True,
+        'modalProduct':True
+    }
+    return render(request, 'customizeRQ.html',context)
+
+@admin_only
+def declineProductRq(request,pk):
+    data=json.loads(request.body)
+    RQ=Customize.objects.get(id=data['rid'])
+
+    RQ.status="declined"
+    RQ.save()
+
+    template=render_to_string('email/declineProduct.html',{'name':RQ.customer.user.username})
+    sendEmail(request,RQ.customer.user,template)
+
+    messages.success(request, "Record Saved Sucessfully")
+    context = {
+       'success': True
+    }
+    return JsonResponse(context)
 
 @admin_only
 def profile(request):
@@ -605,3 +910,14 @@ def get_page(request, user_obj, pages):
         users = all_user.page(1)
 
     return users
+
+
+@admin_only
+def sendEmail(request,user,template):
+    send_mail(
+        'thank you for send new product request',
+        template,
+        settings.EMAIL_HOST_USER,
+        [user.email],
+        fail_silently=False,
+    )

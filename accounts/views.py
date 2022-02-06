@@ -83,6 +83,6 @@ def login(request):
 def logout(request):
     if request.user.is_authenticated:
         auth_logout(request)
-        return render(request,'signin.html')
+        return redirect('signin')
     else:
-        return render(request,'signin.html')
+        return redirect('signin')

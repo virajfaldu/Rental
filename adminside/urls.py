@@ -15,20 +15,33 @@ urlpatterns=[
 
 
     path('managedeliveryboy',views.manageDeliveryBoy,name="manageDeliveryBoy"),
+    path('managedeliveryboy/asignarea/<int:pk>',views.asignArea,name="asignArea"),
     path('ajax/load-cities/', views.load_cities, name='ajax_load_cities'),
     path('ajax/load-area/', views.load_area, name='ajax_load_area'),
     
     path('manageorder',views.manageOrder,name="manageOrder"),
     path('manageorderdetails/<int:orderid>',views.manageOrderDetails,name="manageOrderDetails"),
     path('manageorderdetails/asigndelivery',views.asignDelivery,name="asignDelivery"),
+    path('manageorderdetails/asignpickup',views.asignPickup,name="asignPickup"),
     path('manageorderdetails/changestatus',views.changeStatus,name="changeStatus"),
-
+    
+    
     path('cancelorder',views.cancelOrder,name="cancelOrder"),
+    path('cancelorder/cancelorderdetails/<int:orderid>',views.cancelOrderDetails,name="cancelOrderDetails"),
+    path('cancelorder/payback/<int:orderid>',views.payBack,name="payBack"),
+    path('cancelorder/payback/<int:orderid>/<str:view>',views.payBack,name="payBack"),
+
+    path('pickeduporders',views.pickedUpOrder,name="pickedUpOrder"),
+    path('pickeduporders/orderdetails/<int:orderid>',views.manageOrderDetails,name="pickedupOrderDetails"),
+    path('pickeduporders/returndeposit/<int:orderid>',views.returnDeposit,name="returnDeposit"),
+    
+
     path('extendrent',views.extendRent,name="extendRent"),
 
 
     path('manageproduct',views.manageProduct,name="manageProduct"),
-    path('editproduct/<int:proid>',views.manageProduct,name="editProduct"),
+    path('manageproduct/editproduct/<int:proid>',views.manageProduct,name="editProduct"),
+    path('manageproduct/productDetails/<int:pk>',views.productDetails,name="productDetails"),
 
     path('categorypage',views.categoryPage,name="categoryPage"),
     path('savecategory',views.manageCategory,name="saveCategory"),
@@ -47,7 +60,10 @@ urlpatterns=[
     path('publish',views.publish,name="publish"),
 
     
-    path('cutomizeproductrq',views.cutomizeProductRq,name="cutomizeProductRq"),
+    path('customizeproductrq',views.customizeProductRq,name="customizeProductRq"),
+    path('customizeproductrq/<int:pk>',views.customizeProductRq,name="getDetails"),
+    path('customizeproductrq/acceptproductRq/<int:pk>',views.acceptProductRq,name="acceptProductRq"),
+    path('customizeproductrq/declineproductRq/<int:pk>',views.declineProductRq,name="declineProductRq"),
 
 
     path('profile/imageupload',views.imageUpload,name="imageUpload"),

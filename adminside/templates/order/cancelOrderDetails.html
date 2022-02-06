@@ -1,0 +1,97 @@
+{% extends 'basic.html' %}
+{% load custom_tags %}
+{% load static %}
+
+{% block title %}
+cancel OrderDetails
+{% endblock %}
+
+{%block body%}
+<div class="p-8 rounded-md w-full h-screen bg-white dark:bg-gray-800">
+
+    <div class="block justify-end rounded">
+        <div class="w-1/4 grid grid-cols-2 text-sm py-4 text-right float-right justify-center text-gray-500">
+            <div class="py-0.5 text-left">Order date</div>
+            <div class="py-0.5">{{order.date}}</div>
+            <div class="py-0.5 text-left">Total amount</div>
+            <div class="py-0.5">&#8377;{{orderDetails|moneyToPay}}</div>
+        </div>
+    </div>
+    <div class="flex justify-start rounded">
+        <div class="w-2/5 text-sm py-4 justify-center text-gray-500">
+            <div class="py-0.5">{{order.customer.company_name}}</div>
+            <div class="py-0.5">{{order.customer.company_address}},{{order.customer.area.area_name}},{{order.customer.city.city_name}}
+            ,{{order.customer.state.state_name}},{{order.customer.area.pincode}}</div>
+        </div>
+    </div>
+
+    <div class="w-full py-4 overflow-hidden rounded dark:bg-gray-800 my-6">
+        <div class="w-full overflow-x-auto shadow-sm rounded">
+            <table class="w-full whitespace-no-wrap ">
+                <thead>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">cancel date</th>
+                        <th class="px-4 py-3">Product</th>
+                        <th class="px-4 py-3">Quantity</th>
+                        <th class="px-4 py-3">start date</th>
+                        <th class="px-4 py-3">end date</th>
+                        <th class="px-4 py-3">rent price</th>
+                        <th class="px-4 py-3">deliver charge</th>
+                        <th class="px-4 py-3">deposit</th>
+                        <th class="px-4 py-3 text-center">status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y dark:divide-gray-700 dark:bg-gray-800 ">
+                    {%for product in orderDetails %}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3 text-sm">
+                            {{product.cancel_date}}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-center">
+                            {{product.product.name}}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-center">
+                            {{product.quantity}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{product.start_date}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{product.end_date}}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-center">
+                            &#8377;{{product.rent_price}}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-center">
+                            &#8377;{{product.delivery_pickup_charge}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            &#8377;{{product.deposit}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{product.status.status}}
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="flex justify-end rounded">
+        <div class="w-2/6 grid grid-cols-2 text-sm px-4 float-right justify-center text-gray-500">
+            <div class="border-b border-gray-300 py-3">Rent Price</div>
+            <div class="border-b border-gray-300 py-3 font-bold text-right" id="rentPrice">&#8377;{{orderDetails|ctotalRent}}</div>
+            <div class="border-b border-gray-300 py-3">Delivery Charge</div>
+            <div class="border-b border-gray-300 py-3 font-bold text-right" id="deliveryCharge">&#8377;{{orderDetails|ctotalDeliveryCharge}}</div>
+            <div class="border-b border-gray-300 py-3">deposit</div>
+            <div class="border-b border-gray-300 py-3 font-bold text-right" id="deposit">&#8377;{{orderDetails|ctotalDeposit}}</div>
+            <div class="py-3 font-bold text-gray-600">Money To Pay</div>
+            <div class="py-3 text-right font-bold text-purple-700">&#8377;{{orderDetails|moneyToPay}}</div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock%}
