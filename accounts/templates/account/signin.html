@@ -1,0 +1,125 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{%static 'assets/css/style.css'%}">
+    <link rel="stylesheet" href="{%static 'assets/css/sweetalert2.min.css'%}" />
+
+    <script src="{%static 'assets/js/sweetalert2.all.min.js'%}"></script>
+
+
+    <title>login</title>
+</head>
+
+<body class="flex items-center justify-center h-screen bg-gray-100">
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+        var toastMixinSuccess = Swal.mixin({
+            toast: true,
+            icon: 'success',
+            title: '{{message}}!',
+            animation: false,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#d4edda',
+            color: '#155724',
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        var toastMixinError = Swal.mixin({
+            toast: true,
+            icon: 'error',
+            title: '{{message}}!',
+            animation: false,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#f8d7da',
+            color: '#721c24',
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    </script>
+    {% if message.tags == 'success' %}
+    <script>
+        toastMixinSuccess.fire({
+            animation: true,
+            title: '{{message}}!'
+        });
+    </script>
+    {% elif message.tags == 'warning' %}
+    <script>
+        toastMixinError.fire({
+            animation: true,
+            title: '{{message}}!'
+        });
+    </script>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <div class="flex items-center justify-center min-h-screen p-6">
+        <div class="container max-w-screen-md mx-auto ">
+            <div>
+                <div class="p-4 px-4 mt-12 mb-6 bg-white rounded shadow-lg md:p-8 md:mt-72 lg:mt-auto ">
+
+                    <!-- <div class="p-4 px-4 mt-6 mb-6 bg-white rounded shadow-lg md:p-8 lg:mt-auto md:mt-96 sm:mt-7 "> -->
+                    <div class="grid grid-cols-1 gap-4 text-sm gap-y-3 lg:grid-cols-2 md:grid-cols-1 ">
+                        <div class="text-gray-600 md:shrink-0">
+                            <p class="pb-1 text-4xl font-medium">Sign in to your account</span>
+                            </p>
+                            <p class="text-gray-600">Please fill out all the fields.</p>
+                            <img src="{%static 'assets/images/sign_in.png'%}"
+                                class="object-cover w-full m-0 h-50 md:h-auto md:w-50" />
+                            <!-- <a href="">create account</a> -->
+                        </div>
+                        <form action="{% url 'signin' %}" class="lg:mt-24" method="post" autocomplete="off">
+                            {%csrf_token%}
+
+
+                            <label for="" class="block">Username</label>
+                            <input type="text" class="w-full h-10 px-3 mb-1 border rounded-md focus:outline-none"
+                                name="username" placeholder="Username" required>
+
+
+                            <label for="" class="block mt-4">Password</label>
+                            <input type="password" class="w-full h-10 px-3 mb-1 border rounded-md focus:outline-none"
+                                name="password" placeholder="password" required>
+
+
+                            <div class="mt-5 flex justify-between">
+                                <div>
+                                    <a href="{%url 'reset_password'%}" class="text-sm text-purple-800">Lost Password?</a><br>
+                                    <a href="{%url 'signup'%}" class="text-sm text-purple-800">Create Account</a>
+                                </div>
+                                <div class="mt-1">
+                                    <button type="submit"
+                                        class="px-4 py-2 font-bold text-white bg-purple-600 active:bg-purple-600 hover:bg-purple-700 rounded">Login</button>
+                                </div>
+                            </div>
+                            <div class="float-right md:col-span-5">
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+</body>
+
+</html>

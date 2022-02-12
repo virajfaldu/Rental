@@ -42,8 +42,11 @@ INSTALLED_APPS = [
     'Rental',
     'rentalmain',
     'adminside',
+    'deliveryboy',
 
+    'django_filters',
     'widget_tweaks',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [

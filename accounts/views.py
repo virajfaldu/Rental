@@ -17,40 +17,32 @@ def signup(request):
     p_fm = ProfileForm()
     if request.method == 'POST':
 
-         # fill the details in form from post request for set the data after error
         u_fm = SignupForm(request.POST) 
         p_fm = ProfileForm(request.POST) 
 
         email=request.POST['email']
         company_name=request.POST['company_name']
 
-        # checking for email exist or not
         if email!='':
             if User.objects.filter(email=email).exists():
                 messages.warning(request,"Email already exist")
-                return render(request,'signup.html',{'user_fm':u_fm,'profileForm':p_fm})
+                return render(request,'account/signup.html',{'user_fm':u_fm,'profileForm':p_fm})
 
-        # checking for company exist or not
-        if Customer.objects.filter(company_name=company_name):
-            messages.info(request,"Company already exist")
-            return render(request,'signup.html',{'user_fm':u_fm,'profileForm':p_fm})
-
-        # checking for all form details are valid or not
         if u_fm.is_valid() and p_fm.is_valid():
 
-            user=u_fm.save() # save all details from fm to user table and create user object
-            user.is_active=False # edit column of user table
+            user=u_fm.save()
+            user.is_active=False
             user.save() 
 
-            group=Group.objects.get(name='customer') #for add user into customer group
+            group=Group.objects.get(name='customer')
             user.groups.add(group)
             Profile=p_fm.save()
             Profile.user=user
             Profile.save()
 
-            return render(request,'signup.html',{'registered':True,'user_fm':u_fm,'profileForm':p_fm})
+            return render(request,'account/signup.html',{'registered':True,'user_fm':u_fm,'profileForm':p_fm})
 
-    return render(request,'signup.html',{'user_fm':u_fm,'profileForm':p_fm})
+    return render(request,'account/signup.html',{'user_fm':u_fm,'profileForm':p_fm})
 
 def load_cities(request):
     state_id = request.GET.get('state')
@@ -78,7 +70,7 @@ def login(request):
 
         else:
             messages.warning(request,"Invalid credentials")
-    return render(request,'signin.html')
+    return render(request,'account/signin.html')
 
 def logout(request):
     if request.user.is_authenticated:

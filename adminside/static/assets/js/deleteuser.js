@@ -106,7 +106,6 @@ for (let i = 0; i < asigndelivery.length; i++) {
   });
 }
 asignPickup = document.getElementsByClassName("asignPickup");
-console.log("heloo")
 for (let i = 0; i < asignPickup.length; i++) {
     asignPickup[i].addEventListener("change", (e) => {
     id = e.target.value;
@@ -139,13 +138,15 @@ for (let i = 0; i < asignPickup.length; i++) {
 orderStatus = document.getElementsByClassName("orderStatus");
 for (let i = 0; i < orderStatus.length; i++) {
   orderStatus[i].addEventListener("change", (e) => {
+    
     ostatus = e.target.value;
     oid = e.target.dataset.oid;
     pid = e.target.dataset.pid;
     token = e.target.dataset.token;
     url = e.target.dataset.url;
     returnurl = e.target.dataset.return;
-
+    
+    console.log(oid,pid,token,url,returnurl)
     fetch(url, {
       method: "POST",
       headers: {

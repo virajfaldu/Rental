@@ -7,7 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 import datetime
 from msilib.schema import PublishComponent
-from operator import truth
+from operator import truediv, truth
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -54,7 +54,7 @@ class AuthUser(models.Model):
 
 
 class Customer(models.Model):
-    company_name = models.CharField(max_length=45,blank=False)
+    company_name = models.CharField(max_length=45,blank=False,unique=True)
     company_address = models.TextField()
     contact=models.CharField(max_length=10)
     image=models.ImageField(upload_to='users/',default='users/avatar-png-1-original.png')
@@ -129,7 +129,7 @@ class AuthUserUserPermissions(models.Model):
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=45)
+    name = models.CharField(max_length=15,unique=True)
 
     def __str__(self):
         return self.name
@@ -150,9 +150,9 @@ class Cart(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=15,blank=False)
-    image = models.ImageField(upload_to ='category/',blank=True,null=True)
-    subcategory_idcategory = models.ForeignKey('self', db_column='subcategory_idcategory', blank=True, null=True,on_delete=models.CASCADE)
+    name = models.CharField(max_length=15,blank=False,unique=True)
+    image = models.ImageField(upload_to ='category/')
+    subcategory_idcategory = models.ForeignKey('self', blank=True, null=True,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -177,7 +177,7 @@ class Customize(models.Model):
 class DeliveryPickup(models.Model):
     pickup = models.BooleanField(default=False)
     deliveryboy = models.ForeignKey(DeliveryBoy,on_delete=models.CASCADE)  # Field name made lowercase.
-    order = models.ForeignKey('ProductHasOrder',on_delete=models.CASCADE)
+    order = models.ForeignKey('ProductHasOrder',on_delete=models.CASCADE,related_name='deliverypickup')
 
     def __str__(self):
         return f"duty aisgn to {self.deliveryboy} for {self.order}"
@@ -240,11 +240,10 @@ class Offers(models.Model):
 
 class Order(models.Model):
     date = models.DateField()
-    # delivery_address = models.CharField(max_length=75)
     tot_amount = models.IntegerField()
-    # order_status = models.CharField(max_length=15)
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)  # Field name made lowercase.
-    # deliveryboy = models.ForeignKey(DeliveryBoy,on_delete=models.DO_NOTHING)  # Field name made lowercase.
+    returndeposite=models.BooleanField(blank=True,null=True,default=False)
+
 
     def __str__(self):
         return self.customer.company_name
@@ -254,8 +253,8 @@ class Payment(models.Model):
     tot_amount = models.IntegerField()
     transaction_id = models.CharField(max_length=45)
     bank_ref_num = models.CharField(max_length=45)
-    order = models.ForeignKey(Order, db_column='order_idorder',on_delete=models.CASCADE)
-    payment_method = models.ForeignKey('PaymentMethod', db_column='payment_method_idpayment_method',on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE)
+    payment_method = models.ForeignKey('PaymentMethod',on_delete=models.CASCADE)
     
     def __str__(self):
         return f'payment by {self.order.customer.company_name} for order date {self.order.date}'
@@ -269,17 +268,17 @@ class PaymentMethod(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=45)
+    name = models.CharField(max_length=45,unique=True)
     desc = models.TextField(max_length=100, blank=True, null=True)
     quantity = models.IntegerField()
-    rent_per_day = models.FloatField(blank=True, null=True)
-    rent_per_week = models.FloatField(blank=True, null=True)
-    rent_per_month = models.FloatField(blank=True, null=True)
+    rent_per_day = models.FloatField()
+    rent_per_week = models.FloatField()
+    rent_per_month = models.FloatField()
     deposit = models.IntegerField()
     delivery_pickup_charges = models.IntegerField()
     brand = models.ForeignKey(Brand,on_delete=models.SET_NULL,null=True)
     category = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
-    subcategory = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,related_name='subcategory')
+    subcategory = models.ForeignKey(Category,on_delete=models.SET_NULL,blank=True,null=True,related_name='subcategory')
 
     def __str__(self):
         return self.name
@@ -315,6 +314,8 @@ class ProductHasOrder(models.Model):
     quantity = models.IntegerField()
     status=models.ForeignKey(OrderStatus,default=OrderStatus.DEFAULT_PK,on_delete=models.SET_NULL,null=True)
     cancel_date = models.DateField(blank=True, null=True)
+    cancelpay=models.BooleanField(blank=True,null=True,default=False)
+
     # deliveryboy=models.ForeignKey(DeliveryBoy,on_delete=models.DO_NOTHING,blank=True,null=True)
 
     def __str__(self):
@@ -332,6 +333,11 @@ class PayBack(models.Model):
     cancellation = models.BooleanField(default=True,blank=True,null=True)
     cheque_num = models.IntegerField()
     order = models.ForeignKey(Order,on_delete=models.CASCADE,blank=True,null=True)
+
+# class OTP(models.Model):
+#     email = models.TextField(max_length=150)
+#     otp = models.IntegerField(max_length=6)
+#     date = models.DateField(default=datetime.datetime.now,blank=True,null=True)
 
 
 

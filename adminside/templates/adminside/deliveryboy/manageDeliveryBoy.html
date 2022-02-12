@@ -1,0 +1,321 @@
+{% extends 'adminside/basic.html' %}
+{%load static %}
+{% load widget_tweaks %}
+{% block title %}
+Delivery Boy
+{% endblock %}
+
+{%block body%}
+
+<div class="block p-8">
+    <button
+        class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        type="button" data-modal-toggle="deliveryboy-modal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-plus-lg inline text-white font-bold" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+        </svg>
+        Add DeliveryBoy
+    </button>
+</div>
+
+<section id="deliveryboy-modal" aria-hidden="true"
+    class="max-w-xl mx-auto my-auto p-6 h-min bg-white rounded-md shadow-md dark:bg-gray-800 hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-8 z-50 justify-center items-center md:inset-0">
+
+        <form id="deliveryboyForm" class="w-full"action="{%url 'manageDeliveryBoy'%}" data-cities-url="{% url 'ajax_load_cities' %}" novalidate data-area-url="{% url 'ajax_load_area' %}"
+            data-token="{{ csrf_token }}" method="post">
+            {%csrf_token%}
+            <div class="">
+                <button type="button" {% if modaldeliveryboy %} onclick="location.href='/adminpanel/managedeliveryboy'" {%else%} data-modal-toggle="deliveryboy-modal" {% endif %}
+                    class="text-gray-400 float-right mr-2 mt-1 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            <h2 class="text-2xl font-semibold text-gray-700 capitalize dark:text-white"><span
+                    class="text-purple-700">Add</span> DeliveryBoy </h2>
+            <div class="grid grid-cols-1 gap-6 w-full pt-5 sm:grid-cols-6 text-sm">
+                <div class="sm:col-span-3">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">First Name</label>
+                    {{deliveryboy_fm.first_name|add_class:'block w-full text-sm mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{deliveryboy_fm.first_name.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-3">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">last Name</label>
+                    {{deliveryboy_fm.last_name|add_class:'block w-full text-sm mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{deliveryboy_fm.last_name.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-6">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">UserName</label>
+                    {{deliveryboy_fm.username|add_class:'block w-full text-sm mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{deliveryboy_fm.username.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-6">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">Email Address</label>
+                    {{deliveryboy_fm.email|add_class:'block w-full text-sm mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{deliveryboy_fm.email.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-3">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">Password</label>
+                    {{deliveryboy_fm.password1|add_class:'block w-full text-sm mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{deliveryboy_fm.password1.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-3">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">Confirm Password</label>
+                    {{deliveryboy_fm.password2|add_class:'block w-full text-sm mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{deliveryboy_fm.password2.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">Select State</label>
+                    {{profileForm.state|add_class:'block w-full text-sm mt-1 h-9 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{profileForm.state.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">Select City</label>
+                    {{profileForm.city|add_class:'block w-full text-sm mt-1 h-9 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{profileForm.city.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">Select Area</label>
+                    {{profileForm.area|add_class:'block w-full text-sm mt-1 h-9 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{profileForm.area.errors|striptags}}</p>
+                </div>
+                <div class="sm:col-span-6">
+                    <label class="text-gray-700 dark:text-gray-200" for="username">Address</label>
+                    {{profileForm.address|add_class:'block w-full text-sm mt-2 h-16 resize-none px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                    <p class="text-red-500 text-xs">{{profileForm.address.errors|striptags}}</p>
+                </div>
+              
+               
+            </div>
+            <div class="flex justify-end mt-6">
+                <button
+                    class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform rounded-md focus:outline-none bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+            </div>
+        </form>
+</section>
+
+<!-- asignd area modal -->
+{% if modalAsign %}
+<div id="asignarea-modal" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
+    <div class="relative px-4 w-full max-w-md h-full md:h-auto">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="">
+                <button type="button" {% if modalAsign %} onclick="location.href='/adminpanel/managedeliveryboy'" {% else %}
+                    data-modal-toggle="asignarea-modal" {% endif %}
+                    class="text-gray-400 float-right mr-2 mt-1 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                    >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            <h3 class="text-xl px-6 pt-8 font-medium text-gray-900 dark:text-white">
+                Asign Area
+            </h3>
+
+            <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'asignArea' deliveryboyId %}" method="post">
+                {% csrf_token %}
+                <div class="mt-4">
+                    {%for area in area%}
+                        <input id="checkbox" value={{area.id}} name="area" aria-describedby="checkbox-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {%if area.area_name in asignedArea%}checked{%endif%}>
+                        <label for="checkbox" class="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">{{area.area_name}}</label>
+                    {%endfor%}
+                </div>
+                <div class="mt-8 -mb-4">
+                    <button type="submit"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{%endif%}
+
+
+<div class="px-8 rounded-md w-full">
+    <div class="w-full p-4 bg-white overflow-hidden rounded shadow-md dark:bg-gray-800">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full whitespace-no-wrap">
+                <thead>
+                    <tr>
+                        <form method="get">
+                            <div class="inline-block mb-10 ml-2">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_name">deliveryboy :</label>
+                                {{myFilter.form.user__username|add_class:'text-sm w-32 inline mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_brand">area :</label>
+                               {{myFilter.form.area|add_class:'inline w-28 mt-1 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200 " for="id_category">city :</label>
+                               {{myFilter.form.city|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_subcategory">state :</label>
+                               {{myFilter.form.state|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_subcategory">status :</label>
+                               {{myFilter.form.user__is_active|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                           
+
+                            <button class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" type="submit">
+                                Filter
+                            </button>
+                        </form>
+                    </tr>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">Delivery Boy</th>
+                        <th class="px-4 py-3">State</th>
+                        <th class="px-4 py-3">City</th>
+                        <th class="px-4 py-3">Area</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Asigned Area</th>
+                        <th class="px-4 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for boy in deliveryboy%}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                                    <img class="object-cover w-full h-full rounded-full" src={{boy.image.url}}
+                                        alt="" loading="lazy" />
+                                    <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">{{boy.user.username}}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                                        {{boy.user.email}}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{boy.state}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{boy.city}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{boy.area}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {%if boy.user.is_active %}
+                            <span
+                                class="px-2 py-1 text-sm leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                                Approved
+                            </span>
+                            {%else%}
+                            <span
+                                class="px-2 py-1 text-sm leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
+                                Blocked
+                            </span>
+                            {%endif%}
+                        </td>
+                        <td class="px-4 py-3">
+                            <a href="{%url 'asignArea' boy.id %}"
+                                class="focus:outline-none ml-5 text-md text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:underline">
+                                View</a>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex items-center space-x-4 text-sm">
+                                {% if boy.user.is_active %}
+                                <form action="{% url 'action' boy.user.id 'userstatus' %}" method="post">
+                                    {%csrf_token%}
+                                <button type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-person-x-fill text-red-700 w-6 h-6" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z" />
+                                    </svg>
+                                </button>
+                                </form>
+                                {%else%}
+                                <form action="{% url 'action' boy.user.id 'userstatus'%}" method="post">
+                                    {%csrf_token%}
+                                <button type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-person-check-fill text-green-700 w-6 h-6" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+                                        <path
+                                            d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                    </svg>
+                                </button>
+                                </form>
+                                {%endif%}
+                                
+                            </div>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{%block js%}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+{% if modaldeliveryboy %}
+<script>
+    window.addEventListener("load", ()=>{
+        toggleModal("deliveryboy-modal");
+    })
+</script>
+{% endif %}
+
+{% if modalAsign %}
+<script>
+    window.addEventListener("load", ()=>{
+        toggleModal("asignarea-modal");
+    })
+</script>
+{% endif %}
+
+<script>
+$("#id_state").change(function () {
+    var url = $("#deliveryboyForm").attr("data-cities-url");  // get the url of the `load_cities` view
+    var stateId = $(this).val();  // get the selected country ID from the HTML input
+    $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+            'state': stateId       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+            
+            $("#id_city").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+});
+
+$("#id_city").change(function () {
+    var url = $("#deliveryboyForm").attr("data-area-url");  // get the url of the `load_cities` view
+    var cityId = $(this).val();  // get the selected country ID from the HTML input
+    $.ajax({                       // initialize an AJAX request
+    url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+    data: {
+        'city': cityId       // add the country id to the GET parameters
+    },
+    success: function (data) {   // `data` is the return of the `load_cities` view function
+        $("#id_area").html(data);  // replace the contents of the city input with the data that came from the server
+    }
+    });
+
+});
+</script>
+{%endblock%}
+{% endblock %}

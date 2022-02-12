@@ -1,0 +1,280 @@
+{% extends 'adminside/basic.html' %}
+{% load widget_tweaks %}
+
+{%load static %}
+{% block title %}
+Manage Product
+{% endblock %}
+
+{%block body%}
+
+<div class="block p-8">
+    <button
+        class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        type="button" data-modal-toggle="product-modal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-plus-lg inline text-white font-bold" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+        </svg>
+        Add Product
+    </button>
+</div>
+
+<section id="product-modal" aria-hidden="true"
+    class="max-w-xl mx-auto my-2 px-6 bg-white rounded-md shadow-md dark:bg-gray-800 hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-8 z-50 justify-center items-center md:inset-0">
+    {%if edit and modalProduct%}
+    <form id="productForm" action="{%url 'editProduct' proid %}" data-subcaturl="{% url 'ajax_load_subCategory' %}" data-token="{{ csrf_token }}" enctype="multipart/form-data" method="post" novalidate>
+    {%else%}
+    <form id="productForm" action="{%url 'manageProduct'%}" data-subcaturl="{% url 'ajax_load_subCategory' %}" data-token="{{ csrf_token }}" enctype="multipart/form-data" method="post" novalidate>
+    {%endif%}
+        {%csrf_token%}
+        <div class="">
+        <button type="button" onclick="location.href='/adminpanel/manageproduct'"
+            class="text-gray-400 float-right mr-2 mt-1 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </button>
+    </div>
+    <h2 class="text-2xl mb-8 font-semibold text-gray-700 capitalize dark:text-white"><span class="text-purple-700">{%if modalProduct and edit %}Edit{%else%}Add{%endif%}</span> Product </h2>
+        <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3 text-sm">
+            <div class="sm:col-span-3">
+                <label class="text-gray-700 dark:text-gray-200" for="username">Product Name</label>
+                {{productForm.name|add_class:'text-sm block w-full mt-2 h-10 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.name.errors|striptags}}</p>    
+            </div>
+            <div class="sm:col-span-3">
+                <label class="text-gray-700 dark:text-gray-200" for="username">Description</label>
+                {{productForm.desc|add_class:'block w-full mt-2 h-12 resize-none px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.desc.errors|striptags}}</p>
+            </div>
+            <div class="sm:col-span-3">
+                <label class="text-gray-700 dark:text-gray-200" for="username">Select Image</label>
+                {{imgForm.image|attr:'multiple'|add_class:'block w-full mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{imgForm.image.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">Quantity</label>
+                {{productForm.quantity|add_class:'text-sm block w-full mt-2 h-10 px-4 py-2  text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.quantity.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">Rent Per Day</label>
+                {{productForm.rent_per_day|add_class:'text-sm block w-full mt-2 h-10 px-4 py-2  text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.rent_per_day.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">Rent Per Week</label>
+                {{productForm.rent_per_week|add_class:'text-sm block w-full mt-2 h-10 px-4 py-2  text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.rent_per_week.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">Rent Per Month</label>
+                {{productForm.rent_per_month|add_class:'text-sm block w-full mt-2 h-10 px-4 py-2  text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.rent_per_month.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">Deposit</label>
+                {{productForm.deposit|add_class:'text-sm block w-full mt-2 h-10 px-4 py-2  text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.deposit.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">DeliveryPickup Charge</label>
+                {{productForm.delivery_pickup_charges|add_class:'text-sm block w-full mt-2 h-10 px-4 py-2  text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.delivery_pickup_charges.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">Brand</label>
+                {{productForm.brand|add_class:'block w-full mt-1 h-10 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.brand.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">Category</label>
+                {{productForm.category|add_class:'block w-full mt-1 h-10 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.category.errors|striptags}}</p>
+            </div>
+            <div>
+                <label class="text-gray-700 dark:text-gray-200" for="username">SubCategory</label>
+                {{productForm.subcategory|add_class:'block w-full mt-1 h-10 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                <p class="text-red-500 text-xs">{{productForm.subcategory.errors|striptags}}</p>
+            </div>
+        </div>
+        <div class="flex justify-end mt-10">
+            <button
+                class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform rounded-md focus:outline-none bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+        </div>
+    </form>
+</section>
+
+
+<div class="px-4 rounded-md w-full">
+    <div class="w-full p-4 bg-white overflow-hidden rounded-md shadow-md dark:bg-gray-800">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full whitespace-no-wrap">
+                <thead>
+                    
+                    <tr>
+                        <form method="get">
+                            <div class="inline-block mb-10 ml-2">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_name">name :</label>
+                                {{myFilter.form.name|add_class:'text-sm w-32 inline mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_brand">brand :</label>
+                               {{myFilter.form.brand|add_class:'inline w-28 mt-1 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200 " for="id_category">category :</label>
+                               {{myFilter.form.category|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_subcategory">subcategory :</label>
+                               {{myFilter.form.subcategory|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+
+                            <button class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" type="submit">
+                                Filter
+                            </button>
+                        </form>
+                    </tr>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">Product</th>
+                        <th class="px-4 py-3">Quantity</th>
+                        <th class="px-4 py-3">Brand</th>
+                        <th class="px-4 py-3">Category</th>
+                        <th class="px-4 py-3">Rent(Day)</th>
+                        <th class="px-4 py-3">Rent(Week)</th>
+                        <th class="px-4 py-3">Rent(Month)</th>
+                        <th class="px-4 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for product in products%}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                                    <img class="object-cover w-full h-full rounded-full"
+                                        src={{product.image_set.all.0.image.url}} alt="" loading="lazy" />
+                                    <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                                </div>
+                                <div>
+                                    <a href="{%url 'productDetails' product.id%}" class="font-semibold">{{product.name}}</a>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="px-4 py-3 text-sm">
+                            {{product.quantity}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{product.brand.name}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{product.category.name}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{product.rent_per_day|floatformat}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{product.rent_per_week|floatformat}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{product.rent_per_month|floatformat}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <p class="whitespace-nowrap">
+                                <a href="{%url 'editProduct' product.id %}"
+                                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">edit</a>
+                                <button type="button" data-uid="{{product.id }}" data-token="{{ csrf_token }}"
+                                    data-url="{% url 'action' product.id 'delete' 'Product'%}"
+                                    data-return="{% url 'manageProduct' %}"
+                                    class="userDeleteBtn text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">delete</button>
+                            </p>
+                        </td>
+                    </tr>
+                    {%endfor%}
+
+                </tbody>
+            </table>
+        </div>
+        {%if products.has_other_pages%}
+        <div
+            class="grid px-4 pt-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span class="flex items-center col-span-3">
+                Showing {{ products.start_index }}-{{ products.end_index }} of {{products.paginator.count}}
+            </span>
+            <span class="col-span-2"></span>
+            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center">
+                        {%if products.has_previous%}
+                        <li>
+                            <a href="?page={{products.previous_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-l-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{products.previous_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{products.previous_page_number}}
+                            </a>
+                        </li>
+                        {%endif%}
+                        <li>
+                            <a href="?page={{products.number}}"
+                                class="px-3 pr-5 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{products.number}}
+                            </a>
+                        </li>
+                        {%if products.has_next%}
+                        <li>
+                            <a href="?page={{products.next_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{products.next_page_number}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{products.next_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-r-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        {%endif%}
+    </div>
+</div>
+
+{%block js%}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="{%static 'assets/js/load_subCategory.js'%}"></script>
+
+    {%if modalProduct or error %}
+        <script>
+            window.addEventListener("load", ()=>{
+                toggleModal("product-modal");
+            })
+        </script>
+    {%endif%}
+{%endblock%}
+{%endblock%}
+    

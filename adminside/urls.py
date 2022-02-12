@@ -18,6 +18,27 @@ urlpatterns=[
     path('managedeliveryboy/asignarea/<int:pk>',views.asignArea,name="asignArea"),
     path('ajax/load-cities/', views.load_cities, name='ajax_load_cities'),
     path('ajax/load-area/', views.load_area, name='ajax_load_area'),
+
+    
+    path('manageproduct',views.manageProduct,name="manageProduct"),
+    path('manageproduct/editproduct/<int:proid>',views.manageProduct,name="editProduct"),
+    path('manageproduct/productDetails/<int:pk>',views.productDetails,name="productDetails"),
+
+    path('managecategory',views.manageCategory,name="manageCategory"),
+    path('managecategory/editcategory/<int:catid>',views.manageCategory,name="editCategory"),
+    path('managecategory/',views.manageSubCategory,name="manageSubCategory"),
+    path('managecategory/editsubcategory/<int:scatid>',views.manageSubCategory,name="editSubCategory"),
+    path('ajax/load-subcategory', views.load_subCategory, name='ajax_load_subCategory'),
+        
+    path('manageoffers',views.manageOffers,name="manageOffers"),
+
+    path('managebrand',views.manageBrand,name="manageBrand"),
+    path('editbrand/<int:brandid>',views.manageBrand,name="editBrand"),
+    
+    path('manageproductreview',views.manageProductReview,name="manageProductReview"),
+    path('getComment/<int:reviewid>',views.manageProductReview,name="getComment"),
+    path('publish',views.publish,name="publish"),
+
     
     path('manageorder',views.manageOrder,name="manageOrder"),
     path('manageorderdetails/<int:orderid>',views.manageOrderDetails,name="manageOrderDetails"),
@@ -35,31 +56,8 @@ urlpatterns=[
     path('pickeduporders/orderdetails/<int:orderid>',views.manageOrderDetails,name="pickedupOrderDetails"),
     path('pickeduporders/returndeposit/<int:orderid>',views.returnDeposit,name="returnDeposit"),
     
-
     path('extendrent',views.extendRent,name="extendRent"),
 
-
-    path('manageproduct',views.manageProduct,name="manageProduct"),
-    path('manageproduct/editproduct/<int:proid>',views.manageProduct,name="editProduct"),
-    path('manageproduct/productDetails/<int:pk>',views.productDetails,name="productDetails"),
-
-    path('categorypage',views.categoryPage,name="categoryPage"),
-    path('savecategory',views.manageCategory,name="saveCategory"),
-    path('editcategory/<int:catid>',views.manageCategory,name="editCategory"),
-    path('savesubcategory',views.manageSubCategory,name="saveSubCategory"),
-    path('editsubcategory/<int:scatid>',views.manageSubCategory,name="editSubCategory"),
-    path('ajax/load-subcategory', views.load_subCategory, name='ajax_load_subCategory'),
-        
-    path('manageoffers',views.manageOffers,name="manageOffers"),
-
-    path('managebrand',views.manageBrand,name="manageBrand"),
-    path('editbrand/<int:brandid>',views.manageBrand,name="editBrand"),
-    
-    path('manageproductreview',views.manageProductReview,name="manageProductReview"),
-    path('getComment/<int:reviewid>',views.manageProductReview,name="getComment"),
-    path('publish',views.publish,name="publish"),
-
-    
     path('customizeproductrq',views.customizeProductRq,name="customizeProductRq"),
     path('customizeproductrq/<int:pk>',views.customizeProductRq,name="getDetails"),
     path('customizeproductrq/acceptproductRq/<int:pk>',views.acceptProductRq,name="acceptProductRq"),
