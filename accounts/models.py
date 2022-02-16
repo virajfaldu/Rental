@@ -5,9 +5,12 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from ctypes.wintypes import SIZE
 import datetime
 from msilib.schema import PublishComponent
 from operator import truediv, truth
+from pyexpat import model
+from xml.etree.ElementInclude import default_loader
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -22,7 +25,6 @@ class City(models.Model):
 
 class State(models.Model):
     state_name = models.CharField(max_length=45,unique=True)
-
     def __str__(self):
         return self.state_name
 
@@ -30,7 +32,7 @@ class State(models.Model):
 
 class Area(models.Model):
     area_name = models.CharField(max_length=45,unique=True)
-    pincode = models.CharField(max_length=6)
+    pincode = models.IntegerField()
     city_idcity = models.ForeignKey('City', db_column='city_idcity',on_delete=models.CASCADE)
 
     def __str__(self):
@@ -157,13 +159,18 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+STATUS_CHOICES = (
+    ("pending", "pending"),
+    ("declined", "declined"),
+    ("accepted", "accepted"),
+)
 
 class Customize(models.Model):
     date = models.DateField(blank=True, null=True)
     product_name = models.CharField(max_length=75)
     description = models.TextField(max_length=350)
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)  # Field name made lowercase.
-    status=models.CharField(max_length=10,default='pending',blank=True, null=True)
+    status=models.CharField(max_length=10,default='pending',choices = STATUS_CHOICES,blank=True, null=True)
 
     def __str__(self):
         return f"{self.customer.user.username} has requested for {self.product_name}"
@@ -175,9 +182,11 @@ class Customize(models.Model):
 
 
 class DeliveryPickup(models.Model):
+    dutydate=models.DateField(default=datetime.datetime.now)
     pickup = models.BooleanField(default=False)
     deliveryboy = models.ForeignKey(DeliveryBoy,on_delete=models.CASCADE)  # Field name made lowercase.
     order = models.ForeignKey('ProductHasOrder',on_delete=models.CASCADE,related_name='deliverypickup')
+    iscompleted=models.BooleanField(default=False)
 
     def __str__(self):
         return f"duty aisgn to {self.deliveryboy} for {self.order}"

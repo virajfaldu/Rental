@@ -23,12 +23,25 @@ from accounts.models import *
 @admin_only
 def adminpanel(request):
 
-    customer = Customer.objects.filter(is_pending=False).count()
+    customer_cnt = Customer.objects.filter(is_pending=False).count()
     pending_customer = Customer.objects.filter(is_pending=True).count()
-    sales = ProductHasOrder.objects.filter(status__status="delivered").count()
+    sales = ProductHasOrder.objects.filter(Q(status__status="delivered") | Q(status__status="pickedup")).count()
+    print(sales)    
+
+    customers=Customer.objects.filter(user__is_active=True).order_by('id').reverse()
+    myFilter=customerFilter(request.GET,queryset=customers)
+    customers=myFilter.qs[:4]
+
+    orders = Order.objects.all().order_by("-date")
+    orderfilter=orderFilter(request.GET,queryset=orders)
+    orders=orderfilter.qs[:4]
 
     context = {
-        'customers': customer,
+        'customers': customers,
+        'orders': orders,
+        'myFilter':myFilter,
+        'orderFilter':orderfilter,
+        'customer_cnt': customer_cnt,
         'pCustomers': pending_customer,
         'sales': sales,
         'index': True,
@@ -43,7 +56,7 @@ def manageCustomer(request):
     customers = Customer.objects.filter(is_pending=False).order_by('id').reverse()
     myFilter=customerFilter(request.GET,queryset=customers)
     customers=myFilter.qs
-    customers=get_page(request,customers,pages=10)
+    customers=get_page(request,customers,pages=5)
 
     context = {
         'customers': customers,
@@ -59,7 +72,7 @@ def customerRQ(request):
     customers = Customer.objects.filter(is_pending=True).order_by('id').reverse()
     myFilter=customerFilter(request.GET,queryset=customers)
     customers=myFilter.qs
-    customers=get_page(request,customers,pages=10)
+    customers=get_page(request,customers,pages=6)
 
     context = {
         'customers': customers,
@@ -120,7 +133,7 @@ def manageDeliveryBoy(request):
     
     d_fm = DeliveryBoyForm()
     p_fm = ProfileForm()
-    deliveryboy= DeliveryBoy.objects.all()
+    deliveryboy= DeliveryBoy.objects.all().order_by('id').reverse()
     myFilter=deliveryBoyFilter(request.GET,queryset=deliveryboy)
     deliveryboy=myFilter.qs
     deliveryboy=get_page(request,deliveryboy,pages=10)
@@ -136,7 +149,8 @@ def manageDeliveryBoy(request):
             'myFilter':myFilter,
             'deliveryboy':deliveryboy,
             'deliveryboy_fm': d_fm, 
-            'profileForm': p_fm
+            'profileForm': p_fm,
+            'mdeliveryboy':True
         }
 
         email = request.POST['email']
@@ -167,6 +181,8 @@ def manageDeliveryBoy(request):
             'myFilter':myFilter,
             'deliveryboy':deliveryboy,
             'modaldeliveryboy':False,
+            'mdeliveryboy':True
+
     }
     return render(request, 'adminside/deliveryboy/manageDeliveryBoy.html',context)
 
@@ -300,8 +316,8 @@ def productDetails(request,pk):
 
 @admin_only
 def manageCategory(request, catid=None):
-    category = Category.objects.filter(subcategory_idcategory=None).all()
-    subCategory = Category.objects.exclude(subcategory_idcategory=None).all()
+    category = Category.objects.filter(subcategory_idcategory=None).all().order_by('id').reverse()
+    subCategory = Category.objects.exclude(subcategory_idcategory=None).all().order_by('id').reverse()
     catForm = categoryForm()
     subCatForm = subCategoryForm()
     error=False
@@ -361,15 +377,15 @@ def load_subCategory(request):
                 subcategory_idcategory=data['category'])
         except Exception as e:
             sub_categories = []
-        return render(request, 'product/load_subCategory.html', {'subcategories': sub_categories})
+        return render(request, 'adminside/product/load_subCategory.html', {'subcategories': sub_categories})
     else:
         return HttpResponse("Operation not allowed")
 
 
 @admin_only
 def manageSubCategory(request, scatid=None):
-    category = Category.objects.filter(subcategory_idcategory=None).all()
-    subCategory = Category.objects.exclude(subcategory_idcategory=None).all()
+    category = Category.objects.filter(subcategory_idcategory=None).all().order_by('id').reverse()
+    subCategory = Category.objects.exclude(subcategory_idcategory=None).all().order_by('id').reverse()
     catForm = categoryForm()
     subCatForm = subCategoryForm()
     isSelected=False
@@ -430,14 +446,13 @@ def manageOffers(request):
 
 @admin_only
 def manageBrand(request, brandid=None):
-    brands = get_page(request, Brand.objects.all(), 5)
+    brands = get_page(request, Brand.objects.all().order_by('id').reverse(), 5)
     bForm = brandForm()
     error=False
 
     if brandid == None:
         if request.method == "POST":
             bForm = brandForm(request.POST)
-
             if bForm.is_valid():
                 bForm.save()
                 messages.success(request, "Brand Added Successfully")
@@ -477,21 +492,10 @@ def manageBrand(request, brandid=None):
     }
     return render(request, 'adminside/product/manageBrand.html', context)
 
-
-@admin_only
-def publish(request):
-    data = json.loads(request.body)
-    review = FeedbackRating.objects.get(id=data['id'])
-    review.publish = not review.publish
-    review.save()
-    messages.success(request, "Record Saved Successfully")
-    return JsonResponse({"data": "running"})
-
-
 @admin_only
 def manageProductReview(request, reviewid=None):
 
-    reviews = FeedbackRating.objects.filter().all()
+    reviews = FeedbackRating.objects.filter().all().order_by('id').reverse()
     myFilter=reviewsFilter(request.GET,queryset=reviews)
     reviews=myFilter.qs
     reviews=get_page(request,reviews,pages=10)
@@ -512,6 +516,15 @@ def manageProductReview(request, reviewid=None):
         'mproduct': True
     }
     return render(request, 'adminside/product/manageReview.html', context)
+
+@admin_only
+def publish(request):
+    data = json.loads(request.body)
+    review = FeedbackRating.objects.get(id=data['id'])
+    review.publish = not review.publish
+    review.save()
+    messages.success(request, "Record Saved Successfully")
+    return JsonResponse({"data": "running"})
 
 # ---------------------------- manage orders ----------------------------
 
@@ -535,7 +548,7 @@ def manageOrder(request):
 def manageOrderDetails(request, orderid):
 
     order = Order.objects.filter(id=orderid).first()
-    orderDetails = ProductHasOrder.objects.filter(order=orderid).all()
+    orderDetails = ProductHasOrder.objects.filter(order=orderid).all().order_by('id')
     status=OrderStatus.objects.exclude(status="cancelled").order_by('-id').reverse()
     
     area_has_deliveryboy=AreaHasDeliveryBoy.objects.filter(area=order.customer.area).all()
@@ -572,7 +585,7 @@ def asignDelivery(request):
             delivery.save()
             
         elif delivery==None:
-            DeliveryPickup.objects.create(deliveryboy=deliveryboy,order=productHasOrder).save()
+            DeliveryPickup.objects.create(deliveryboy=deliveryboy,order=productHasOrder,dutydate=productHasOrder.start_date).save()
 
     messages.success(request, "Record Saved Succesfully!")
     return JsonResponse({"data": "running"})
@@ -597,7 +610,7 @@ def asignPickup(request):
             delivery.save()
             
         elif delivery==None:
-            obj=DeliveryPickup.objects.create(deliveryboy=deliveryboy,order=productHasOrder)
+            obj=DeliveryPickup.objects.create(deliveryboy=deliveryboy,order=productHasOrder,dutydate=productHasOrder.end_date)
             obj.pickup=True
             obj.save()
 
@@ -642,7 +655,6 @@ def cancelOrder(request):
     myFilter=productHasOrderFilter(request.GET,queryset=orderDetails)
     orderDetails=myFilter.qs
 
-    print(Order.objects.filter(id__in=[product.id for product in orderDetails]))
     orders = []
     for detail in orderDetails:
         orders.append(Order.objects.get(id=detail.order.id))
@@ -857,7 +869,7 @@ def acceptProductRq(request,pk):
             RQ.status="accepted"
             RQ.save()
 
-            template=render_to_string('email/acceptProduct.html',{'name':RQ.customer.user.username})
+            template=render_to_string('adminside/email/acceptProduct.html',{'name':RQ.customer.user.username})
             sendEmail(request,RQ.customer.user,template)
 
             messages.success(request, "Product Added Successfully")
@@ -881,7 +893,7 @@ def declineProductRq(request,pk):
     RQ.status="declined"
     RQ.save()
 
-    template=render_to_string('email/declineProduct.html',{'name':RQ.customer.user.username})
+    template=render_to_string('adminside/email/declineProduct.html',{'name':RQ.customer.user.username})
     sendEmail(request,RQ.customer.user,template)
 
     messages.success(request, "Record Saved Sucessfully")
@@ -889,6 +901,215 @@ def declineProductRq(request,pk):
        'success': True
     }
     return JsonResponse(context)
+
+@admin_only
+def manageLocations(request,pk=None):
+
+    states=State.objects.all().order_by('id').reverse()
+    page = request.GET.get('page')
+    states=get_page(request,states,5,page)
+    stateform=stateForm()
+    state_error=False
+
+    cities=City.objects.all().order_by('id').reverse()
+    page = request.GET.get('page2')
+    cities=get_page(request,cities,5,page)
+    cityform=cityForm()
+
+    area=Area.objects.all().order_by('id').reverse()
+    page = request.GET.get('page3')
+    area=get_page(request,area,5,page)
+    areaform=areaForm()
+
+    if request.method=="POST" and pk==None:
+        stateform=stateForm(request.POST)
+        if stateform.is_valid():
+            stateform.save()
+            messages.success(request, "Record Saved Sucessfully")
+            return redirect('manageLocations')
+        else:
+            state_error=True
+
+    state=State.objects.filter(id=pk).first()
+    if pk!=None:
+        stateform=stateForm(instance=state)
+        if request.method=='POST':
+            stateform=stateForm(request.POST,instance=state)
+            if stateform.is_valid():
+                stateform.save()
+                messages.success(request, "Record Saved Sucessfully")
+                return redirect('manageLocations')
+            else:
+                state_error=True
+        
+        context={
+            'stateForm':stateform,
+            'cityForm':cityform,
+            'areaForm':areaform,
+            'states':states,
+            'cities':cities,
+            'area':area,
+            'state_error':state_error,
+            'pk':pk,
+            'modalState':True,
+            'edit':True,
+            'mlocations':True,
+        }
+        return render(request,'adminside/locations.html',context)
+
+
+    context={
+        'stateForm':stateform,
+        'cityForm':cityform,
+        'areaForm':areaform,
+        'states':states,
+        'cities':cities,
+        'area':area,
+        'state_error':state_error,
+        'mlocations':True,
+    }
+
+    return render(request,'adminside/locations.html',context)
+
+@admin_only
+def manageCity(request,pk=None):
+
+    states=State.objects.all().order_by('id').reverse()
+    page = request.GET.get('page')
+    states=get_page(request,states,5,page)
+    stateform=stateForm()
+
+    cities=City.objects.all().order_by('id').reverse()
+    page = request.GET.get('page2')
+    cities=get_page(request,cities,5,page)
+    cityform=cityForm()
+    city_error=False
+
+    area=Area.objects.all().order_by('id').reverse()
+    page = request.GET.get('page3')
+    area=get_page(request,area,5,page)
+    areaform=areaForm()
+
+    if request.method=="POST" and pk==None:
+        cityform=cityForm(request.POST)
+        if cityform.is_valid():
+            cityform.save()
+            messages.success(request, "Record Saved Sucessfully")
+            return redirect('manageLocations')
+        else:
+            city_error=True
+
+    city=City.objects.filter(id=pk).first()
+    if pk!=None:
+        cityform=cityForm(instance=city)
+        if request.method=='POST':
+            cityform=cityForm(request.POST,instance=city)
+            if cityform.is_valid():
+                cityform.save()
+                messages.success(request, "Record Saved Sucessfully")
+                return redirect('manageLocations')
+            else:
+                city_error=True
+        context={
+            'stateForm':stateform,
+            'cityForm':cityform,
+            'areaForm':areaform,
+            'states':states,
+            'cities':cities,
+            'area':area,
+            'city_error':city_error,
+            'pk':pk,
+            'modalCity':True,
+            'edit':True,
+            'mlocations':True,
+        }
+        return render(request,'adminside/locations.html',context)
+       
+
+
+    context={
+        'stateForm':stateform,
+        'cityForm':cityform,
+        'areaForm':areaform,
+        'states':states,
+        'cities':cities,
+        'area':area,
+        'city_error':city_error,
+        'mlocations':True,
+    }
+
+    return render(request,'adminside/locations.html',context)
+
+@admin_only
+def manageArea(request,pk=None):
+    states=State.objects.all().order_by('id').reverse()
+    page = request.GET.get('page')
+    states=get_page(request,states,5,page)
+    stateform=stateForm()
+
+    cities=City.objects.all().order_by('id').reverse()
+    page = request.GET.get('page2')
+    cities=get_page(request,cities,5,page)
+    cityform=cityForm()
+
+    area=Area.objects.all().order_by('id').reverse()
+    page = request.GET.get('page3')
+    area=get_page(request,area,5,page)
+    areaform=areaForm()
+    area_error=False
+
+    if request.method=="POST" and pk==None:
+        areaform=areaForm(request.POST)
+        if areaform.is_valid():
+            areaform.save()
+            messages.success(request, "Record Saved Sucessfully")
+            return redirect('manageLocations')
+        else:
+            area_error=True
+
+    area_obj=Area.objects.filter(id=pk).first()
+    if pk!=None:
+        areaform=areaForm(instance=area_obj)
+        if request.method=='POST':
+            areaform=areaForm(request.POST,instance=area_obj)
+            print(areaform.errors,"hello")
+
+            if areaform.is_valid():
+                areaform.save()
+                messages.success(request, "Record Saved Sucessfully")
+                return redirect('manageLocations')
+            else:
+                area_error=True
+        context={
+            'stateForm':stateform,
+            'cityForm':cityform,
+            'areaForm':areaform,
+            'states':states,
+            'cities':cities,
+            'area':area,
+            'area_error':area_error,
+            'pk':pk,
+            'modalArea':True,
+            'edit':True,
+            'mlocations':True,
+        }
+        return render(request,'adminside/locations.html',context)
+       
+
+
+    context={
+        'stateForm':stateform,
+        'cityForm':cityform,
+        'areaForm':areaform,
+        'states':states,
+        'cities':cities,
+        'area':area,
+        'area_error':area_error,
+        'mlocations':True,
+    }
+
+    return render(request,'adminside/locations.html',context)
+
 
 @admin_only
 def profile(request):
@@ -958,9 +1179,11 @@ def imageUpload(request):
     return redirect('profile')
 
 
-def get_page(request,obj, pages):
+def get_page(request,obj, pages,page=None):
     paginator = Paginator(obj, pages)
-    page = request.GET.get('page')
+
+    if page==None:
+        page = request.GET.get('page')
 
     try:
         users = paginator.page(page)

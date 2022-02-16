@@ -20,9 +20,11 @@ class productFilter(django_filters.FilterSet):
 
 class customerFilter(django_filters.FilterSet):
 
+    company_name=CharFilter(field_name='company_name',lookup_expr='icontains')
+    
     class Meta:
         model=Customer
-        fields=['company_name','area','state','city','user__is_active']
+        fields=['area','state','city','user__is_active']
 
 class deliveryBoyFilter(django_filters.FilterSet):
 

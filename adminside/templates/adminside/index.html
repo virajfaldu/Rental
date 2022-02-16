@@ -1,15 +1,16 @@
 {% extends 'adminside/basic.html' %}
 {%load static %}
+{%load widget_tweaks%}
 {% block title %}
 Home
 {% endblock %}
 
 {%block body%}
 <div class="p-8 rounded-md w-full">
+    <!-- Cards -->
     <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-        <!-- Card -->
-        <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
-            <div class="p-3 mr-4 text-orange-500 bg-orange-100 rounded-full dark:text-orange-100 dark:bg-orange-500">
+        <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800" data-aos="flip-left" data-aos-duration="1000">
+            <div class="p-3 mr-4 text-orange-500 bg-orange-100 rounded-full dark:text-orange-100 dark:bg-orange-500" >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path
                         d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
@@ -21,12 +22,11 @@ Home
                     Total customers
                 </p>
                 <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                    {{customers}}
+                    {{customer_cnt}}
                 </p>
             </div>
         </div>
-        <!-- Card -->
-        <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+        <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800" data-aos="flip-left" data-aos-duration="1000">
             <div class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
@@ -39,12 +39,11 @@ Home
                     Account balance
                 </p>
                 <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                     46,760.89
+                    46,760.89
                 </p>
             </div>
         </div>
-        <!-- Card -->
-        <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+        <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800" data-aos="flip-left" data-aos-duration="1000">
             <div class="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full dark:text-blue-100 dark:bg-blue-500">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -61,8 +60,7 @@ Home
                 </p>
             </div>
         </div>
-        <!-- Card -->
-        <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+        <div class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800" data-aos="flip-left" data-aos-duration="1000">
             <div class="p-3 mr-4 text-teal-500 bg-teal-100 rounded-full dark:text-teal-100 dark:bg-teal-500">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
@@ -80,5 +78,283 @@ Home
             </div>
         </div>
     </div>
-</div>
+
+    <div>
+        <h1 class="text-xl font-bold text-gray-600 text-center mb-5">Customers</h1>
+    </div> 
+    <!-- tables -->
+    <div class="w-full p-4 bg-white overflow-hidden rounded shadow-md dark:bg-gray-800 transition delay-150 duration-700" data-aos="zoom-in" data-aos-duration="1000">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full whitespace-no-wrap ">
+                <thead>
+                    <tr>
+                        <form method="get">
+                            <div class="inline-block mb-10 ml-2">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_name">company :</label>
+                                {{myFilter.form.company_name|add_class:'text-sm w-32 inline mt-2 h-8 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_brand">area :</label>
+                               {{myFilter.form.area|add_class:'inline w-28 mt-1 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200 " for="id_category">city :</label>
+                               {{myFilter.form.city|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_subcategory">status :</label>
+                               {{myFilter.form.user__is_active|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+
+                            <button class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" type="submit">
+                                Filter
+                            </button>
+                        </form>
+                    </tr>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-white dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">Customer</th>
+                        <th class="px-4 py-3">Company</th>
+                        <th class="px-4 py-3">City</th>
+                        <th class="px-4 py-3">Area</th>
+                        <th class="px-4 py-3 text-center">Status</th>
+                        <th class="px-4 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for customer in customers%}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                                    <img class="object-cover w-full h-full rounded-full" src={{customer.image.url}}
+                                        alt="" loading="lazy" />
+                                    <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">{{customer.user.username}}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                                        {{customer.user.email}}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{customer.company_name}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{customer.city}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {{customer.area}}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            {%if customer.user.is_active %}
+                            <span
+                                class="px-2 py-1 text-sm leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                                Approved
+                            </span>
+                            {%else%}
+                            <span
+                                class="px-2 py-1 text-sm leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
+                                Blocked
+                            </span>
+                            {%endif%}
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex items-center space-x-4 text-sm">
+                                {% if customer.user.is_active %}
+                                <form action="{% url 'action' customer.user.id 'userstatus'%}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" data-tooltip-target="tooltip-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor"
+                                            class="bi bi-person-x-fill text-red-700 dark:text-red-600 dark:hover:text-red-700  w-6 h-6"
+                                            viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </button>
+                                    <div id="tooltip-block" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                                        Block
+                                        <div class="tooltip-arrow" data-popper-arrow></div>
+                                    </div>
+                                </form>
+                                {%else%}
+                                <form action="{% url 'action' customer.user.id 'userstatus'%}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" data-tooltip-target="tooltip-active">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-person-check-fill text-green-700 w-6 h-6"
+                                            viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+                                            <path
+                                                d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                        </svg>
+                                    </button>
+                                    <div id="tooltip-active" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                                        Active
+                                        <div class="tooltip-arrow" data-popper-arrow></div>
+                                    </div>
+                                </form>
+                                {%endif%}
+                                <button data-tooltip-target="tooltip-delete" type="submit" data-uid="{{customer.user.id }}" data-token="{{ csrf_token }}" data-url="{% url 'action' customer.user.id 'delete' 'User'%}" data-return="{% url 'manageCustomer' %}" class="userDeleteBtn focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-trash-fill text-gray-600 w-5 h-5 dark:text-gray-300"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"
+                                            data-uid="{{customer.user.id }}" data-token="{{ csrf_token }}" data-url="{% url 'action' customer.user.id 'delete' 'User'%}" data-return="{% url 'manageCustomer' %}"/>
+                                    </svg>
+                                </button>
+                                <div id="tooltip-delete" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                                    Delete
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <h1 class="text-xl font-bold text-gray-600 text-center my-7">Orders</h1>
+    </div>
+
+    <div class=" w-full p-4 bg-white overflow-hidden rounded-md shadow-md dark:bg-gray-800 transition" data-aos="zoom-in" data-aos-duration="1000">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full whitespace-no-wrap">
+                <thead>
+                    <tr>
+                        <form method="get">
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200 " for="id_customer__company_name">company :</label>
+                               {{orderFilter.form.company|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline-block mb-10 ml-2">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_date">From date :</label>
+                                {{orderFilter.form.fromdate|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+                            </div>
+                            <div class="inline-block mb-10 ml-2">
+                                <label class="text-gray-700 dark:text-gray-200" for="id_date">To date :</label>
+                                {{orderFilter.form.todate|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200 " for="id_customer__area">area :</label>
+                               {{orderFilter.form.customer__area|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+                            <div class="inline mb-4 ml-4">
+                                <label class="text-gray-700 dark:text-gray-200 " for="id_customer__city">city :</label>
+                               {{orderFilter.form.customer__city|add_class:'inline mt-1 w-28 h-8 text-gray-700 px-2 py-1 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring'}}
+                            </div>
+
+                            <button class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" type="submit">
+                                Filter
+                            </button>
+                        </form>
+                    </tr>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">order date</th>
+                        <th class="px-4 py-3">company</th>
+                        <th class="px-4 py-3">area</th>
+                        <th class="px-4 py-3">type of product</th>
+                        <th class="px-4 py-3">total amount</th>
+                        <th class="px-4 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for order in orders%}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3 text-sm">
+                            <p>{{order.date|date:"d-m-Y"}}</p>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <p>{{order.customer.company_name}}</p>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <p>{{order.customer.area}}</p>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <p class="ml-10">{{order.producthasorder_set.all|length}}</p>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <p class="ml-5">&#8377;{{order.tot_amount}}</p>
+                        </td>
+                      
+                        <td class="px-4 py-3">
+                            <a href="{%url 'manageOrderDetails' order.id %}"
+                            class="text-blue-600 hover:text-blue-900 dark:text-blue-500 text-md dark:hover:underline">view</a>
+                        </td>
+                    </tr>
+                    {%endfor%}
+
+                </tbody>
+            </table>
+        </div>
+        {%if orders.has_other_pages%}
+        <div
+            class="grid px-4 pt-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span class="flex items-center col-span-3">
+                Showing {{ orders.start_index }}-{{ orders.end_index }} of {{orders.paginator.count}}
+            </span>
+            <span class="col-span-2"></span>
+            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center">
+                        {%if orders.has_previous%}
+                        <li>
+                            <a href="?page={{orders.previous_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-l-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{orders.previous_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{orders.previous_page_number}}
+                            </a>
+                        </li>
+                        {%endif%}
+                        <li>
+                            <a href="?page={{orders.number}}"
+                                class="px-3 pr-5 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{orders.number}}
+                            </a>
+                        </li>
+                        {%if orders.has_next%}
+                        <li>
+                            <a href="?page={{orders.next_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{orders.next_page_number}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{orders.next_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-r-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        {%endif%}
+    </div>
+
 {% endblock %}

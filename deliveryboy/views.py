@@ -1,101 +1,126 @@
 from ast import Del
+import imp
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.http import JsonResponse
-import json
-
+import datetime
 
 from accounts.decorators import allowed_users
 from accounts.models import *
-from adminside.forms import userForm
-from deliveryboy.forms import deliveryBoyForm
+from .filters import *
+from adminside.views import get_page
+from .forms import *
+
 
 # Create your views here.
 @allowed_users(['deliveryboy'])
 def home(request):
-    context={
-        'index':True
-    }
-    return render(request,"dashboard.html",context)
-
-@allowed_users(['deliveryboy'])
-def duty(request):
 
     deliveryboy=DeliveryBoy.objects.filter(user=request.user).first()
-    product=ProductHasOrder.objects.filter(deliverypickup__deliveryboy=deliveryboy)
 
-    duties=[]
-    for p in product:
-        duties.append(Order.objects.get(id=p.order.id))
+    complete_duty=DeliveryPickup.objects.filter(deliveryboy=deliveryboy,iscompleted=True).count()
+    pending_duty=DeliveryPickup.objects.filter(deliveryboy=deliveryboy,iscompleted=False).count()
 
-    print(duties)
+    todayPending=DeliveryPickup.objects.filter(deliveryboy=deliveryboy,iscompleted=False,dutydate=datetime.datetime.now()).count()
+
+    duty=DeliveryPickup.objects.filter(deliveryboy=deliveryboy,iscompleted=False)
+
+    myFilter=dutyFilter(request.GET,queryset=duty)
+    duty=myFilter.qs
+    duty=get_page(request,duty,10)
+
 
     context={
+        'complete_duty':complete_duty,
+        'pending_duty':pending_duty,
+        'todayPending':todayPending,
+        'myFilter':myFilter,
+        'duties':duty,
+        'index':True
+    }
+    return render(request,"deliveryboy/dashboard.html",context)
 
-        'duties':duties,
+@allowed_users(['deliveryboy'])
+def duty(request,dutyid=None):
+
+    deliveryboy=DeliveryBoy.objects.filter(user=request.user).first()
+    duty=DeliveryPickup.objects.filter(deliveryboy=deliveryboy,iscompleted=False)
+
+    myFilter=dutyFilter(request.GET,queryset=duty)
+    duty=myFilter.qs
+    duty=get_page(request,duty,10)
+
+    if dutyid != None:
+        address = DeliveryPickup.objects.get(id=dutyid)
+        address=Order.objects.get(id=address.order.order.id)
+        context = {
+            'myFilter':myFilter,
+            'duties':duty,
+            'dutyid': dutyid,
+            'address': address,
+            'modalComment': True,
+            'mduty': True
+        }
+        return render(request, 'deliveryboy/duty.html', context)
+
+    context={
+        'myFilter':myFilter,
+        'duties':duty,
         'mduty':True
-        
     }
-    return render(request,"duty.html",context)
-
+    return render(request,"deliveryboy/duty.html",context)
 
 @allowed_users(['deliveryboy'])
-def dutyDetails(request, orderid):
+def history(request):
 
-    order = Order.objects.filter(id=orderid).first()
-    orderDetails = ProductHasOrder.objects.filter(order=orderid).all()
-    status=OrderStatus.objects.exclude(status="cancelled").order_by('-id').reverse()
-    
+    deliveryboy=DeliveryBoy.objects.filter(user=request.user).first()
+    duty=DeliveryPickup.objects.filter(deliveryboy=deliveryboy,iscompleted=True)
 
-    context = {
-        'order': order,
-        'orderDetails': orderDetails,
-        'status':status,
-        'mduty': True,
+    myFilter=dutyFilter(request.GET,queryset=duty)
+    duty=myFilter.qs
+
+    duty=get_page(request,duty,10)
+    context={
+        'myFilter':myFilter,
+        'duties':duty,
+        'mhistory':True
     }
-    return render(request, 'dutyDetails.html', context)
-
+    return render(request,"deliveryboy/history.html",context)
 
 @allowed_users(['deliveryboy'])
-def changeStatus(request):
-    print("hello")
-    data = json.loads(request.body)
+def confirm(request,dutyid):
+    duty=DeliveryPickup.objects.filter(id=dutyid).first()
 
-    status=OrderStatus.objects.get(id=data['ostatus'])
-    order=Order.objects.get(id=data['oid'])
-    orderDetails = ProductHasOrder.objects.get(order=order,product__id=data['pid'])
-    product=Product.objects.get(id=orderDetails.product.id)
-
-    orderDetails.status=status
-    orderDetails.save()
+    delivered=OrderStatus.objects.filter(status="delivered").first()
+    pickedup=OrderStatus.objects.filter(status="pickedup").first()
     
-    if orderDetails.status.status=='cancelled':
-        orderDetails.cancel_date=datetime.datetime.now()
-        orderDetails.save()
+    productHasOrder=ProductHasOrder.objects.filter(id=duty.order.id).first()
+    
+    
+    if productHasOrder.status.status=="delivered":
+        productHasOrder.status=pickedup
+    else:
+        productHasOrder.status=delivered
 
-        delivery=DeliveryPickup.objects.filter(order=orderDetails).first()
-        if delivery!=None:
-            delivery.delete()
+    productHasOrder.save()
 
+    duty.iscompleted=True
+    duty.save()
 
-        product.quantity+=orderDetails.quantity
-        product.save()
-    messages.success(request, "status updated")
-    return JsonResponse({"data": "running"})
+    return redirect('duty')
 
 @allowed_users(['deliveryboy'])
-def profile(request):
+def boyProfile(request):
 
     boy = DeliveryBoy.objects.filter(user=request.user).first()
-    boy_fm = deliveryBoyForm(instance=boy)
-    user_fm = userForm(instance=request.user)
-    # pass_Form = passwordForm()
+    boy_fm = boyForm(instance=boy)
+    user_fm = userBoyForm(instance=request.user)
 
     if request.method == 'POST':
+        print("helo")
 
-        boy_fm = deliveryBoyForm(request.POST, instance=boy)
-        user_fm = userForm(request.POST, instance=request.user)
+        boy_fm = boyForm(request.POST, instance=boy)
+        user_fm = userBoyForm(request.POST, instance=request.user)
 
         context = {
             'userForm': user_fm,
@@ -116,16 +141,16 @@ def profile(request):
             user_fm.save()
             boy_fm.save()
             messages.success(request, "Records Save Successfully")
-            return redirect(request.META['HTTP_REFERER'])
+            return redirect('boyProfile')
 
     context = {
         'userForm': user_fm,
         'boyForm': boy_fm,
         'boy': boy,
     }
-    return render(request, 'boy_profile.html', context)
+    return render(request, 'deliveryboy/profile.html', context)
 
-def imageUpload(request):
+def imgUpload(request):
 
     if request.method == "POST":
 
@@ -133,4 +158,4 @@ def imageUpload(request):
         boy.image = request.FILES.get('image')
         boy.save()
         messages.success(request, "Records Save Successfully")
-    return redirect('profile')
+    return redirect('boyProfile')

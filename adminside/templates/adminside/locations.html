@@ -1,0 +1,555 @@
+{% extends 'adminside/basic.html' %}
+{%load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+Locations
+{% endblock %}
+
+{%block body%}
+
+<div class="block p-8">
+    <button
+        class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        type="button" data-modal-toggle="area-modal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-plus-lg inline text-white font-bold" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+        </svg>
+        Add Area
+    </button>
+
+    <button
+        class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        type="button" data-modal-toggle="city-modal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-plus-lg inline text-white font-bold" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+        </svg>
+        Add City
+    </button>
+    <button
+        class="inline float-right text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        type="button" data-modal-toggle="state-modal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-plus-lg inline text-white font-bold" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+        </svg>
+        Add State
+    </button>
+</div>
+
+
+<!-- add area modal -->
+<div id="area-modal" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
+    <div class="relative px-4 w-full max-w-md h-full md:h-auto">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="">
+                <button type="button" onclick="location.href='/adminpanel/managelocations'"
+                    class="text-gray-400 float-right mr-2 mt-1 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                    >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            <h3 class="text-xl px-8 pt-8 font-medium text-gray-900 dark:text-white">
+                {% if edit and modalArea %}Edit {% else %}Add {% endif %}Area
+            </h3>
+            {% if edit and modalArea %}
+            <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'editArea' pk %}" method="post"
+            enctype="multipart/form-data" novalidate>
+            {%else%}
+            <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'manageArea'%}" method="post"
+            enctype="multipart/form-data" novalidate>
+            {%endif%}
+                {% csrf_token %}
+                <div class="mt-4">
+                    <label for="id_name"
+                        class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-300">Area</label>
+                    {{areaForm.area_name|add_class:'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'}}
+                    <p class="text-red-500 text-xs">{{areaForm.area_name.errors|striptags}}</p>
+                </div>
+                <div class="mt-4">
+                    <label for="id_name"
+                        class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-300">Pincode</label>
+                    {{areaForm.pincode|add_class:'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'}}
+                    <p class="text-red-500 text-xs">{{areaForm.pincode.errors|striptags}}</p>
+                </div>
+                
+                <div class="mt-4">
+                    <label for="id_subcategory_idcategory"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">City</label>
+                    {{areaForm.city_idcity|attr:'required'|add_class:'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'}}
+                    <p class="text-red-500 text-xs">{{areaForm.city_idcity.errors|striptags}}</p>
+                </div>
+
+                <div class="mt-8">
+                    <button type="submit"
+                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- add city modal -->
+<div id="city-modal" aria-hidden="true"
+    class="hidden overflow-y-hidden overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
+    <div class="relative px-4 w-full max-w-md h-full md:h-auto">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="">
+                <button type="button" type="button" onclick="location.href='/adminpanel/managelocations'"
+                    class="text-gray-400 float-right mr-2 mt-1 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                    data-modal-toggle="category-modal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            <h3 class="text-xl px-8 pt-8 font-medium text-gray-900 dark:text-white">
+                {% if edit and modalCity %} Edit {% else %}Add {% endif %}City
+            </h3>
+            {% if edit and modalCity %}
+            <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'editCity' pk %}" method="post"
+            enctype="multipart/form-data" novalidate>
+            {%else%}
+            <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'manageCity'%}" method="post"
+            enctype="multipart/form-data" novalidate>
+            {%endif%}
+                {% csrf_token %}
+                <div class="mt-4">
+                    <label for="id_name"
+                        class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-300">City</label>
+                    {{cityForm.city_name|add_class:'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'}}
+                    <p class="text-red-500 text-xs">{{cityForm.city_name.errors|striptags}}</p>
+                </div>
+                <div class="mt-4">
+                    <label for="id_subcategory_idcategory"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">State</label>
+                    {{cityForm.state_idstate|attr:'required'|add_class:'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'}}
+                    <p class="text-red-500 text-xs">{{cityForm.state_idstate.errors|striptags}}</p>
+                </div>
+                <div class="mt-8">
+                    <button type="submit"
+                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- add state modal -->
+<div id="state-modal" aria-hidden="true"
+    class="hidden overflow-y-hidden overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
+    <div class="relative px-4 w-full max-w-md h-full md:h-auto">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="">
+                <button type="button" type="button" onclick="location.href='/adminpanel/managelocations'"
+                    class="text-gray-400 float-right mr-2 mt-1 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                    data-modal-toggle="category-modal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            <h3 class="text-xl px-8 pt-8 font-medium text-gray-900 dark:text-white">
+                {% if edit and modalState %} Edit {% else %}Add {% endif %}State
+            </h3>
+            {% if edit and modalState %}
+            <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'editState' pk %}" method="post"
+            enctype="multipart/form-data" novalidate>
+            {%else%}
+            <form class="px-6 pt-4 pb-6 lg:px-8 sm:pb-6 xl:pb-8" action="{%url 'manageLocations'%}" method="post"
+            enctype="multipart/form-data" novalidate>
+            {%endif%}
+                {% csrf_token %}
+                <div class="mt-4">
+                    <label for="id_name"
+                        class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-300">State</label>
+                    {{stateForm.state_name|add_class:'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white'}}
+                    <p class="text-red-500 text-xs">{{stateForm.state_name.errors|striptags}}</p>
+                </div>
+                <div class="mt-8">
+                    <button type="submit"
+                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- tables -->
+
+<div class="flex justify-between p-8 rounded-md w-full md:flex-row">
+    <!-- state table -->
+    <div class="bg-white mb-8 px-4 pt-1 overflow-hidden rounded shadow-md dark:bg-gray-800 ">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full rounded whitespace-no-wrap">
+                <thead>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-white dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">State</th>
+                        <th class="px-4 py-3"></th>
+                        <th class="px-4 py-3 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for state in states %}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div>
+                                    <p class="font-semibold">{{state.state_name}}</p>
+                                </div>
+                            </div>
+                        </td>
+                        
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div>
+                                    <p class="font-semibold"></p>
+                                </div>
+                            </div>
+                        </td>
+                        
+                        <td class="pl-4 py-3 text-sm">
+                            <div class="flex items-center text-sm">
+                                <a href="{% url 'editState' state.id %}"
+                                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                                    </svg>
+                                </a>
+                                <button type="button" data-uid="{{state.id}}" data-token="{{csrf_token}}" data-url="{% url 'action' state.id 'delete' 'State' %}" data-return="{% url 'manageLocations'%}"
+                                    class="userDeleteBtn text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        {%if state.has_other_pages%}
+        <div
+            class="grid px-4 pt-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span class="flex items-center col-span-3">
+                Showing {{ state.start_index }}-{{ state.end_index }} of {{state.paginator.count}}
+            </span>
+            <span class="col-span-2"></span>
+            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center">
+                        {%if state.has_previous%}
+                        <li>
+                            <a href="?page={{state.previous_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-l-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{state.previous_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{state.previous_page_number}}
+                            </a>
+                        </li>
+                        {%endif%}
+                        <li>
+                            <a href="?page={{state.number}}"
+                                class="px-3 pr-5 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{state.number}}
+                            </a>
+                        </li>
+                        {%if state.has_next%}
+                        <li>
+                            <a href="?page={{state.next_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{state.next_page_number}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{state.next_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-r-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        {%endif%}
+    </div>
+    <!-- city table -->
+    <div class="bg-white mb-8 px-4 pt-1 overflow-hidden rounded shadow-md dark:bg-gray-800">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full rounded whitespace-no-wrap">
+                <thead>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-white dark:text-gray-400 dark:bg-gray-800">
+                            <th class="px-4 py-3">city</th>
+                        <th class="px-4 py-3">state</th>
+                        <th class="px-4 py-3 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {%for city in cities %}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                      
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div>
+                                    <p class="font-semibold">{{city.city_name}}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div>
+                                    <p class="font-semibold">{{city.state_idstate}}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="pl-4 py-3 text-sm">
+                            <div class="flex items-center text-sm">
+                                <a href="{% url 'editCity' city.id %}"
+                                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                                    </svg>
+                                </a>
+                                <button type="button" data-uid="{{city.id}}" data-token="{{csrf_token}}" data-url="{% url 'action' city.id 'delete' 'City' %}" data-return="{% url 'manageLocations'%}"
+                                    class="userDeleteBtn text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        {%if cities.has_other_pages%}
+        <div
+            class="grid px-4 pt-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span class="flex items-center col-span-3">
+                Showing {{ cities.start_index }}-{{ cities.end_index }} of {{cities.paginator.count}}
+            </span>
+            <span class="col-span-2"></span>
+            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center">
+                        {%if cities.has_previous%}
+                        <li>
+                            <a href="?page2={{cities.previous_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-l-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page2={{cities.previous_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{cities.previous_page_number}}
+                            </a>
+                        </li>
+                        {%endif%}
+                        <li>
+                            <a href="?page2={{cities.number}}"
+                                class="px-3 pr-5 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{cities.number}}
+                            </a>
+                        </li>
+                        {%if cities.has_next%}
+                        <li>
+                            <a href="?page2={{cities.next_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{cities.next_page_number}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page2={{cities.next_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-r-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        {%endif%}
+    </div>
+    <!-- area table -->
+    <div class="bg-white mb-8 px-4 pt-1 overflow-hidden rounded shadow-md dark:bg-gray-800">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full rounded whitespace-no-wrap">
+                <thead>
+                    <tr
+                        class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-white dark:text-gray-400 dark:bg-gray-800">
+                            <th class="px-4 py-3">area</th>
+                        <th class="px-4 py-3">city</th>
+                        <th class="px-4 py-3 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    {% for a in area %}
+                    <tr class="text-gray-700 dark:text-gray-400">
+                      
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div>
+                                    <p class="font-semibold">{{a.area_name}}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <div>
+                                    <p class="font-semibold">{{a.city_idcity}}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="pl-4 py-3 text-sm">
+                            <div class="flex items-center justify-end text-sm">
+                                <a href="{% url 'editArea' a.id %}"
+                                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                                    </svg>
+                                </a>
+                                <button type="button"  data-uid="{{a.id}}" data-token="{{csrf_token}}" data-url="{% url 'action' a.id 'delete' 'Area' %}" data-return="{% url 'manageLocations'%}"
+                                    class="userDeleteBtn text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-2 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        {%if area.has_other_pages%}
+        <div
+            class="grid px-4 pt-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span class="flex items-center col-span-3">
+                Showing {{ area.start_index }}-{{ area.end_index }} of {{area.paginator.count}}
+            </span>
+            <span class="col-span-2"></span>
+            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center">
+                        {%if area.has_previous%}
+                        <li>
+                            <a href="?page3={{area.previous_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-l-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page3={{area.previous_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{area.previous_page_number}}
+                            </a>
+                        </li>
+                        {%endif%}
+                        <li>
+                            <a href="?page3={{area.number}}"
+                                class="px-3 pr-5 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{area.number}}
+                            </a>
+                        </li>
+                        {%if area.has_next%}
+                        <li>
+                            <a href="?page3={{area.next_page_number}}"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+                                {{area.next_page_number}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{area.next_page_number}}"
+                                class="px-3 py-1 rounded-md rounded-r-lg inline-block focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next">
+                                <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        {%endif%}
+    </div>
+    
+</div>
+
+{% if modalState or state_error %}
+<script>
+    window.addEventListener("load", ()=>{
+        toggleModal("state-modal");
+    })
+</script>
+{% endif %}
+
+{% if modalCity or city_error %}
+<script>
+    window.addEventListener("load", ()=>{
+        toggleModal("city-modal");
+    })
+</script>
+{% endif %}
+
+{% if modalArea or area_error %}
+<script>
+    window.addEventListener("load", ()=>{
+        toggleModal("area-modal");
+    })
+</script>
+{% endif %}
+
+{% endblock %}

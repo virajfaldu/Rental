@@ -49,7 +49,7 @@ Manage OrderDetails
                     {%for product in orderDetails %}
                     <tr class="text-gray-700 dark:text-gray-400">
                         <td class="px-4 py-3 text-sm">
-                            {{product.product.name}}
+                            {{product.product.name|truncatechars:10}}
                         </td>
                         <td class="px-4 py-3 text-sm text-center">
                             {{product.quantity}}
@@ -89,7 +89,7 @@ Manage OrderDetails
                                 data-oid={{order.id}} data-pid={{product.product.id}} data-token="{{ csrf_token }}" data-url="{% url 'asignDelivery'%}"
                                 data-return="{% url 'manageOrderDetails' order.id %}" {%if product.status.status == 'cancelled' %} disabled {% endif %}>
                                 <option selected>{{product|getBoy:"delivery"}}</option>
-                                {%if product.deliverypickup_set.all|length != 0%}
+                                {%if product|getBoy:"delivery" != ""%}
                                 <option value="">-------</option>
                                 {%endif%}
                                 {%for boy in deliveryboy%}

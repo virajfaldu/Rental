@@ -6,10 +6,12 @@ urlpatterns=[
     path('',views.home,name="home"),
 
     path('duty',views.duty,name="duty"),
-    path('duty/dutyDetails/<int:orderid>',views.dutyDetails,name="dutyDetails"),
-    path('duty/dutyDetails/changestatus',views.changeStatus,name="changestatus"),
+    path('duty/confirm/<int:dutyid>',views.confirm,name="confirm"),
+    path('duty/address/<int:dutyid>',views.duty,name="address"),
 
 
-    path('profile',views.profile,name="profile"),
-    path('profile/imageUpload',views.imageUpload,name="imageUpload"),
+    path('history',views.history,name="history"),
+
+    path('profile',views.boyProfile,name="boyProfile"),
+    path('profile/imageUpload',views.imgUpload,name="imgUpload"),
 ]

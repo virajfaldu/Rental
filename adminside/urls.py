@@ -63,6 +63,13 @@ urlpatterns=[
     path('customizeproductrq/acceptproductRq/<int:pk>',views.acceptProductRq,name="acceptProductRq"),
     path('customizeproductrq/declineproductRq/<int:pk>',views.declineProductRq,name="declineProductRq"),
 
+    path('managelocations',views.manageLocations,name="manageLocations"),
+    path('managelocations/editstate/<int:pk>',views.manageLocations,name="editState"),
+    path('managelocations/city',views.manageCity,name="manageCity"),
+    path('managelocations/editcity/<int:pk>',views.manageCity,name="editCity"),
+    path('managelocations/area',views.manageArea,name="manageArea"),
+    path('managelocations/editarea/<int:pk>',views.manageArea,name="editArea"),
+
 
     path('profile/imageupload',views.imageUpload,name="imageUpload"),
 

@@ -23,7 +23,7 @@ Delivery Boy
 <section id="deliveryboy-modal" aria-hidden="true"
     class="max-w-xl mx-auto my-auto p-6 h-min bg-white rounded-md shadow-md dark:bg-gray-800 hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-8 z-50 justify-center items-center md:inset-0">
 
-        <form id="deliveryboyForm" class="w-full"action="{%url 'manageDeliveryBoy'%}" data-cities-url="{% url 'ajax_load_cities' %}" novalidate data-area-url="{% url 'ajax_load_area' %}"
+        <form id="deliveryboyForm" class="w-full overflow-y-auto" action="{%url 'manageDeliveryBoy'%}" data-cities-url="{% url 'ajax_load_cities' %}" novalidate data-area-url="{% url 'ajax_load_area' %}"
             data-token="{{ csrf_token }}" method="post">
             {%csrf_token%}
             <div class="">
@@ -103,7 +103,7 @@ Delivery Boy
 {% if modalAsign %}
 <div id="asignarea-modal" aria-hidden="true"
     class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
-    <div class="relative px-4 w-full max-w-md h-full md:h-auto">
+    <div class="relative px-4 w-full max-w-md h-full md:h-auto" >
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="">
                 <button type="button" {% if modalAsign %} onclick="location.href='/adminpanel/managedeliveryboy'" {% else %}
@@ -235,18 +235,22 @@ Delivery Boy
                                 {% if boy.user.is_active %}
                                 <form action="{% url 'action' boy.user.id 'userstatus' %}" method="post">
                                     {%csrf_token%}
-                                <button type="submit">
+                                <button type="submit" data-tooltip-target="tooltip-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-person-x-fill text-red-700 w-6 h-6" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd"
                                             d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z" />
                                     </svg>
                                 </button>
+                                <div id="tooltip-block" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                                    Block
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
                                 </form>
                                 {%else%}
                                 <form action="{% url 'action' boy.user.id 'userstatus'%}" method="post">
                                     {%csrf_token%}
-                                <button type="submit">
+                                <button type="submit" data-tooltip-target="tooltip-active">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-person-check-fill text-green-700 w-6 h-6" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd"
@@ -255,6 +259,10 @@ Delivery Boy
                                             d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                                     </svg>
                                 </button>
+                                <div id="tooltip-active" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                                    Active
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
                                 </form>
                                 {%endif%}
                                 

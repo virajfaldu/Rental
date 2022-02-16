@@ -129,3 +129,21 @@ class payBackForm(forms.ModelForm):
     class Meta:
         model = PayBack
         fields = '__all__'
+
+class stateForm(forms.ModelForm):
+
+    class Meta:
+        model = State
+        fields = '__all__'
+
+class cityForm(forms.ModelForm):
+
+    class Meta:
+        model = City
+        fields = '__all__'
+
+class areaForm(forms.ModelForm):
+
+    class Meta:
+        model = Area
+        fields = '__all__'
