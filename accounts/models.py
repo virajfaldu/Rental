@@ -132,6 +132,8 @@ class AuthUserUserPermissions(models.Model):
 
 class Brand(models.Model):
     name = models.CharField(max_length=15,unique=True)
+    image = models.ImageField(upload_to ='uploads/brand/')
+
 
     def __str__(self):
         return self.name

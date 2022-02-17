@@ -323,7 +323,6 @@ def manageCategory(request, catid=None):
     error=False
 
     if catid != None:
-            subCategory = Category.objects.exclude(subcategory_idcategory=None).all()
             subCatForm = subCategoryForm()
             catData = Category.objects.get(id=catid)
             catForm = categoryForm(instance=catData)
@@ -413,9 +412,6 @@ def manageSubCategory(request, scatid=None):
         return render(request, 'adminside/product/manageCategory.html', context)
 
     else:
-        category = Category.objects.filter(subcategory_idcategory=None).all()
-        subCategory = Category.objects.exclude(
-            subcategory_idcategory=None).all()
         catForm = categoryForm()
         scatData = Category.objects.get(id=scatid)
         subCateForm = subCategoryForm(instance=scatData)

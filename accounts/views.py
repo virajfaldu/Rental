@@ -21,7 +21,6 @@ def signup(request):
         p_fm = ProfileForm(request.POST) 
 
         email=request.POST['email']
-        company_name=request.POST['company_name']
 
         if email!='':
             if User.objects.filter(email=email).exists():
