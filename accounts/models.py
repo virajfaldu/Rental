@@ -139,17 +139,16 @@ class Brand(models.Model):
         return self.name
 
 class Cart(models.Model):
-    customer_idcustomer = models.OneToOneField('Customer', db_column='customer_idCustomer', primary_key=True,on_delete=models.CASCADE)  # Field name made lowercase.
-    product_idproduct = models.ForeignKey('Product', db_column='product_idproduct',on_delete=models.CASCADE)
+
+
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)  # Field name made lowercase.
+    product = models.ForeignKey('Product',on_delete=models.CASCADE)
     quantity = models.IntegerField()
     start_date = models.DateField()
     end_date = models.DateField()
     rent_amount = models.IntegerField()
     deposit = models.IntegerField()
     delivery_pickup_charges = models.IntegerField()
-
-    def __str__(self):
-        return f"{self.customer_idcustomer.user_iduser.username} has {self.product_idproduct.product_name}"
 
 
 
@@ -280,7 +279,7 @@ class PaymentMethod(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=45,unique=True)
-    desc = models.TextField(max_length=100, blank=True, null=True)
+    desc = models.TextField(max_length=300, blank=True, null=True)
     quantity = models.IntegerField()
     rent_per_day = models.FloatField()
     rent_per_week = models.FloatField()
@@ -323,7 +322,7 @@ class ProductHasOrder(models.Model):
     deposit = models.IntegerField()
     delivery_pickup_charge = models.IntegerField()
     quantity = models.IntegerField()
-    status=models.ForeignKey(OrderStatus,default=OrderStatus.DEFAULT_PK,on_delete=models.SET_NULL,null=True)
+    status=models.ForeignKey(OrderStatus,default=OrderStatus.DEFAULT_PK,on_delete=models.SET_NULL,null=True,blank=True)
     cancel_date = models.DateField(blank=True, null=True)
     cancelpay=models.BooleanField(blank=True,null=True,default=False)
 

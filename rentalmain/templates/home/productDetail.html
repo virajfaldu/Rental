@@ -1,0 +1,375 @@
+{%extends 'home/basic.html'%}
+{% load custom_tags %}
+{%load static%}
+{%block css%}
+<link href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css' rel='stylesheet'>
+{%endblock%}
+{%block content%}
+
+<body>
+    <div class="page-wrapper">
+        <main class="pt-3 pb-3 mx-2 mb-2 main">
+            <nav aria-label="breadcrumb" class="mb-0 border-0 breadcrumb-nav">
+                <div class="container d-flex align-items-center">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Default</li>
+                    </ol>
+                </div>
+            </nav>
+
+            <div class="page-content">
+                <div class="container">
+                    <div class="product-details-top">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="product-gallery product-gallery-vertical">
+                                    <div class="row" style="width:730px; height:435px; ">
+                                        <figure class="product-main-image" style="width:630px; height:375px;">
+                                            <img id="product-zoom"
+                                                style="width:520px; height:385px;" class="object-contain"
+                                                src={{product.image_set.all.0.image.url}}
+                                                data-zoom-image={{product.image_set.all.0.image.url}}
+                                                alt="product image">
+
+                                            <a href="#" id="btn-product-gallery" class="btn-product-gallery">
+                                                <i class="icon-arrows"></i>
+                                            </a>
+                                        </figure>
+                                        <!-- End .product-main-image -->
+                                        <div id="product-zoom-gallery" class="product-image-gallery">
+                                            {%for img in product.image_set.all%}
+                                            <a class="product-gallery-item {% if img == product.image_set.all.0 %}active{%endif%}"
+                                                href="#" data-image="{{img.image.url}}"
+                                                data-zoom-image="{{img.image.url}}" style="width:116px; height:116px;">
+                                                <img src="{{img.image.url}}" class="object-contain" alt="product side" style="width:116px; height:116px;">
+                                            </a>
+                                            {%endfor%}
+                                        </div>
+                                        <!-- End .product-image-gallery -->
+                                    </div>
+                                    <!-- End .row -->
+                                </div>
+                                <!-- End .product-gallery -->
+                            </div>
+                            <!-- End .col-md-6 -->
+
+                            <div class="col-md-6">
+                                <div class="product-details">
+                                    
+                                    <h1 class=" product-title" style="font-weight: 600;">{{product.name}}</h1>
+                                    <!-- End .product-title -->
+
+                                    <div class="ratings-container">
+                                        <div class="rating">
+                                            {% with rating=ratings|getAvgRating %}
+                                            {% for i in rating|times %}
+                                            <i class="fa fa-star rating-star" style="color:orange" data-value="1"></i>
+                                            {%endfor%}
+                                            {%for i in 5|times:rating%}
+                                            <i class="fa fa-star rating-star" data-value="2"></i>
+                                            {%endfor%}
+                                            {% endwith %}
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="pr-20 product-content " style="margin-bottom: 0px;">
+                                        <p>{{product.desc}}</p>
+                                        <div class="pr-20 mt-1 border-b "> </div>
+                                    </div>
+
+                                    <!-- End .product-content -->
+
+                                    <div class="details-filter-row details-row-size " style="margin-bottom: 0px;">
+                                        <label class="text-xl" style=" width:100px; ">Rent Details:</label>
+
+                                        <span
+                                            class="inline-flex h-12 px-4 py-2 mt-2 ml-2 font-normal text-center border border-black rounded-xlg hover:bg-gray-100 hover:text-primary product-content ">&#8377;
+                                            <span class="pl-1 text-center ">{{product.rent_per_day|floatformat}}
+                                                /Day</span> </span>
+
+                                        <span
+                                            class="inline-flex h-12 px-4 py-2 mt-2 ml-2 font-normal text-center border border-black rounded-xlg hover:bg-gray-100 hover:text-primary product-content ">&#8377;
+                                            <span class="pl-1 ">{{product.rent_per_week|floatformat}} /Week</span>
+                                        </span>
+                                        <span
+                                            class="inline-flex h-12 px-4 py-2 mt-2 ml-2 font-normal text-center border border-black rounded-xlg hover:bg-gray-100 hover:text-primary product-content ">&#8377;
+                                            <span class="pl-1 ">{{product.rent_per_month|floatformat}} /Month</span>
+                                        </span>
+                                    </div>
+                                    <!-- End .product-price -->
+
+                                    <div class="inline-flex mt-1 details-filter-row details-row-size "
+                                        style="margin-bottom: 0px;">
+                                        <div class="">
+                                            <label class="text-xl " style=" width:150px; ">Refundable Deposit:</label>
+
+                                            <p class="flex items-center ">
+                                                <span class="pr-1 text-2xl font-medium text-primary "
+                                                    style="font-family:serif;">&#8377;</span>
+                                                <span class="text-xl font-medium text-primary ">{{product.deposit}}
+                                                    /Unit</span>
+
+                                            </p>
+                                        </div>
+                                        <div class="">
+                                            <label class="text-xl" style=" width:150px; ">Delivery & Pickup:</label>
+
+
+                                            <p class="flex items-center ">
+                                                <span class="pr-1 text-2xl font-medium text-primary "
+                                                    style="font-family:serif;">&#8377; </span>
+                                                <span
+                                                    class="text-xl font-medium text-primary ">{{product.delivery_pickup_charges}}</span>
+
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- End .details-filter-row -->
+                                    <div class="space-y-5 my-5">
+                                        <p>Enter Date 1 :
+                                            <input type="text" id="date1" class="border border-black" {% if product.quantity == 0 %} disabled {% endif %}>
+                                        </p>
+                                        <p>Enter Date 2 :
+                                            <input type="text" id="date2" class="border border-black" {% if product.quantity == 0 %} disabled {% endif %}>
+                                        </p>
+                                        </button>
+                                        <p>Difference in days : <span id="ans" value="" ></span></p> 
+                                       <p>Amount of rent: <span id="amt"></span></p>
+                                    </div>
+
+                                    <!-- End .details-filter-row -->
+
+                                    <div class="details-filter-row details-row-size">
+                                        <label for="qty">Qty:</label>
+                                        <div class="product-details-quantity">
+                                            <input type="number" name="qtyDrop" id="qtyDrop" class="form-control" {% if product.quantity == 0 %} disabled {% endif %} value="1" min="1" max="{{product.quantity}}"  step="1" data-decimals="0" required>
+                                        </div>
+                                    </div>
+                                    
+
+                                    <div class="product-details-action ">
+                                        <form action="{%url 'addToCart' product.id %}" method="post" name="dateForm" onsubmit="return scanDateForm()">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="startDate" id="startDate">    
+                                            <input type="hidden" name="endDate" id="endDate">    
+                                            <input type="hidden" name="amount" id="amount">  
+                                            <input type="hidden" name="qty" id="qty">    
+                                            {%if product.quantity > 1%}
+                                            <button type="submit" class="btn-product btn-cart text-2xl">
+                                                Add to cart
+                                            </button>
+                                            {%else%}
+                                            <h1 class="text-4xl font-bold mt-2 text-red-700">Out Of Stock</h1>
+                                            {%endif%}
+                                        </form>
+                                    </div>
+                                    <!-- End .product-details-action -->
+
+                                    <div class="product-details-footer ">
+                                        <div class="product-cat ">
+                                            <span>Category:</span>
+                                            <a href="{% url 'categoryDetail' product.subcategory.id %}">{{product.subcategory.name}}</a>,
+                                            <span class="ml-5">Brand:</span>
+                                            <a href="{% url 'categoryDetail' product.subcategory.id %}">{{product.brand.name}}</a>,
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- End .product-details -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 class="mb-4 text-center title ">You May Also Like</h2>
+
+                    <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl"
+                        data-owl-options='{
+                            "nav": false, 
+                            "dots": true,
+                            "margin": 20,
+                            "loop": false,
+                            "responsive": {
+                                "0": {
+                                    "items":1
+                                },
+                                "480": {
+                                    "items":2
+                                },
+                                "768": {
+                                    "items":3
+                                },
+                                "992": {
+                                    "items":4
+                                },
+                                "1200": {
+                                    "items":4,
+                                    "nav": true,
+                                    "dots": false
+                                }
+                            }
+                        }'>
+
+                        {% for prod in otherProducts%}
+                        {%if prod != product %}
+                        <div class="product product-7 text-center">
+                            <figure class="product-media">
+                                <a href="{%url 'productDetail' prod.id %}" >
+                                    <img src="{{prod.image_set.all.0.image.url}}" style="height:276px;" alt="Product image"
+                                        class="product-image object-contain bg-white">
+                                </a>
+                                <div class="product-action">
+                                    <a href="{%url 'quickView' prod.id %}" class="btn-product btn-quickview"><span>quick view</span></a>
+                                </div>
+                            </figure>
+
+                            <div class="product-body">
+                                <div class="product-cat">
+                                    <a href="#">{{prod.subcategory.name}}</a>
+                                </div><!-- End .product-cat -->
+                                <h3 class="product-title"><a href="product.html">{{prod.name}}</a></h3><!-- End .product-title -->
+                                <div class="product-price">{{prod.rent_per_day|floatformat}} /day &nbsp;{{prod.rent_per_month|floatformat}} /month
+                                </div><!-- End .product-price -->
+                                <div class="ratings-container">
+                                    <div class="rating">
+                                        {% with rating=prod.feedbackrating_set.all|getAvgRating %}
+                                        {% for i in rating|times %}
+                                        <i class="fa fa-star rating-star" style="color:orange" data-value="1"></i>
+                                        {%endfor%}
+                                        {%for i in 5|times:rating%}
+                                        <i class="fa fa-star rating-star" data-value="2"></i>
+                                        {%endfor%}
+                                        {% endwith %}
+                                    </div><!-- End .ratings -->
+                                </div>
+
+                            </div><!-- End .product-body -->
+                        </div><!-- End .product -->
+                        {%endif%}
+                        {%endfor%}
+                    </div>
+
+                </div>
+            </div>
+        </main>
+        </div>
+        {%block js%}
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
+        </script>
+        
+        <script>
+            function scanDateForm() {
+                if (isNaN(document.getElementById("ans").value)){
+                    alert("enter valid date");
+                    return false
+                }
+            }
+            $(document).ready(function() {
+                
+                $(function() {
+                    $("#date1").datepicker({minDate: '-d'});
+                });
+    
+                $(function() {
+                    $("#date2").datepicker({minDate: '-d'});
+                });
+    
+                $('#date1').change(function() {
+                    startDate = $(this).datepicker('getDate');
+                    $("#date2").datepicker("option", "minDate", startDate);
+                    evalDays()
+                })
+                
+                $('#date2').change(function() {
+                    endDate = $(this).datepicker('getDate');
+                    $("#date1").datepicker("option", "maxDate", endDate);
+                    evalDays()
+                })
+                
+                $('#qtyDrop').change(function() {
+                    document.getElementById("qty").value=$(this).val()
+                    evalDays()
+                })
+                function convertDate(inputFormat) {
+                    function pad(s) { return (s < 10) ? '0' + s : s; }
+                    var d = new Date(inputFormat)
+                    return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
+                }
+                function evalDays(){
+                    day=document.getElementById("ans")
+                    console.log(day)
+                    date1 = new Date($('#date1').val());
+                    date2 = new Date($('#date2').val());
+                    
+                    document.getElementById("startDate").value=convertDate(date1)
+                    document.getElementById("endDate").value=convertDate(date2)
+                    q=document.getElementById("qtyDrop").value
+
+                    if(date1 && date2){
+                        var milli_secs = date1.getTime() - date2.getTime();
+            
+                        // Convert the milli seconds to Days 
+                        var days = milli_secs / (1000 * 3600 * 24);
+                        document.getElementById("ans").innerHTML = Math.round(Math.abs(days))+1;
+                        document.getElementById("ans").value = Math.round(Math.abs(days))+1;
+                        var numDay=Math.round(Math.abs(days))+1;
+    
+                        var day="{{product.rent_per_day}}";
+                        var week="{{product.rent_per_week}}";
+                        var month="{{product.rent_per_month}}";
+                        var deposit="{{product.deposit}}"
+                        var delivery="{{product.delivery_pickup_charges}}"
+    
+                        if(numDay<=7){
+                            amt=day*numDay
+                            if(amt>week){
+                                document.getElementById("amt").innerHTML = (week)*q;
+                                document.getElementById("amount").value = (week)*q;
+                            }
+                            else{
+                                document.getElementById("amt").innerHTML = (day)*numDay*q;
+                                document.getElementById("amount").value = (day)*numDay*q;
+                            }
+                        }
+                        else if(numDay>7 && numDay<=30){
+                            var perWeek=week/7
+                            var amt=Math.round((perWeek*numDay))
+                            
+                            if(amt>month){
+                                document.getElementById("amt").innerHTML = (month)*q;
+                                document.getElementById("amount").value = (month)*q;
+                            
+                            }
+                            else{
+                                document.getElementById("amt").innerHTML = (amt)*q;
+                                document.getElementById("amount").value = (amt)*q;
+                            }
+                        }
+                        else if(numDay>30){
+                            var perMonth=month/30
+                            var amt=Math.round((perMonth*numDay))
+                            
+                            document.getElementById("amt").innerHTML = (amt)*q;
+                            document.getElementById("amount").value = (amt)*q;
+                        }
+                        
+                        
+                    }else{
+                        document.getElementById("ans").innerHTML = "0";
+                    }
+    
+    
+                }
+            })
+    
+        </script>
+
+
+        {%endblock%}
+
+</body>
+{%endblock%}

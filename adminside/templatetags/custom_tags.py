@@ -1,7 +1,9 @@
-from traceback import print_tb
+import imp
 from django import template
+import math
+from datetime import datetime
 
-from accounts.models import DeliveryBoy, DeliveryPickup
+from accounts.models import DeliveryPickup
 
 register = template.Library()
 
@@ -30,8 +32,17 @@ def totalDeliveryCharge(object):
     return tot_charge
 
 @register.filter
+def productTotal(object):
+    tot_charge=object.rent_amount+object.deposit+object.delivery_pickup_charges
+    return tot_charge
+
+@register.filter
+def getTax(cart):
+    return math.floor((totalDeliveryCharge(cart)+totalDeposit(cart)+totalRent(cart))*18)/100
+
+@register.filter
 def total(object):
-    tot_charge=totalDeliveryCharge(object)+totalDeposit(object)+totalRent(object)
+    tot_charge=totalDeliveryCharge(object)+totalDeposit(object)+totalRent(object)+getTax(object)
     return tot_charge
 
 # --------------for cancel order--------------
@@ -81,5 +92,67 @@ def getBoy(object,args):
         else:
             return ""   
 
+# --------------for customer side --------------
 
-    
+@register.filter
+def times(number, minus=0):
+    return range(number-minus)
+
+@register.filter
+def qty(number):
+    return range(1,number+1)
+
+@register.filter
+def getAvgRating(reviews):
+    rating = 0
+    if reviews:
+        for review in reviews:
+            rating += review.rating
+        return math.floor(rating/len(reviews))
+    else:
+        return rating
+
+@register.filter
+def getTotalRent(cart):
+
+    totalRent = 0
+    for c in cart:
+        totalRent+=c.rent_amount
+    return totalRent
+
+@register.filter
+def getTotalDeposit(cart):
+
+    totalDeposit = 0
+    for c in cart:
+        totalDeposit+=c.deposit
+    return totalDeposit
+
+@register.filter
+def getTotalDelivery(cart):
+
+    totalDelivery = 0
+    for c in cart:
+        totalDelivery+=c.delivery_pickup_charges
+    return totalDelivery
+
+@register.filter
+def tax(cart):
+    return math.floor((getTotalDelivery(cart)+getTotalDeposit(cart)+getTotalRent(cart))*18)/100
+
+@register.filter
+def grandTotal(cart):
+
+    return getTotalDelivery(cart)+getTotalDeposit(cart)+getTotalRent(cart)+tax(cart)
+
+@register.filter
+def getDays(sDate,eDate):
+
+    delta = eDate-sDate
+    return delta.days+1
+
+@register.filter
+def has_group(user, group_name):
+    return user.groups.filter(name=group_name).exists() 
+
+

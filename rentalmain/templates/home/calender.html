@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        jQuery UI | Date Picker
+    </title>
+
+    <link href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'
+        rel='stylesheet'>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            
+            $(function() {
+                $("#date1").datepicker({minDate: '-d'});
+            });
+
+            $(function() {
+                $("#date2").datepicker({});
+            });
+
+            $('#date1').change(function() {
+                startDate = $(this).datepicker('getDate');
+                $("#date2").datepicker("option", "minDate", startDate);
+                evalDays()
+            })
+
+            $('#date2').change(function() {
+                endDate = $(this).datepicker('getDate');
+                $("#date1").datepicker("option", "maxDate", endDate);
+                evalDays()
+            })
+
+            function evalDays(){
+                date1 = new Date($('#date1').val());
+                date2 = new Date($('#date2').val());
+                
+                console.log(date1, date2)
+                if(date1 && date2){
+                    var milli_secs = date1.getTime() - date2.getTime();
+        
+                    // Convert the milli seconds to Days 
+                    var days = milli_secs / (1000 * 3600 * 24);
+                    document.getElementById("ans").innerHTML =
+                        Math.round(Math.abs(days));
+                    var numDay=Math.round(Math.abs(days));
+
+                    var day=4099;
+                    var week=8999;
+                    var month=16948;
+
+                    if(numDay<=7){
+                        amt=day*numDay
+                        if(amt>week){
+                            document.getElementById("amt").innerHTML = week;
+                        }
+                        else{
+                        document.getElementById("amt").innerHTML = day*numDay;
+                        }
+                    }
+                    else if(numDay>7 && numDay<=30){
+                        var perWeek=week/7
+                        var amt=Math.round((perWeek*numDay))
+
+                        if(amt>month){
+                            document.getElementById("amt").innerHTML = month;
+                        }
+                        else{
+                        document.getElementById("amt").innerHTML = amt;
+                        }
+                    }
+                    else if(numDay>30){
+                        var perMonth=month/30
+                        var amt=Math.round((perMonth*numDay))
+
+                        document.getElementById("amt").innerHTML = amt;
+                       
+                    }
+
+                }else{
+                    document.getElementById("ans").innerHTML = "0";
+                }
+
+
+            }
+        })
+
+    </script>
+
+</head>
+
+<body>
+
+
+    <p>Enter Date 1 :
+        <input type="text" id="date1">
+    </p>
+
+
+    <p>Enter Date 2 :
+        <input type="text" id="date2">
+    </p>
+
+
+    <button id="sub" onclick="func()" type="button"> Submit
+    </button>
+    <h3 id="ans">Difference in days</h3>
+    <h3 id="amt">amount</h3>
+
+
+</body>
+
+</html>

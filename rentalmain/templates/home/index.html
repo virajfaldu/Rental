@@ -1,6 +1,6 @@
 {%extends 'home/basic.html'%}
+{% load custom_tags %}
 {%load static%}
-<!DOCTYPE html>
 
 {%block css%}
 <style>
@@ -117,7 +117,7 @@
                                             <div class="intro-price">
                                                 <sup>Today:</sup>
                                                 <span class="text-primary">
-                                                    $247<sup>.99</sup>
+                                                    &#8377;247<sup>.99</sup>
                                                 </span>
                                             </div>
 
@@ -150,7 +150,7 @@
                                             <div class="intro-price">
                                                 <sup class="intro-old-price">$49,99</sup>
                                                 <span class="text-primary">
-                                                    $29<sup>.99</sup>
+                                                    &#8377;29<sup>.99</sup>
                                                 </span>
                                             </div>
 
@@ -199,7 +199,7 @@
                                         <h4 class="banner-subtitle d-lg-none d-xl-block"><a href="#">Clearance</a>
                                         </h4>
                                         <h3 class="banner-title"><a href="#">GoPro - Fusion 360 <span>Save
-                                                    $70</span></a></h3>
+                                            &#8377;70</span></a></h3>
                                         <a href="#" class="banner-link text-primary">Shop Now<i
                                                 class="icon-long-arrow-right"></i></a>
                                     </div>
@@ -234,9 +234,9 @@
                     <h2 class="mb-4 text-center title">Explore Popular Categories</h2>
                     <div class="cat-blocks-container">
                         <div class="row">
-                            {%for scat in subCategory%}
+                            {%for scat in trendingCat%}
                             <div class="col-6 col-sm-4 col-lg-2">
-                                <a href="category.html" class="cat-block">
+                                <a href="{%url 'categoryDetail' scat.id%}" class="cat-block">
                                     <figure>
                                         <span>
                                             <img src="{{scat.image.url}}" alt="{{scat.name}} image">
@@ -328,16 +328,15 @@
                             {%for product in newProducts%}
                             <div class="product product-2">
                                 <figure class="product-media">
-                                    <a href="product.html">
+                                    <a href="{%url 'productDetail' product.id %}">
                                         <img src="{{product.image_set.all.0.image.url}}" alt="Product image"
-                                            class="product-image"style="height:361px; width:361;">
+                                            class="product-image object-contain bg-white"style="height:361px; width:361;">
                                         <img src="{{product.image_set.all.1.image.url}}" alt="Product image"
-                                            class="product-image-hover"style="height:361px; width:361;">
+                                            class="product-image-hover object-contain bg-white"style="height:361px; width:361;">
                                     </a>
                                     <div class="product-action product-action-dark">
-                                        <a href="#" class="btn-product btn-cart" title="Add to cart"><span>add to
-                                                cart</span></a>
-                                        <a href="popup/quickView.html" class="btn-product btn-quickview"
+                                        
+                                        <a href="{% url 'quickView' product.id %}" class="btn-product btn-quickview"
                                             title="Quick view"><span>quick view</span></a>
                                     </div>
                                 </figure>
@@ -346,16 +345,22 @@
                                     <div class="product-cat">
                                         <a href="#">{{product.subcategory.name}}</a>
                                     </div>
-                                    <h3 class="product-title"><a href="product.html">{{product.name}}</a></h3>
+                                    <h3 class="product-title"><a href="{%url 'productDetail' product.id %}">{{product.name}}</a></h3>
                                     <div class="product-price">
                                         &#8377;{{product.rent_per_day|floatformat}} /Day &nbsp;&nbsp;
                                         &#8377;{{product.rent_per_month|floatformat}} /Month
                                     </div>
                                     <div class="ratings-container">
-                                        <div class="ratings">
-                                            <div class="ratings-val" style="width: 60%"></div>
-                                        </div>
-                                        <span class="ratings-text">( 2 Reviews )</span>
+                                        <div class="rating">
+                                            {% with rating=product.feedbackrating_set.all|getAvgRating %}
+                                            {% for i in rating|times %}
+                                            <i class="fa fa-star rating-star"style="color:orange" data-value="1"></i>
+                                            {%endfor%}
+                                            {%for i in 5|times:rating%}
+                                            <i class="fa fa-star rating-star" data-value="2"></i>
+                                            {%endfor%}
+                                            {% endwith %}
+                                            </div>
                                     </div>
                                 </div>
                             </div>
@@ -395,14 +400,12 @@
                                 <figure class="product-media">
                                     <a href="product.html">
                                         <img src="{{product.image_set.all.0.image.url}}" alt="Product image"
-                                            class="product-image" style="height:361px; width:361;">
+                                            class="product-image object-contain bg-white" style="height:361px; width:361;">
                                         <img src="{{product.image_set.all.1.image.url}}" alt="Product image"
-                                            class="product-image-hover" style="height:361px; width:361px;">
+                                            class="product-image-hover object-contain bg-white" style="height:361px; width:361px;">
                                     </a>
                                     <div class="product-action product-action-dark">
-                                        <a href="#" class="btn-product btn-cart" title="Add to cart"><span>add to
-                                                cart</span></a>
-                                        <a href="popup/quickView.html" class="btn-product btn-quickview"
+                                        <a href="{% url 'quickView' product.id %}" class="btn-product btn-quickview"
                                             title="Quick view"><span>quick view</span></a>
                                     </div>
                                 </figure>
@@ -417,10 +420,16 @@
                                         {{product.rent_per_month|floatformat}} /Month&nbsp;&nbsp;
                                     </div>
                                     <div class="ratings-container">
-                                        <div class="ratings">
-                                            <div class="ratings-val" style="width: 60%;"></div>
+                                        <div class="rating">
+                                            {% with rating=product.feedbackrating_set.all|getAvgRating %}
+                                            {% for i in rating|times %}
+                                            <i class="fa fa-star rating-star" style="color:orange" data-value="1"></i>
+                                            {%endfor%}
+                                            {%for i in 5|times:rating%}
+                                            <i class="fa fa-star rating-star" data-value="2"></i>
+                                            {%endfor%}
+                                            {% endwith %}
                                         </div>
-                                        <span class="ratings-text">( 2 Reviews )</span>
                                     </div>
                                 </div>
                             </div>
@@ -433,7 +442,8 @@
                 <!-- End .tab-content -->
             </div>
 
-            <div class="container">
+            <div class="container mt-10 mb-8">
+              
                 <div class="mt-5 mb-5 owl-carousel owl-simple" data-toggle="owl" data-owl-options='{
                             "nav": false, 
                             "dots": false,
@@ -458,9 +468,9 @@
                             }
                         }'>
                     {%for brand in brands%}
-                    <a href="#" class="brand">
-                        <img src="{{brand.image.url}}" alt="{{brand.name}}">
-                    </a>
+                    <div class="brand" style="width: 150px; height:100px;">
+                        <img src="{{brand.image.url}}" alt="{{brand.name}}" class="object-contain">
+                    </div>
                     {%endfor%}
                 </div>
                 <!-- End .owl-carousel -->
@@ -538,15 +548,14 @@
                                     {%for product in products%}
                                     <div class="product product-2">
                                         <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="{{product.image_set.all.0.image.url}}" alt="Product image" class="product-image" style="height:297px; width:297;">
-                                                <img src="{{product.image_set.all.1.image.url}}"style="height:297px; width:297;" alt="Product image"
-                                            class="product-image-hover">
+                                            <a href="{%url 'productDetail'  product.id %}">
+                                                <img src="{{product.image_set.all.0.image.url}}" alt="Product image" class="product-image object-contain bg-white" style="height:297px; width:297;">
+                                                <img src="{{product.image_set.all.1.image.url}}" style="height:297px; width:297;" alt="Product image"
+                                            class="product-image-hover object-contain bg-white">
                                             </a>
                                             <div class="product-action product-action-dark">
-                                                <a href="#" class="btn-product btn-cart" title="Add to cart"><span>add
-                                                        to cart</span></a>
-                                                <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
+                                             
+                                                <a href="{% url 'quickView' product.id %}" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
                                             </div>
                                         </figure>
 
@@ -554,16 +563,22 @@
                                             <div class="product-cat">
                                                 <a href="#">{{product.subcategory.name}}</a>
                                             </div>
-                                            <h3 class="product-title"><a href="product.html">{{product.name}}</a></h3>
+                                            <h3 class="product-title"><a href="{%url 'productDetail'  product.id %}">{{product.name}}</a></h3>
                                             <div class="product-price">
                                                 {{product.rent_per_day|floatformat}} /Day&nbsp;&nbsp;
                                                 {{product.rent_per_day|floatformat}} /Mon
                                             </div>
                                             <div class="ratings-container">
-                                                <div class="ratings">
-                                                    <div class="ratings-val" style="width: 100%;"></div>
+                                                <div class="rating">
+                                                    {% with rating=product.feedbackrating_set.all|getAvgRating %}
+                                                    {% for i in rating|times %}
+                                                    <i class="fa fa-star rating-star" style="color:orange" data-value="1"></i>
+                                                    {%endfor%}
+                                                    {%for i in 5|times:rating%}
+                                                    <i class="fa fa-star rating-star" data-value="2"></i>
+                                                    {%endfor%}
+                                                    {% endwith %}
                                                 </div>
-                                                <span class="ratings-text">( 4 Reviews )</span>
                                             </div>
                                         </div>
                                     </div>
@@ -601,14 +616,13 @@
                                         <figure class="product-media">
                                             <a href="product.html">
                                                 <img src="{{product.image_set.all.0.image.url}}" alt="Product image"
-                                                    style="height:297px; width:297;">
+                                                    style="height:297px; width:297;" class="object-contain bg-white">
                                                 <img src="{{product.image_set.all.1.image.url}}" alt="Product image"
-                                            class="product-image-hover" style="height:297px; width:297;">
+                                            class="product-image-hover object-contain bg-white" style="height:297px; width:297;">
                                             </a>
                                             <div class="product-action product-action-dark">
-                                                <a href="#" class="btn-product btn-cart" title="Add to cart"><span>add
-                                                        to cart</span></a>
-                                                <a href="popup/quickView.html" class="btn-product btn-quickview"
+                                             
+                                                <a href="{% url 'quickView' product.id %}" class="btn-product btn-quickview"
                                                     title="Quick view"><span>quick view</span></a>
                                             </div>
                                         </figure>
@@ -645,7 +659,7 @@
             <div class="mb-5 bg-light deal-container pt-2 pb-6">
                 <div class="container">
                     <div class="mt-1 mb-0 text-center more-container">
-                        <a href="#" class="btn btn-outline-dark-2 btn-round btn-more"><span>Shop More
+                        <a href="{%url 'categoryDetail'%}" class="btn btn-outline-dark-2 btn-round btn-more"><span>Shop More
                                 Products</span><i class="icon-long-arrow-right"></i></a>
                     </div>
                 </div>
@@ -795,5 +809,3 @@
     </div>
 </body>
 {%endblock%}
-
-</html>

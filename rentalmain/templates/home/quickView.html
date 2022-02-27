@@ -1,0 +1,111 @@
+{% load custom_tags %}
+
+<div class="container quickView-container">
+	<div class="quickView-content">
+		<div class="row">
+			<div class="col-lg-7 col-md-6">
+				<div class="row">
+					<div class="product-left">
+						{% for img in product.image_set.all %}
+						<a href="#{{img.id}}" class="carousel-dot active">
+							<img src="{{img.image.url}}" class="object-contain" style="width: 100px; height:100px;">
+						</a>
+						{%endfor%}
+					</div>
+					<div class="product-right">
+						<div class="owl-carousel owl-theme owl-nav-inside owl-light mb-0" data-toggle="owl" data-owl-options='{
+	                        "dots": false,
+	                        "nav": false, 
+	                        "URLhashListener": true,
+	                        "responsive": {
+	                            "900": {
+	                                "nav": true,
+	                                "dots": true
+	                            }
+	                        }
+	                    }'>
+						{% for img in product.image_set.all %}
+							<div class="intro-slide bg-white" data-hash="{{img.id}}" >
+	                            <img src="{{img.image.url}}" alt="Image Desc" style="width: 490px; height:400px;" class="object-contain">
+	                            <a href="{{img.image.url}}" class="btn-fullscreen">
+                                    <i class="icon-arrows"></i>
+                                </a>
+		                    </div><!-- End .intro-slide -->
+						{%endfor%}
+
+		                    
+		                </div>
+					</div>
+                </div>
+			</div>
+			<div class="col-lg-5 col-md-6">
+				<h2 class="product-title">{{product.name}}</h2>
+
+                <div class="ratings-container">
+                    <div class="rating">
+						{% with rating=product.feedbackrating_set.all|getAvgRating %}
+						{% for i in rating|times %}
+						<i class="fa fa-star rating-star" style="color:orange" data-value="1"></i>
+						{%endfor%}
+						{%for i in 5|times:rating%}
+						<i class="fa fa-star rating-star" data-value="2"></i>
+						{%endfor%}
+						{% endwith %}
+					</div><!-- End .ratings -->
+                </div><!-- End .rating-container -->
+
+                <p class="">{{product.desc}}</p>
+
+				<div class="details-filter-row details-row-size " style="margin-bottom: 0px;">
+					<span
+						class="inline-flex h-12 px-4 py-2 mb-5 font-normal text-center border border-black rounded-xlg hover:bg-gray-100 hover:text-primary product-content ">&#8377;
+						<span class="pl-1 text-center ">{{product.rent_per_day|floatformat}}
+							/Day</span> </span>
+
+					<span
+						class="inline-flex h-12 px-4 py-2 ml-2 mb-5 font-normal text-center border border-black rounded-xlg hover:bg-gray-100 hover:text-primary product-content ">&#8377;
+						<span class="pl-1 ">{{product.rent_per_week|floatformat}} /Week</span>
+					</span>
+					<span
+						class="inline-flex h-12 px-4 py-2 ml-2 mb-5 font-normal text-center border border-black rounded-xlg hover:bg-gray-100 hover:text-primary product-content ">&#8377;
+						<span class="pl-1 ">{{product.rent_per_month|floatformat}} /Month</span>
+					</span>
+				</div>
+				<!-- End .product-price -->
+
+				<div class="inline-flex mt-1 details-filter-row details-row-size "
+					style="margin-bottom: 0px;">
+					<div class="">
+						<label class="text-xl " style=" width:150px; ">Refundable Deposit:</label>
+
+						<p class="flex items-center ">
+							<span class="pr-1 text-2xl font-medium text-primary "
+								style="font-family:serif;">&#8377;</span>
+							<span class="text-xl font-medium text-primary ">{{product.deposit}}
+								/Unit</span>
+
+						</p>
+					</div>
+					<div class="">
+						<label class="text-xl" style=" width:150px; ">Delivery & Pickup:</label>
+						<p class="flex items-center ">
+							<span class="pr-1 text-2xl font-medium text-primary "
+								style="font-family:serif;">&#8377; </span>
+							<span
+								class="text-xl font-medium text-primary ">{{product.delivery_pickup_charges}}</span>
+
+						</p>
+					</div>
+				</div>
+
+                <div class="product-details-footer">
+                    <div class="product-cat">
+                        <span>Category:</span>
+                        <a href="{% url 'categoryDetail' product.subcategory.id %}">{{product.subcategory.name}}</a>,
+                    </div><!-- End .product-cat -->
+
+                </div>
+			</div>
+		</div>
+	</div>
+</div>

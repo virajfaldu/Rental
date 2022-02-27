@@ -70,7 +70,11 @@ urlpatterns=[
     path('managelocations/area',views.manageArea,name="manageArea"),
     path('managelocations/editarea/<int:pk>',views.manageArea,name="editArea"),
 
-
     path('profile/imageupload',views.imageUpload,name="imageUpload"),
+
+    path('report',views.Reports,name="reports"),
+    path('report/<str:report>',views.Reports,name="reports"),
+    path('report/invoice/<int:oid>',views.invoice,name="invoice"),
+    
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

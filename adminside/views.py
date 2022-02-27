@@ -1,4 +1,5 @@
 import datetime
+from multiprocessing import context
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -26,7 +27,6 @@ def adminpanel(request):
     customer_cnt = Customer.objects.filter(is_pending=False).count()
     pending_customer = Customer.objects.filter(is_pending=True).count()
     sales = ProductHasOrder.objects.filter(Q(status__status="delivered") | Q(status__status="pickedup")).count()
-    print(sales)    
 
     customers=Customer.objects.filter(user__is_active=True).order_by('id').reverse()
     myFilter=customerFilter(request.GET,queryset=customers)
@@ -448,7 +448,7 @@ def manageBrand(request, brandid=None):
 
     if brandid == None:
         if request.method == "POST":
-            bForm = brandForm(request.POST)
+            bForm = brandForm(request.POST,request.FILES)
             if bForm.is_valid():
                 bForm.save()
                 messages.success(request, "Brand Added Successfully")
@@ -461,7 +461,7 @@ def manageBrand(request, brandid=None):
         bForm = brandForm(instance=brand)
 
         if request.method == "POST":
-            bForm = brandForm(request.POST, instance=brand)
+            bForm = brandForm(request.POST,request.FILES,instance=brand)
             if bForm.is_valid():
                 bForm.save()
                 messages.success(request, "Brand Updated Successfully")
@@ -545,7 +545,7 @@ def manageOrderDetails(request, orderid):
 
     order = Order.objects.filter(id=orderid).first()
     orderDetails = ProductHasOrder.objects.filter(order=orderid).all().order_by('id')
-    status=OrderStatus.objects.exclude(status="cancelled").order_by('-id').reverse()
+    status=OrderStatus.objects.exclude().order_by('-id').reverse()
     
     area_has_deliveryboy=AreaHasDeliveryBoy.objects.filter(area=order.customer.area).all()
     deliveryBoy=[]
@@ -630,12 +630,13 @@ def changeStatus(request):
         orderDetails.cancel_date=datetime.datetime.now()
         orderDetails.save()
 
-        delivery=DeliveryPickup.objects.filter(order=orderDetails).first()
+        delivery=DeliveryPickup.objects.filter(order=orderDetails)
         if delivery!=None:
-            delivery.delete()
+            for d in delivery:
+                d.delete()
   
-        # order.tot_amount=order.tot_amount-orderDetails.rent_price-orderDetails.deposit-orderDetails.delivery_pickup_charge
-        # order.save()
+        order.tot_amount=order.tot_amount-orderDetails.rent_price-orderDetails.deposit-orderDetails.delivery_pickup_charge
+        order.save()
 
         product.quantity+=orderDetails.quantity
         product.save()
@@ -1200,3 +1201,71 @@ def sendEmail(request,user,template):
         [user.email],
         fail_silently=False,
     )
+
+@admin_only
+def Reports(request,report=None):
+    products=Product.objects.exclude(quantity=0).all().order_by('id').reverse()
+    productfilter=productFilter(request.GET,queryset=products)
+
+    orders=Order.objects.all().order_by('date').reverse()
+    orderfilter=orderReportFilter(request.GET,queryset=orders)
+    
+    customers=Customer.objects.exclude(user__is_active=False).all().order_by('id').reverse()
+    customerfilter=customerFilter(request.GET,queryset=customers)
+
+    deliveryboy=DeliveryBoy.objects.exclude(user__is_active=False).all().order_by('id').reverse()
+    deliveryboyfilter=deliveryBoyFilter(request.GET,queryset=deliveryboy)
+
+    if report=='orderreport':
+        orders=orderfilter.qs
+        context={
+            'orders':orders,
+            'date':datetime.datetime.now()
+        }
+        return render(request,'adminside/reports/orderReport.html',context)
+
+    elif report=='stockreport':
+        products=productfilter.qs
+        context={
+            'products':products,
+            'date':datetime.datetime.now(),
+        }
+        return render(request,'adminside/reports/stockReport.html',context)
+
+    elif report=='customerreport':
+        customers=customerfilter.qs
+        context={
+            'customers':customers,
+            'date':datetime.datetime.now(),
+        }
+        return render(request,'adminside/reports/customerReport.html',context)
+
+    elif report=='deliveryboyreport':
+        deliveryboy=deliveryboyfilter.qs
+        context={
+            'deliveryboy':deliveryboy,
+            'date':datetime.datetime.now(),
+        }
+        return render(request,'adminside/reports/deliveryboyReport.html',context)
+
+    context={
+        'productfilter':productfilter,
+        'orderfilter':orderfilter,
+        'customerfilter':customerfilter,
+        'deliveryboyfilter':deliveryboyfilter,
+        'mreport':True
+    }
+    return render(request,'adminside/reports/report.html',context)
+
+
+def invoice(request,oid):
+    order=Order.objects.filter(id=oid).first()
+    orderDetails=ProductHasOrder.objects.filter(order=order).all()
+
+    context={
+        'order':order,
+        'orderDetails':orderDetails,
+        'date':datetime.datetime.now()
+    }
+
+    return render(request,'adminside/reports/invoice.html',context)

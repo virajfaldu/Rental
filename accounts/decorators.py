@@ -24,7 +24,7 @@ def allowed_users(allowed_roles=[]):
         return wrapper
     return decorator
 
-def notAllowed_users(allowed_roles=[]):
+def notAllowed_users(roles=[]):
     def decorator(view_func):
         def wrapper(request,*args,**kwargs):
 
@@ -33,11 +33,11 @@ def notAllowed_users(allowed_roles=[]):
                 group=request.user.groups.all()[0].name
                 print(group)
 
-            if group not in allowed_roles:
+            if group not in roles:
                 return view_func(request,*args,**kwargs)
             
             elif group == 'deliveryboy':
-                return HttpResponse("your delivery boy")
+                return HttpResponse("you are delivery boy")
 
         return wrapper
     return decorator

@@ -1,0 +1,377 @@
+{%load static%}
+{% load custom_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Report</title>
+
+    <link rel="stylesheet" href="{%static 'home/assets/css/bootstrap.min.css'}">
+    <link rel="stylesheet" href="{%static 'home/assets/css/skins/skin-demo-4.css'%}">
+    <link rel="stylesheet" href="{%static 'home/assets/css/demos/demo-4.css'%}">
+    <link rel="stylesheet" href="{%static 'home/assets/style_tail.css'%}">
+    <style type="text/css" media="print">
+        @page {
+            size: auto;
+            margin: 0;
+        }
+        * {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        body {
+            padding: 10px;
+            width: 100%;
+        }
+
+        .main {
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .img {
+            height: 80px;
+            width: 170px;
+        }
+
+        .info {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .report-title {
+            text-align: center;
+            font-size: 24px;
+            font-family: 'Courier New', Courier, monospace;
+            color: blueviolet;
+            margin: 25px 0px;
+        }
+
+        .report-main table {
+            width: 100%;
+        }
+
+        .report-main table tr td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .product-name {
+            text-align: start !important;
+        }
+
+        .hr {
+            border-top: 2px solid black;
+            margin: 40px 0px;
+            padding: 5px;
+        }
+        .invoice-container .invoice-header .invoice-logo {
+            margin: 0.8rem 0 0 0;
+            display: inline-block;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2e323c;
+        }
+        
+        .invoice-container .invoice-header .invoice-logo img {
+            max-width: 130px;
+        }
+        
+        .invoice-container .invoice-header address {
+            font-size: 0.8rem;
+            color: #9fa8b9;
+            margin: 0;
+        }
+        
+        .invoice-container .invoice-details {
+            padding: 1rem;
+            line-height: 180%;
+            background: #f5f6fa;
+            margin-bottom: 1rem;
+        }
+        
+        .invoice-container .invoice-details .invoice-num {
+            text-align: right;
+            line-height: 180%;
+            padding: 8px;
+        }
+        
+        .invoice-container .invoice-body {
+            padding: 1rem 0 0 0;
+        }
+        
+        .invoice-container .invoice-footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin: 5px 0 0 0;
+        }
+        
+        .invoice-status {
+            text-align: center;
+            padding: 1rem;
+            background: #ffffff;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        .invoice-status h2.status {
+            margin: 0 0 0.8rem 0;
+        }
+        
+        .invoice-status h5.status-title {
+            margin: 0 0 0.8rem 0;
+            color: #9fa8b9;
+        }
+        
+        .invoice-status p.status-type {
+            margin: 0.5rem 0 0 0;
+            padding: 0;
+            line-height: 150%;
+        }
+        
+        .invoice-status i {
+            font-size: 1.5rem;
+            margin: 0 0 1rem 0;
+            display: inline-block;
+            padding: 1rem;
+            background: #f5f6fa;
+            -webkit-border-radius: 50px;
+            -moz-border-radius: 50px;
+            border-radius: 50px;
+        }
+        
+        .invoice-status .badge {
+            text-transform: uppercase;
+        }
+        
+        @media (max-width: 767px) {
+            .invoice-container {
+                padding: 1rem;
+            }
+        }
+        
+        .custom-table {
+            border: 1px solid #e0e3ec;
+        }
+        
+        .custom-table thead {
+            background: #007ae1;
+        }
+        
+        .custom-table thead th {
+            border: 0;
+            color: #ffffff;
+        }
+        
+        .custom-table>tbody tr:hover {
+            background: #fafafa;
+        }
+        
+        .custom-table>tbody tr:nth-of-type(even) {
+            background-color: #ffffff;
+        }
+        
+        .custom-table>tbody td {
+            border: 1px solid #e6e9f0;
+        }
+        
+        .card {
+            background: #ffffff;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            border: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .text-success {
+            color: #00bb42 !important;
+        }
+        
+        .text-muted {
+            color: #9fa8b9 !important;
+        }
+        
+        .custom-actions-btns {
+            margin: auto;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .custom-actions-btns .btn {
+            margin: .3rem 0 .3rem .3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex flex-col mt-2">
+        <div class="relative inline-block mx-1 text-left">
+            <div class="container">
+                <div class="row gutters">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="card">
+                            <div class="p-0 card-body">
+                                <div class="invoice-container">
+                                    <div class="invoice-header">
+                                        <!-- Row start -->
+
+                                        <!-- Row end -->
+                                        <!-- Row start -->
+
+                                        <div class="header"> <span class="text-3xl font-medium text-primary ">Rental Appliances </span>
+                                            <div class="">
+                                                <table class="inline-block mb-2">
+                                                    <tr>
+                                                        <td>G.F.8, Karmam Avenue, Opp. Surya
+                                                            <br>City, Hirabhai Tower, Maninagar,
+                                                            <br>Ahmedabad.
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="">
+                                                            Mo. 8866983464, 9512991243
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row end -->
+                                    <!-- Row start -->
+                                    <div class="row gutters">
+                                        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                                            <div class="invoice-details">
+                                                <address>
+                                                            {{order.customer.company_name}}<br>
+                                                            {{order.customer.address}}
+                                                        </address>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                                            <div class="invoice-details">
+                                                <div class="invoice-num">
+                                                    <div># {{order.id}}</div>
+                                                    <div>{{order.date|date:"d-m-Y"}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row end -->
+                                </div>
+
+                                <div class="inline-block min-w-full p-6 overflow-visible align-middle border-2 border-gray-200 shadow sm:rounded-lg">
+
+                                    <table class="min-w-full">
+
+
+                                        <thead>
+                                            <tr class="hover:bg-gray-100 bg-primary">
+
+                                                <th class="py-3 pl-4 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                                    Product Name</th>
+                                                <th class="py-3 pl-2 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                                    Quantity</th>
+                                                <th class="py-3 pl-2 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                                    Start Date</th>
+                                                <th class="py-3 pl-2 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                                    End Date</th>
+                                               
+                                                <th class="py-3 pl-2 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                                    Deposite</th>
+                                                <th class="py-3 pl-2 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                                    Total Rate</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="bg-white ">
+                                            {%for od in orderDetails %}
+                                            <tr class="hover:bg-gray-100 odd">
+                                                <td class="py-2 pl-2 whitespace-no-wrap ">
+                                                    <div class="flex items-center ">
+
+                                                        <div class="ml-4 ">
+                                                            <div class="text-sm font-normal leading-5 text-gray-900 ">
+                                                            {{od.product.name}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                <td class="px-2 py-2 whitespace-no-wrap ">
+                                                    <div class="text-sm leading-5 text-gray-900 ml-4">{{od.quantity}}</div>
+                                                </td>
+                                                <td class="py-2 pl-2 whitespace-no-wrap ">
+                                                    <div class="text-sm leading-5 text-gray-900 ">{{od.start_date|date:'d-m-Y'}}</div>
+                                                </td>
+                                                <td class="py-2 pl-2 whitespace-no-wrap ">
+                                                    <div class="text-sm leading-5 text-gray-900 ">{{od.end_date|date:'d-m-Y'}}</div>
+                                                </td>
+                                                <td class="py-2 pl-2 whitespace-no-wrap ">
+                                                    <div class="text-sm leading-5 text-gray-900 ">₹ {{od.deposit}}</div>
+                                                </td>
+                                                <td class="py-2 pl-2 whitespace-no-wrap ">
+                                                    <div class="text-sm leading-5 text-gray-900 ">₹ {{od.rent_price}}</div>
+                                                </td>
+                                            </tr>
+                                            {%endfor%}
+                                                <tr class="hover:bg-gray-100 even">
+                                                <td class="py-2 pl-2 whitespace-no-wrap">
+                                                    <div class="flex items-center ">
+                                                        <div class="ml-4 ">
+                                                            <div class="text-sm font-normal leading-5 text-gray-900 ">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+
+                                                <td class="px-10 py-2 whitespace-no-wrap ">
+                                                </td>
+                                                <td class="py-2 pl-2 whitespace-no-wrap ">
+                                                </td>
+                                                <td class="py-2 pl-2 whitespace-no-wrap ">
+
+                                                </td>
+                                                <td colspan="1">
+                                                    <p>
+                                                        Rent Price :<br> Delivery Charge :<br> Deposite:<br> Total IGST @ 18%
+                                                        <br>
+                                                    </p>
+                                                    <h5 class=" text-primary"><strong>Grand Total</strong></h5>
+                                                </td>
+
+                                                <td colspan="1">
+                                                    <p>
+                                                        ₹ {{orderDetails|totalRent}}<br> ₹ {{orderDetails|totalDeliveryCharge}}<br> ₹ {{orderDetails|totalDeposit}}
+                                                        <br>₹ {{orderDetails|getTax}}<br>
+                                                    </p>
+                                                    <h5 class="text-black"><strong>₹ {{orderDetails|total}}</strong></h5>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="hr ">Date : {{date|date:'d-m-Y'}}</p>
+
+                        <script>
+                            window.onload = function(){
+                                print()
+                            };
+                        </script> 
+</body>
+
+</html>

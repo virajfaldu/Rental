@@ -15281,8 +15281,6 @@ button:focus {
 .form-tab .form-footer {
     padding-top: .6rem;
     padding-bottom: 3rem;
-    border-bottom: .1rem solid #ebebeb;
-    margin-bottom: 2.3rem
 }
 
 .form-tab .form-footer .btn {

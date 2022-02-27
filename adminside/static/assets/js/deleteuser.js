@@ -1,11 +1,11 @@
 userDeleteBtn = document.getElementsByClassName("userDeleteBtn");
 for (let i = 0; i < userDeleteBtn.length; i++) {
-  console.log(userDeleteBtn);
   userDeleteBtn[i].addEventListener("click", (e) => {
     uid = e.target.dataset.uid;
     token = e.target.dataset.token;
     url = e.target.dataset.url;
     returnurl = e.target.dataset.return;
+    console.log(e.target.dataset.url,uid,token);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -38,7 +38,6 @@ for (let i = 0; i < userDeleteBtn.length; i++) {
 }
 declineBtn = document.getElementsByClassName("declineBtn");
 for (let i = 0; i < declineBtn.length; i++) {
-  console.log(declineBtn);
   declineBtn[i].addEventListener("click", (e) => {
     rid = e.target.dataset.rid;
     token = e.target.dataset.token;

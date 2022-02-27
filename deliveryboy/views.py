@@ -1,5 +1,4 @@
-from ast import Del
-import imp
+
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -14,7 +13,7 @@ from .forms import *
 
 # Create your views here.
 @allowed_users(['deliveryboy'])
-def home(request):
+def panel(request):
 
     deliveryboy=DeliveryBoy.objects.filter(user=request.user).first()
 

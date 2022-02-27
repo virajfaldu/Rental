@@ -1,0 +1,81 @@
+{% extends 'adminside/basic.html' %}
+{%load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+Reports
+{% endblock %}
+
+{%block body%}
+
+<div class="p-8 block">
+    Stock report
+    <form method="get" action="{%url 'reports' 'stockreport'%}" class="">
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">Category :</label>
+            {{productfilter.form.category|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">SubCategory :</label>
+            {{productfilter.form.subcategory|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">brand :</label>
+            {{productfilter.form.brand|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <button class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" type="submit">
+            Genrate
+        </button>
+    </form>
+    <br>
+    order report
+    <form method="get" action="{%url 'reports' 'orderreport'%}">
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">From date :</label>
+            {{orderfilter.form.fromdate|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">To date :</label>
+            {{orderfilter.form.todate|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <button class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" type="submit">
+            Genrate
+        </button>
+    </form>
+    <br>
+    customer report
+    <form method="get" action="{%url 'reports' 'customerreport'%}">
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">From date :</label>
+            {{customerfilter.form.fromdate|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">To date :</label>
+            {{customerfilter.form.todate|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <button class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" type="submit">
+            Genrate
+        </button>
+    </form>
+    <br>
+    deliveryboy report
+    <form method="get" action="{%url 'reports' 'deliveryboyreport'%}">
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">From date :</label>
+            {{deliveryboyfilter.form.fromdate|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <div class="inline-block mb-10 ml-2">
+            <label class="text-gray-700 dark:text-gray-200" for="id_date">To date :</label>
+            {{deliveryboyfilter.form.todate|add_class:'text-sm w-40 inline mt-2 h-8 p-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none'}}
+        </div>
+        <button class="inline ml-3 float-right text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" type="submit">
+            Genrate
+        </button>
+    </form>
+</div>   
+{%block js%}
+<script>
+
+</script>
+{% endblock %}
+{% endblock %}

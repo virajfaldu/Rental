@@ -1,0 +1,115 @@
+{%extends 'home/basic.html'%}
+{% load custom_tags %}
+{%load static%}
+
+
+{%block content%}
+
+<body>
+    <div class="page-wrapper">
+        
+        <main class="main">
+            <div class="text-center page-header" style="background-image: url('assets/images/page-header-bg.jpg')">
+                <div class="container">
+                    <h1 class="page-title text-primary">Checkout</h1>
+                </div>
+            </div>
+
+
+            <div class="page-content">
+                <div class="checkout">
+                    <div class="container">
+
+                        <!-- End .checkout-discount -->
+                        <form action="{%url 'placeOrder' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-lg-9 px-8 pl-10">
+                                    <h2 class="checkout-title">Billing Details</h2>
+                                    <!-- End .checkout-title -->
+                                    <div class="row">
+                                        <div class="col-sm-12 " style="width: full;">
+                                            <label class="checkout-title">Address *</label>
+                                            <br>
+                                            <h1 class="mb-2">{{cart.0.customer.company_address}}</h1>
+                                        </div>
+
+                                    </div>
+                                    <h2 class="checkout-title">Payment Details</h2>
+                                    <!-- End .row -->
+                                    <label>Enter Your Name *</label>
+                                    <input type="text" name="holderName" class="form-control h-14" placeholder="" required>
+                                    <label>Card Number *</label>
+                                    <input type="text" name="cardNumber" class="form-control h-14" placeholder="" required>
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>Expiry Date *</label>
+                                            <input type="date" name="date" class="form-control h-14" required>
+                                        </div>
+                                        <!-- End .col-sm-6 -->
+
+                                        <div class="col-sm-6">
+                                            <label>CVV *</label>
+                                            <input type="text" name="cvv" class="form-control h-14" required>
+                                        </div>
+                                        <!-- End .col-sm-6 -->
+                                    </div>
+                                </div>
+                                <!-- End .col-lg-9 -->
+                                <aside class="col-lg-3 mt-3">
+                                    <div class="summary">
+                                        <h3 class="summary-title">Your Order</h3>
+                                        <!-- End .summary-title -->
+
+                                        <table class="table table-summary">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               {% for c in cart %}
+                                                <tr>
+                                                    <td><a href="#">{{c.product}}</a></td>
+                                                    <td>&#x20B9; {{c|productTotal}}</td>
+                                                </tr>
+
+                                                {%endfor%}
+                                                <!-- End .summary-subtotal -->
+                                               
+                                                <tr class="summary-total">
+                                                    <td>Total:</td>
+                                                    <td>&#x20B9; {{cart|grandTotal}}</td>
+                                                </tr>
+                                                <!-- End .summary-total -->
+                                            </tbody>
+                                        </table>
+                                        <!-- End .table table-summary -->
+
+
+
+                                        <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+		                					<span class="btn-text">Place Order</span>
+		                					<span class="btn-hover-text">Proceed to Checkout</span>
+		                				</button>
+                                    </div>
+                                    <!-- End .summary -->
+                                </aside>
+                                <!-- End .col-lg-3 -->
+                            </div>
+                            <!-- End .row -->
+                        </form>
+                    </div>
+                    <!-- End .container -->
+                </div>
+                <!-- End .checkout -->
+            </div>
+            <!-- End .page-content -->
+        </main>
+        <!-- End .main -->
+
+    </div>
+</body>
+{%endblock%}

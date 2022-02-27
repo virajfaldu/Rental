@@ -21,13 +21,17 @@ class productFilter(django_filters.FilterSet):
 class customerFilter(django_filters.FilterSet):
 
     company_name=CharFilter(field_name='company_name',lookup_expr='icontains')
+    fromdate = DateFilter(field_name='user__date_joined',lookup_expr='gte',widget=DateInput(attrs={'type': 'date'}))
+    todate=DateFilter(field_name='user__date_joined',lookup_expr='lte',widget=DateInput(attrs={'type': 'date'}))
     
     class Meta:
         model=Customer
         fields=['area','state','city','user__is_active']
 
 class deliveryBoyFilter(django_filters.FilterSet):
-
+    
+    fromdate = DateFilter(field_name='user__date_joined',lookup_expr='gte',widget=DateInput(attrs={'type': 'date'}))
+    todate=DateFilter(field_name='user__date_joined',lookup_expr='lte',widget=DateInput(attrs={'type': 'date'}))
     class Meta:
         model=DeliveryBoy
         fields=['user__username','area','state','city','user__is_active']
@@ -59,4 +63,13 @@ class productHasOrderFilter(django_filters.FilterSet):
     class Meta:
         model=ProductHasOrder
         fields=['cancel_date','cancelpay']
+
+class orderReportFilter(django_filters.FilterSet):
+
+    fromdate = DateFilter(field_name='date',lookup_expr='gte',widget=DateInput(attrs={'type': 'date'}))
+    todate=DateFilter(field_name='date',lookup_expr='lte',widget=DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model=Order
+        fields=['date']
 

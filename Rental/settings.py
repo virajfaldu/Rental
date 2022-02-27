@@ -72,6 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'rentalmain.contextProcessor.general'
                 # 'adminside.context_processors.admin_processor'
             ],
         },
@@ -130,6 +131,10 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 
 USE_TZ = True
+
+# SHORT_DATE_FORMAT = 'd/m/Y'
+# DATE_FORMAT = 'd M, Y'
+# DATE_INPUT_FORMATS = ['%d/%m/%Y', ]
 
 
 # Static files (CSS, JavaScript, Images)

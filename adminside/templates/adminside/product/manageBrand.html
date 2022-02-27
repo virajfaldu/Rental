@@ -51,8 +51,12 @@ Brand
                             Name</label>
                             {{brandForm.name|add_class:'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white'}}
                             <p class="text-red-500 text-xs">{{brandForm.name.errors|striptags}}</p>
-                            
-                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label for="id_image" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-300">Image</label>
+                        {{brandForm.image|add_class:'rounded-md border-2 w-full dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'}}
+                        <p class="text-red-500 text-xs">{{brandForm.image.errors|striptags}}</p>
+                    </div>
                     <div class="mt-6">
                         <button type="submit"
                             class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
@@ -71,6 +75,7 @@ Brand
                 <thead>
                     <tr
                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">Image</th>
                         <th class="px-4 py-3">Brand</th>
                         <th class="px-4 py-3">Action</th>
                     </tr>
@@ -78,6 +83,15 @@ Brand
                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                     {%for brand in brands%}
                     <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex items-center text-sm">
+                                <div class="relative hidden w-14 h-10 mr-3 md:block">
+                                    <img class="object-contain w-full h-full" src={{brand.image.url}}
+                                        loading="lazy" />
+                                    <div class="absolute inset-0 shadow-inner" aria-hidden="true"></div>
+                                </div>
+                            </div>
+                        </td>
                         <td class="px-4 py-3 text-sm">
                             {{brand.name}}
                         </td>

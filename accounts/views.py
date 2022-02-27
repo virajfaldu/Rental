@@ -63,8 +63,9 @@ def login(request):
         user=authenticate(request,username=username,password=password)
 
         if user is not None:
-            
             auth_login(request,user)
+            if user.groups.filter(name='deliveryboy'):
+                return redirect('panel')
             return redirect('/')
 
         else:

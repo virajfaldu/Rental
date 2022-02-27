@@ -1,0 +1,190 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>deliveryboy Report</title>
+
+    <link rel="stylesheet" href="{%static 'home/assets/css/bootstrap.min.css'}">
+    <link rel="stylesheet" href="{%static 'home/assets/css/skins/skin-demo-4.css'%}">
+    <link rel="stylesheet" href="{%static 'home/assets/css/demos/demo-4.css'%}">
+    <link rel="stylesheet" href="{%static 'home/assets/style_tail.css'%}">
+    <style type="text/css" media="print">
+        @page {
+            size: auto;
+            margin: 0;
+        }
+    </style>
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        body {
+            padding: 10px;
+            width: 100%;
+        }
+
+        .main {
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .img {
+            height: 80px;
+            width: 170px;
+        }
+
+        .info {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .report-title {
+            text-align: center;
+            font-size: 24px;
+            font-family: 'Courier New', Courier, monospace;
+            color: blueviolet;
+            margin: 25px 0px;
+        }
+
+        .report-main table {
+            width: 100%;
+        }
+
+        .report-main table tr td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .product-name {
+            text-align: start !important;
+        }
+
+        .hr {
+            border-top: 2px solid black;
+            margin: 40px 0px;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body class="h-screen">
+    <div class="flex flex-col mt-2">
+        <div class="relative inline-block mx-1 text-left">
+            <div class="header"> <span class="text-3xl font-medium text-primary ">Rental Appliances </span>
+                <div class="">
+                    <table class="inline-block ">
+                        <tr>
+                            <td>20 , Madhav Mall , near ratanba school,
+                                <br>Thakkarnagar, Ahmedabad
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Mo. 7202031282
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- <p class="mt-1 hr">Date : 01/02/2022 to 12/02/2022</p> -->
+            <div
+                class="inline-block min-w-full p-4 overflow-visible align-middle border-2 border-gray-200 shadow sm:rounded-lg">
+
+                <table class="min-w-full">
+
+                    <h2 class="mb-7 text-2xl font-bold text-gray-700 ">deliveryboy Report</h2>
+
+                    <thead>
+                        <tr class="hover:bg-gray-100 bg-primary">
+
+                            <th
+                                class="py-3 pl-4 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                Id</th>
+                            <th
+                                class="py-3 pl-4 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                DOJ</th>
+                            <th
+                                class="py-3 pl-4 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                UserName</th>
+                            <th
+                                class="py-3 pl-4 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                First Name</th>
+                            <th
+                                class="py-3 pl-4 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                Last Name</th>
+                            <th
+                                class="py-3 pl-2 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                Contact No.</th>
+                            <th
+                                class="py-3 pl-2 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                City</th>
+                            <th
+                                class="py-3 pl-2 text-xs font-bold leading-4 tracking-wider text-left text-white uppercase border-b border-gray-200 ">
+                                Area</th>
+                            
+                           
+                        </tr>
+                    </thead>
+
+                    <tbody class="bg-white ">
+                        {% for boy in deliveryboy %}
+                        <tr class="hover:bg-gray-100 odd">
+                            <td class="py-2 pl-2 whitespace-no-wrap ">
+                                <div class="flex items-center ">
+                                    <div class="ml-4 ">
+                                        <div class="text-sm font-normal leading-5 text-gray-900 ">
+                                            {{boy.id}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-2 whitespace-no-wrap ">
+                                <div class="text-sm leading-5 text-gray-900 ">{{boy.user.date_joined|date:'d-m-Y'}}</div>
+                            </td>
+                            <td class="py-2 pl-5 whitespace-no-wrap ">
+                                <div class="text-sm leading-5 text-gray-900 ">{{boy.user.username}}</div>
+                            </td>
+                            <td class="py-2 pl-6 whitespace-no-wrap ">
+                                <div class="text-sm leading-5 text-gray-900 ">{{boy.user.first_name}}</div>
+                            </td>
+                            <td class="py-2 pl-6 whitespace-no-wrap ">
+                                <div class="text-sm leading-5 text-gray-900 ">{{boy.user.last_name}}</div>
+                            </td>
+                            <td class="py-2 pl-2 whitespace-no-wrap ">
+                                <div class="text-sm leading-5 text-gray-900 ">{{boy.contact}}</div>
+                            </td>
+                            <td class="py-2 whitespace-no-wrap ">
+                                <div class="text-sm leading-5 text-gray-900 ">{{boy.city}}</div>
+                            </td>
+                            <td class="py-2 whitespace-no-wrap ">
+                                <div class="text-sm leading-5 text-gray-900 ">{{boy.area}}</div>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <p class="hr">Date : {{date|date:'d-m-Y'}}</p>
+
+    <script>
+        window.onload = function(){
+            print()
+        };
+    </script> 
+
+</body>
+
+</html>

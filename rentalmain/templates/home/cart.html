@@ -1,0 +1,164 @@
+{%extends 'home/basic.html'%}
+{% load custom_tags %}
+{%load static%}
+
+{%block css%}
+<link href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'
+rel='stylesheet'>
+{%endblock%}
+
+{%block content%}
+<body>
+    <div class="page-wrapper">
+        <main class="main">
+            <div class="page-header text-center" style="background-image: url('{% static "home/assets/images/page-header-bg.jpg" %}')">
+                <div class="container">
+                    <h1 class="page-title">My Cart<span>Add More Products</span></h1>
+                </div>
+                <!-- End .container -->
+            </div>
+            <!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+                    </ol>
+                </div>
+                <!-- End .container -->
+            </nav>
+            <!-- End .breadcrumb-nav -->
+
+            <div class="page-content">
+                <div class="cart">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-9">
+                                <table class="table table-cart table-mobile">
+                                    <tbody>
+                                        {%for c in cart%}
+                                        <tr class=" gap-2 inlie-flex max-w-full mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
+                                            <div class="">
+                                                <td class=" h-1/3 pl-4 " style="width: 188px; height:150px;"><a href="{%url 'productDetail' c.product.id %}"> <img src="{{c.product.image_set.all.0.image.url}}" class="object-contain" style="width: 188px; height:150px;"></a></td>
+
+                                                <td class="w-1/4 p-4 md:p-4">
+
+                                                <a href="{%url 'productDetail' c.product.id %}"><h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{c.product.name}}</h1></a> 
+
+
+                                                    <div class=" mt-1">
+                                                        <div class="inline-block w-full py-1 align-middle lg:w-36  ">
+                                                            <input type="number" name="qtyDrop" id="qtyDrop"  value="{{c.quantity}}" min="1" max="{{c.product.quantity}}" step="1" data-decimals="0">
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                                <td class="w-1/4 p-4 md:p-4">
+                                                    <div class=" ">
+                                                        <span class="text-xl font-medium ">Rent</span>
+                                                        <p class="flex items-center ">
+                                                            <span class="mr-1 text-xl font-medium text-blue-500 " style="font-family: none; ">&#x20B9;</span>
+                                                            <span class="text-lg font-medium text-blue-500 ">{{c.rent_amount}}</span>
+
+                                                        </p>
+                                                    </div>
+                                                    <div class=" mt-1">
+                                                        <span class="text-xl font-medium ">Rental Period</span>
+                                                        <p class="flex items-center ">
+                                                            <!-- <span class="mr-1 text-xl font-medium text-blue-500 " style="font-family: none; ">&#x20B9;</span> -->
+                                                            <span class="text-lg font-medium ">{{c.start_date|date:'d/m/y'}} To {{c.end_date|date:'d/m/Y'}}</span>
+
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td class="w-1/4 p-4 md:p-4">
+                                                    <div class="mt-1 ">
+                                                        <span class="text-xl font-medium ">Refundable Deposit</span>
+                                                        <p class="flex items-center ">
+                                                            <span class="mr-1 text-xl font-medium text-blue-500 " style="font-family: none; ">&#x20B9;</span>
+                                                            <span class="text-lg font-medium text-blue-500 ">{{c.deposit}}</span>
+
+                                                        </p>
+                                                    </div>
+                                                    <div class=" mt-1">
+                                                        <span class="text-xl font-medium ">Days</span>
+                                                        <p class="flex items-center ">
+
+                                                            <span class="text-lg font-medium ">{{c.start_date|getDays:c.end_date}}</span>
+
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td class="p-4 ">
+                                                    <form action="{%url 'removeCart' c.id%}" method="post">
+                                                        {% csrf_token %}
+                                                        <button type="submit">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                                            </svg>
+                                                        </button>
+                                                    </td>
+                                                    </form>
+                                            </div>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- End .table table-wishlist -->
+                            <aside class="col-lg-3 p-3 bg-white rounded-lg shadow-lg dark:bg-gray-800" style="outline:none ;">
+                                <div class="summary summary-cart ">
+                                    <h3 class="summary-title ">Cart Summary</h3>
+                                    <!-- End .summary-title -->
+
+                                    <table class="">
+                                        <tbody>
+                                            <tr class="">
+                                                <br>
+                                                <tr class="text-2xl font-normal">
+                                                    <td class="pt-1">Rent</td>
+                                                    <td class="pl-20 pt-1">&#x20B9; {{cart|getTotalRent}}</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr class="  text-2xl font-normal ">
+                                                    <td class="pt-1">Total Deposit</td>
+                                                    <td class="pl-20 pt-1">&#x20B9; {{cart|getTotalDeposit}}</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr class="  text-2xl font-normal ">
+                                                    <td class="pt-1">Total Delivery & Pickup</td>
+                                                    <td class="pl-20 pt-1">&#x20B9; {{cart|getTotalDelivery}}</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr class="  text-2xl font-normal ">
+                                                    <td class="pt-1">Total IGST @ 18%</td>
+                                                    <td class="pl-20 pt-1">&#x20B9; {{cart|tax|floatformat}}</td>
+                                                    <td></td>
+                                                </tr>
+                                                
+                                            </tr>
+                                            <tr class="text-black text-3xl font-normal pt-5">
+                                                <td class="font-medium py-10">Total Rent Amount:</td>
+                                                <td class="pt-1 pb-1 pl-20 font-semibold text-primary">&#x20B9; {{cart|grandTotal|floatformat}}</td>
+                                            </tr>
+                                            <!-- End .summary-total -->
+                                        </tbody>
+                                    </table>
+                                    <!-- End .table table-summary -->
+
+                                    <a href="{%url 'placeOrder'%}" class="btn btn-outline-primary-2 btn-order btn-block ">PROCEED TO CHECKOUT</a>
+                                </div>
+                                <!-- End .summary -->
+
+                                <a href="{%url 'categoryDetail'%}" class="btn btn-outline-dark-2 btn-block mb-3 "><span>CONTINUE SHOPPING</span><i class="icon-refresh "></i></a>
+                            </aside>
+                            
+                    </div>
+                </div>
+            </div>
+        </main>
+        </div>
+
+</body>
+{%endblock%}
