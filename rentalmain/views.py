@@ -40,10 +40,10 @@ def home(request):
 def categoryDetail(request,pk=None):
     mAllProduct=False
     if pk==None:
-        products=Product.objects.all()
+        products=Product.objects.all().order_by('id').reverse()
         mAllProduct=True
     else:
-        products=Product.objects.filter(subcategory=pk).all()
+        products=Product.objects.filter(subcategory=pk).all().order_by('id').reverse()
     context={
         'products':products,
         'mAllProduct':mAllProduct
@@ -164,10 +164,6 @@ def placeOrder(request,pk=None):
     return render(request,'home/checkout.html',context)
     
 
-# @allowed_users(allowed_roles=['customer','admin'])
-# def checkOut(request):
-    
-
 @allowed_users(allowed_roles=['customer'])
 def requestProduct(request):
     product=request.POST['product']
@@ -178,6 +174,40 @@ def requestProduct(request):
     messages.success(request,"Request Sent Successfully")
 
     return redirect(request.META['HTTP_REFERER'])
+
+
+@notAllowed_users(roles=['deliveryboy'])
+def aboutus(request):
+    context={
+        'about':True
+    }
+    return render(request,'home/aboutus.html',context)
+
+@notAllowed_users(roles=['deliveryboy'])
+def contactus(request):
+    context={
+        'contact':True
+    }
+    return render(request,'home/contactus.html',context)
+
+@allowed_users(allowed_roles=['customer'])
+def orderHistory(request):
+    orders=Order.objects.filter(customer=request.user.customer).all()
+    context={
+        'orders':orders,
+        'orderhistory':True
+    }
+    return render(request,'home/orderhistory.html',context)
+
+@allowed_users(allowed_roles=['customer'])
+def orderView(request,oid):
+    order=Order.objects.filter(id=oid).first()
+    orderDetail=ProductHasOrder.objects.filter(order=order)
+    context={
+        'orderDetail':orderDetail,
+        'orderhistory':True
+    }
+    return render(request,'home/orderView.html',context)
 
 
 

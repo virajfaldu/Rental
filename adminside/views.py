@@ -189,7 +189,7 @@ def manageDeliveryBoy(request):
 
 def asignArea(request,pk):
     
-    deliveryboy= get_page(request,DeliveryBoy.objects.all(),10)
+    deliveryboy= get_page(request,DeliveryBoy.objects.all().order_by('id').reverse(),10)
     boy=DeliveryBoy.objects.get(id=pk)
     boyHasArea=AreaHasDeliveryBoy.objects.filter(deliveryboy=boy).all()
     if request.method=="POST":

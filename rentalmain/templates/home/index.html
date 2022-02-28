@@ -101,8 +101,8 @@
                                         <figure class="slide-image">
                                             <picture>
                                                 <source media="(max-width: 480px)"
-                                                    srcset="{%static 'home/assets/images/demos/demo-3/slider/slide-1-480w.jpg'%}">
-                                                <img src="{%static 'home/assets/images/demos/demo-3/slider/slide-1.jpg'%}"
+                                                    srcset="{%static 'home/assets/images/banners/banner.png'%}">
+                                                <img src="{%static 'home/assets/images/banners/banner.png'%}"
                                                     alt="Image Desc">
                                             </picture>
                                         </figure>
@@ -111,17 +111,17 @@
                                         <div class="intro-content">
                                             <h3 class="intro-subtitle text-primary">Daily Deals</h3>
                                             <h1 class="intro-title">
-                                                AirPods <br>Earphones
+                                                Ideapad <br>Slim
                                             </h1>
 
                                             <div class="intro-price">
                                                 <sup>Today:</sup>
                                                 <span class="text-primary">
-                                                    &#8377;247<sup>.99</sup>
+                                                    &#8377;500<sup>per day</sup>
                                                 </span>
                                             </div>
 
-                                            <a href="category.html" class="btn btn-primary btn-round">
+                                            <a href="{%url 'productDetail' 62%}" class="btn btn-primary btn-round">
                                                 <span>Click Here</span>
                                                 <i class="icon-long-arrow-right"></i>
                                             </a>
@@ -183,8 +183,8 @@
                                     <div class="banner-content">
                                         <h4 class="banner-subtitle d-lg-none d-xl-block"><a href="#">Top Product</a>
                                         </h4>
-                                        <h3 class="banner-title"><a href="#">Edifier <br>Stereo Bluetooth</a></h3>
-                                        <a href="#" class="banner-link text-primary">Shop Now<i
+                                        <h3 class="banner-title"><a href="{%url 'productDetail' 70 %}">Asus <br>Vivo Book</a></h3>
+                                        <a href="{%url 'productDetail' 70 %}" class="banner-link text-primary">Shop Now<i
                                                 class="icon-long-arrow-right"></i></a>
                                     </div>
                                 </div>
@@ -192,15 +192,14 @@
 
                                 <div class="banner mb-lg-1 mb-xl-2">
                                     <a href="#">
-                                        <img src="{%static 'home/assets/images/demos/demo-3/banners/banner-2.jpg'%}"
+                                        <img src="{%static 'home/assets/images/banners/banner-2.png'%}"
                                             alt="Banner">
                                     </a>
                                     <div class="banner-content">
                                         <h4 class="banner-subtitle d-lg-none d-xl-block"><a href="#">Clearance</a>
                                         </h4>
-                                        <h3 class="banner-title"><a href="#">GoPro - Fusion 360 <span>Save
-                                            &#8377;70</span></a></h3>
-                                        <a href="#" class="banner-link text-primary">Shop Now<i
+                                        <h3 class="banner-title"><a href="{%url 'productDetail' 63 %}">Philips Audio<span>Tower Speaker</span></a></h3>
+                                        <a href="{%url 'productDetail' 63 %}" class="banner-link text-primary">Shop Now<i
                                                 class="icon-long-arrow-right"></i></a>
                                     </div>
                                 </div>
@@ -208,16 +207,15 @@
 
                                 <div class="mb-0 banner">
                                     <a href="#">
-                                        <img src="{%static 'home/assets/images/demos/demo-3/banners/banner-3.jpg'%}"
+                                        <img src="{%static 'home/assets/images/banners/banner-3.png'%}"
                                             alt="Banner">
                                     </a>
 
                                     <div class="banner-content">
                                         <h4 class="banner-subtitle d-lg-none d-xl-block"><a href="#">Featured</a>
                                         </h4>
-                                        <h3 class="banner-title"><a href="#">Apple Watch 4 <span>Our Hottest
-                                                    Deals</span></a></h3>
-                                        <a href="#" class="banner-link text-primary">Shop Now<i
+                                        <h3 class="banner-title"><a href="{%url 'productDetail' 65 %}">Hp Desktop<span>All in one</span></a></h3>
+                                        <a href="{%url 'productDetail' 65 %}" class="banner-link text-primary">Shop Now<i
                                                 class="icon-long-arrow-right"></i></a>
                                     </div>
                                 </div>
@@ -343,7 +341,7 @@
                                 <!-- End product media-->
                                 <div class="product-body">
                                     <div class="product-cat">
-                                        <a href="#">{{product.subcategory.name}}</a>
+                                        <a href="{%url 'categoryDetail' product.subcategory.id %}">{{product.subcategory.name}}</a>
                                     </div>
                                     <h3 class="product-title"><a href="{%url 'productDetail' product.id %}">{{product.name}}</a></h3>
                                     <div class="product-price">
@@ -412,7 +410,7 @@
                                 <!-- End product media-->
                                 <div class="product-body">
                                     <div class="product-cat">
-                                        <a href="#">{{product.subcategory_idcategory.name}}</a>
+                                        <a href="{%url 'categoryDetail' product.subcategory.id %}">{{product.subcategory_idcategory.name}}</a>
                                     </div>
                                     <h3 class="product-title"><a href="product.html">{{product.name}}</a></h3>
                                     <div class="product-price">
@@ -561,12 +559,12 @@
 
                                         <div class="product-body">
                                             <div class="product-cat">
-                                                <a href="#">{{product.subcategory.name}}</a>
+                                                <a href="{%url 'categoryDetail' product.subcategory.id %}">{{product.subcategory.name}}</a>
                                             </div>
                                             <h3 class="product-title"><a href="{%url 'productDetail'  product.id %}">{{product.name}}</a></h3>
                                             <div class="product-price">
                                                 {{product.rent_per_day|floatformat}} /Day&nbsp;&nbsp;
-                                                {{product.rent_per_day|floatformat}} /Mon
+                                                {{product.rent_per_month|floatformat}} /Mon
                                             </div>
                                             <div class="ratings-container">
                                                 <div class="rating">
@@ -614,7 +612,7 @@
                                     {%if product.subcategory == cat %}
                                     <div class="product product-2">
                                         <figure class="product-media">
-                                            <a href="product.html">
+                                            <a href="{%url 'productDetail' product.id %}">
                                                 <img src="{{product.image_set.all.0.image.url}}" alt="Product image"
                                                     style="height:297px; width:297;" class="object-contain bg-white">
                                                 <img src="{{product.image_set.all.1.image.url}}" alt="Product image"
@@ -629,12 +627,12 @@
                                         <!-- End .product-media -->
                                         <div class="product-body">
                                             <div class="product-cat">
-                                                <a href="#">{{product.subcategory.name}}</a>
+                                                <a href="{%url 'categoryDetail' product.subcategory.id %}">{{product.subcategory.name}}</a>
                                             </div>
-                                            <h3 class="product-title"><a href="product.html">{{product.name}}</a></h3>
+                                            <h3 class="product-title"><a href="{%url 'productDetail'  product.id %}">{{product.name}}</a></h3>
                                             <div class="product-price">
                                                 {{product.rent_per_day|floatformat}} /Day&nbsp;&nbsp;
-                                                {{product.rent_per_day|floatformat}} /Mon
+                                                {{product.rent_per_month|floatformat}} /Mon
                                             </div>
                                             <div class="ratings-container">
                                                 <div class="ratings">

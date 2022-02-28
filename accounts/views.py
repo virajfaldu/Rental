@@ -66,6 +66,8 @@ def login(request):
             auth_login(request,user)
             if user.groups.filter(name='deliveryboy'):
                 return redirect('panel')
+            if user.groups.filter(name='admin'):
+                return redirect('adminpanel')
             return redirect('/')
 
         else:

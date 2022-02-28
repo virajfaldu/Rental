@@ -7,7 +7,8 @@ from django.forms import DateInput
 
 
 class productFilter(django_filters.FilterSet):
-    
+    name=CharFilter(field_name='name',lookup_expr='icontains')
+
     category = Category.objects.filter(subcategory_idcategory=None).all()
     subCategory = Category.objects.exclude(subcategory_idcategory=None).all()
 
@@ -16,7 +17,7 @@ class productFilter(django_filters.FilterSet):
 
     class Meta:
         model=Product
-        fields=['name','brand','category']
+        fields=['name','brand','category','subcategory']
 
 class customerFilter(django_filters.FilterSet):
 
@@ -30,6 +31,7 @@ class customerFilter(django_filters.FilterSet):
 
 class deliveryBoyFilter(django_filters.FilterSet):
     
+    user__username=CharFilter(field_name='user__username',lookup_expr='icontains')
     fromdate = DateFilter(field_name='user__date_joined',lookup_expr='gte',widget=DateInput(attrs={'type': 'date'}))
     todate=DateFilter(field_name='user__date_joined',lookup_expr='lte',widget=DateInput(attrs={'type': 'date'}))
     class Meta:

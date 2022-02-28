@@ -1,0 +1,213 @@
+{%extends 'home/basic.html'%}
+{% load custom_tags %}
+{%load static%}
+{%block css%}
+
+<style>
+    #progressbar {
+        margin-bottom: 30px;
+        overflow: hidden;
+        color: #455A64;
+        padding-left: 0px;
+        margin-top: 30px
+    }
+
+    #progressbar li {
+        list-style-type: none;
+        font-size: 13px;
+        width: 20%;
+        float: left;
+        position: relative;
+        font-weight: 400
+    }
+
+    #progressbar .step0:before {
+        font-family: FontAwesome;
+        content: "\f10c";
+        color: #fff
+    }
+
+    #progressbar li:before {
+        width: 40px;
+        height: 40px;
+        line-height: 45px;
+        display: block;
+        font-size: 20px;
+        background: rgb(149, 194, 240);
+        border-radius: 50%;
+        margin: auto;
+        padding: 0px
+    }
+
+    #progressbar li:after {
+        content: '';
+        width: 100%;
+        height: 12px;
+        background: rgb(149, 194, 240);
+        position: absolute;
+        left: 0;
+        top: 16px;
+        z-index: -1
+    }
+
+    #progressbar li:last-child:after {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        position: absolute;
+        left: -50%
+    }
+
+    #progressbar li:nth-child(2):after,
+    #progressbar li:nth-child(3):after,
+    #progressbar li:nth-child(4):after {
+        left: -50%
+    }
+
+    #progressbar li:first-child:after {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        position: absolute;
+        left: 50%
+    }
+
+    #progressbar li:last-child:after {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px
+    }
+
+    #progressbar li:first-child:after {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px
+    }
+
+    #progressbar li.active:before,
+    #progressbar li.active:after {
+        background: #39f
+    }
+
+    #progressbar li.active:before {
+        font-family: FontAwesome;
+        content: "\f00c"
+    }
+
+    .icon {
+        width: 60px;
+        height: 60px;
+        margin-right: 15px
+    }
+
+    .icon-content {
+        padding-bottom: 20px
+    }
+
+    @media screen and (max-width: 992px) {
+        .icon-content {
+            width: 50%
+        }
+    }
+
+    .card-stepper {
+        z-index: 0
+    }
+</style>
+{%endblock%}
+
+{%block content%}
+<body>
+    <div class="page-wrapper">
+
+        <section class="vh-100 gradient-custom-2">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="shadow col-md-10 col-lg-8 col-xl-6">
+                        <div class="card card-stepper" style="border-radius: 16px;">
+                            <div class="p-4 card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="mb-1 text-muted"> Order ID <span
+                                                class="font-semibold text-body">1222528743</span></p>
+                                        <p class="mb-0 text-muted"> Place On <span
+                                                class="font-semibold text-body">12,March 2019</span> </p>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="p-4 card-body">
+                                <div class="flex-row pb-2 mb-2 d-flex">
+                                    <div class="flex-fill">
+                                        <h5 class="text-2xl font-bold">Headphones Bose 35 II</h5>
+                                        <p class="text-muted"> Qt: 1 item</p>
+                                        <h4 class="mb-1 text-2xl font-semibold"> &#x20B9; 299 <span
+                                                class="small text-muted"> via (COD) </span></h4>
+                                        <p class="text-muted">Tracking Status on: <span
+                                                class="font-medium text-muted">11:30pm</span></p>
+                                        <p class="font-medium text-muted"> Today</p>
+                                    </div>
+                                    <div>
+                                        <img class="align-self-center img-fluid"
+                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/6.webp"
+                                            width="250">
+                                    </div>
+                                </div>
+                                <ul id="progressbar-1" class="px-0 pt-0 pb-2 mx-0 mt-0 mb-1">
+                                    <div class="row d-flex justify-content-center">
+                                        <div class="col-12">
+                                            <ul id="progressbar" class="text-center">
+                                                <li class=" active step0"><span class="font-semibold">
+                                                        Order<br>Pending</span></li>
+                                                <li class="active step0"><span class="font-semibold">
+                                                        Order<br>Confirmed</span></li>
+                                                <li class="active step0"><span class="font-semibold"> Order<br>On The
+                                                        Way</span></li>
+                                                <li class="active step0"><span class="font-semibold">
+                                                        Order<br>Delivered</span></li>
+                                                <li class="step0"><span class="font-semibold"> Order<br>Picked Up</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+
+                            </div>
+
+                            </ul>
+                        </div>
+                        <div class="p-4 card-footer odd:">
+                            <div class="d -flex justify-content-between ">
+
+                                <p class="mb-0 text-muted "><span class="mr-4 font-semibold">Total</span><span
+                                        style="font-family: none;">&#x20B9;</span>898.00</p>
+                            </div>
+
+                            <div class=" d-flex justify-content-between">
+
+                                <p class="mb-0 text-muted "><span class="mr-4 font-semibold">Discount</span>
+                                    &#x20B9;9.00</p>
+                            </div>
+
+                            <div class="d-flex justify-content-between ">
+
+                                <p class="mb-0 text-muted "><span class="mr-4 font-semibold">GST 18%</span> 123</p>
+                            </div>
+
+                            <div class="mb-0 d-flex justify-content-between ">
+
+                                <p class="mb-0 text-muted "><span class="mr-4 font-semibold">Delivery Charges</span>
+                                    Free</p>
+                            </div>
+                        </div>
+                        <div class="px-4 py-2 mb-2 border-0 card-footer "
+                            style="background-color:#39f; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; ">
+                            <h5 class="mb-0 text-white d-flex align-items-center justify-content-end text-uppercase ">
+                                Total paid: <span class="pl-2 mb-0 text-4xl font-semibold ms-2 "> &#x20B9; 1040</span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </div>
+    </section>
+    </div>
+</body>
+{%endblock%}

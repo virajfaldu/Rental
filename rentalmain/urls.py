@@ -22,6 +22,11 @@ urlpatterns=[
     path('quickview/<int:pk>',views.quickView,name="quickView"),
 
     path('placeOrder',views.placeOrder,name="placeOrder"),
-    # path('placeorder/checkout',views.checkOut,name="checkOut"),
+
+    path('aboutus',views.aboutus,name="aboutus"),
+    path('contactus',views.contactus,name="contactus"),
+
+    path('orderhistory',views.orderHistory,name="orderHistory"),
+    path('orderhistory/orderview/<int:oid>',views.orderView,name="orderView"),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

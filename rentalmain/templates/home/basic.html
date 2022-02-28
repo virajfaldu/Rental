@@ -176,7 +176,7 @@
 
                                 <div class="dropdown-cart-action">
                                     <a href="{% url 'cartView' %}" class="btn btn-primary">View Cart</a>
-                                    <a href="checkout.html" class="btn btn-outline-primary-2"><span>Checkout</span><i
+                                    <a href="{%url 'placeOrder'%}" class="btn btn-outline-primary-2"><span>Checkout</span><i
                                             class="icon-long-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -236,13 +236,23 @@
                                 <li class="megamenu-container {%if mAllProduct %} active {% endif %}">
                                     <a href="{%url 'categoryDetail'%}" class="">All Products</a>
                                 </li>
-                                {% if request.user|has_group:"customer" %} 
+                                {% if user.customer.user %} 
                                 <li class="megamenu-container">
                                     <a href="#signin-modal" data-toggle="modal" class="">Request Product</a>
                                 </li>
                                 {%endif%}
-
-                                {%if user.admin.user != None %}
+                                <li class="megamenu-container {%if about %}active{%endif%}" >
+                                    <a href="{%url 'aboutus'%}" class="">About Us</a>
+                                </li>
+                                <li class="megamenu-container {%if contact %}active{%endif%}" >
+                                    <a href="{%url 'contactus'%}" class="">Contact Us</a>
+                                </li>
+                                {% if user.customer.user %} 
+                                <li class="megamenu-container {%if orderhistory %}active{%endif%}" >
+                                    <a href="{%url 'orderHistory'%}" class="">My Order</a>
+                                </li>
+                                {%endif%}
+                                {%if user.admin.user %}
                                 <li class="megamenu-container" >
                                     <a href="{%url 'adminpanel'%}" class="">Admin Panel</a>
                                 </li>
