@@ -1,6 +1,10 @@
+import imp
+
+from django.conf import settings
 from accounts.decorators import notAllowed_users
 from accounts.models import *
 from django.shortcuts import render
+import math
 
 # @notAllowed_users(roles=['deliveryboy'])
 def general(request):
@@ -17,7 +21,7 @@ def general(request):
         for c in cart:
             totalAmount+=c.rent_amount+c.deposit+c.delivery_pickup_charges
 
-        totalAmount=totalAmount+((totalAmount*18)/100)
+        totalAmount=math.floor(totalAmount+((totalAmount*18)/100))
 
         context = {
             'category': category,
@@ -31,7 +35,7 @@ def general(request):
     context = {
         'category': category,
         'subCategory': subCategory,
-        
+        'siteUrl':settings.SITE_URL
     }
 
     return context

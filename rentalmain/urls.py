@@ -29,4 +29,6 @@ urlpatterns=[
     path('orderhistory',views.orderHistory,name="orderHistory"),
     path('orderhistory/orderview/<int:oid>',views.orderView,name="orderView"),
 
+    path('orderhistory/cancellation/<int:odid>',views.cancellation,name="cancellation"),
+
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

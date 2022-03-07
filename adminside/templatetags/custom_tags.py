@@ -38,11 +38,11 @@ def productTotal(object):
 
 @register.filter
 def getTax(cart):
-    return math.floor((totalDeliveryCharge(cart)+totalDeposit(cart)+totalRent(cart))*18)/100
+    return math.floor(((totalDeliveryCharge(cart)+totalDeposit(cart)+totalRent(cart))*18)/100)
 
 @register.filter
 def total(object):
-    tot_charge=totalDeliveryCharge(object)+totalDeposit(object)+totalRent(object)+getTax(object)
+    tot_charge=math.floor(totalDeliveryCharge(object)+totalDeposit(object)+totalRent(object)+getTax(object))
     return tot_charge
 
 # --------------for cancel order--------------
@@ -72,8 +72,12 @@ def ctotalDeliveryCharge(object):
     return tot_charge
 
 @register.filter
+def cTax(object):
+    tot_tax=((ctotalDeliveryCharge(object)+ctotalDeposit(object)+ctotalRent(object))*18)/100
+    return tot_tax
+@register.filter
 def moneyToPay(object):
-    tot_charge=ctotalDeliveryCharge(object)+ctotalDeposit(object)+ctotalRent(object)
+    tot_charge=ctotalDeliveryCharge(object)+ctotalDeposit(object)+ctotalRent(object)+cTax(object)
     return tot_charge
 
 @register.filter
@@ -138,12 +142,12 @@ def getTotalDelivery(cart):
 
 @register.filter
 def tax(cart):
-    return math.floor((getTotalDelivery(cart)+getTotalDeposit(cart)+getTotalRent(cart))*18)/100
+    return math.floor(((getTotalDelivery(cart)+getTotalDeposit(cart)+getTotalRent(cart))*18)/100)
 
 @register.filter
 def grandTotal(cart):
 
-    return getTotalDelivery(cart)+getTotalDeposit(cart)+getTotalRent(cart)+tax(cart)
+    return math.floor(getTotalDelivery(cart)+getTotalDeposit(cart)+getTotalRent(cart)+tax(cart))
 
 @register.filter
 def getDays(sDate,eDate):

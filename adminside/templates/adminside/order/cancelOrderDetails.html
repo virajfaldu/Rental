@@ -87,6 +87,8 @@ cancel OrderDetails
             <div class="border-b border-gray-300 py-3 font-bold text-right" id="deliveryCharge">&#8377;{{orderDetails|ctotalDeliveryCharge}}</div>
             <div class="border-b border-gray-300 py-3">deposit</div>
             <div class="border-b border-gray-300 py-3 font-bold text-right" id="deposit">&#8377;{{orderDetails|ctotalDeposit}}</div>
+            <div class="border-b border-gray-300 py-3">IGST @18%</div>
+            <div class="border-b border-gray-300 py-3 font-bold text-right" id="deposit">&#8377;{{orderDetails|cTax}}</div>
             <div class="py-3 font-bold text-gray-600">Money To Pay</div>
             <div class="py-3 text-right font-bold text-purple-700">&#8377;{{orderDetails|moneyToPay}}</div>
         </div>

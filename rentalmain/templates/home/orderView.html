@@ -1,213 +1,125 @@
 {%extends 'home/basic.html'%}
 {% load custom_tags %}
 {%load static%}
-{%block css%}
 
-<style>
-    #progressbar {
-        margin-bottom: 30px;
-        overflow: hidden;
-        color: #455A64;
-        padding-left: 0px;
-        margin-top: 30px
-    }
-
-    #progressbar li {
-        list-style-type: none;
-        font-size: 13px;
-        width: 20%;
-        float: left;
-        position: relative;
-        font-weight: 400
-    }
-
-    #progressbar .step0:before {
-        font-family: FontAwesome;
-        content: "\f10c";
-        color: #fff
-    }
-
-    #progressbar li:before {
-        width: 40px;
-        height: 40px;
-        line-height: 45px;
-        display: block;
-        font-size: 20px;
-        background: rgb(149, 194, 240);
-        border-radius: 50%;
-        margin: auto;
-        padding: 0px
-    }
-
-    #progressbar li:after {
-        content: '';
-        width: 100%;
-        height: 12px;
-        background: rgb(149, 194, 240);
-        position: absolute;
-        left: 0;
-        top: 16px;
-        z-index: -1
-    }
-
-    #progressbar li:last-child:after {
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        position: absolute;
-        left: -50%
-    }
-
-    #progressbar li:nth-child(2):after,
-    #progressbar li:nth-child(3):after,
-    #progressbar li:nth-child(4):after {
-        left: -50%
-    }
-
-    #progressbar li:first-child:after {
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-        position: absolute;
-        left: 50%
-    }
-
-    #progressbar li:last-child:after {
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px
-    }
-
-    #progressbar li:first-child:after {
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px
-    }
-
-    #progressbar li.active:before,
-    #progressbar li.active:after {
-        background: #39f
-    }
-
-    #progressbar li.active:before {
-        font-family: FontAwesome;
-        content: "\f00c"
-    }
-
-    .icon {
-        width: 60px;
-        height: 60px;
-        margin-right: 15px
-    }
-
-    .icon-content {
-        padding-bottom: 20px
-    }
-
-    @media screen and (max-width: 992px) {
-        .icon-content {
-            width: 50%
-        }
-    }
-
-    .card-stepper {
-        z-index: 0
-    }
-</style>
-{%endblock%}
-
-{%block content%}
+{%block content%} 
 <body>
-    <div class="page-wrapper">
-
-        <section class="vh-100 gradient-custom-2">
+        <section class="h-100 gradient-custom">
             <div class="container py-5 h-100">
                 <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div class="shadow col-md-10 col-lg-8 col-xl-6">
-                        <div class="card card-stepper" style="border-radius: 16px;">
-                            <div class="p-4 card-header">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="mb-1 text-muted"> Order ID <span
-                                                class="font-semibold text-body">1222528743</span></p>
-                                        <p class="mb-0 text-muted"> Place On <span
-                                                class="font-semibold text-body">12,March 2019</span> </p>
-                                    </div>
-
-                                </div>
+                    <div class="col-lg-10 col-xl-8">
+                        <div class="shadow card" style="border-radius: 10px;">
+                            <div class="px-4 py-5 card-header">
+                                <h5 class="mb-0 text-muted">Thanks for your Order, <span style="color: #39f;">{{order.customer}}</span>!</h5>
                             </div>
                             <div class="p-4 card-body">
-                                <div class="flex-row pb-2 mb-2 d-flex">
-                                    <div class="flex-fill">
-                                        <h5 class="text-2xl font-bold">Headphones Bose 35 II</h5>
-                                        <p class="text-muted"> Qt: 1 item</p>
-                                        <h4 class="mb-1 text-2xl font-semibold"> &#x20B9; 299 <span
-                                                class="small text-muted"> via (COD) </span></h4>
-                                        <p class="text-muted">Tracking Status on: <span
-                                                class="font-medium text-muted">11:30pm</span></p>
-                                        <p class="font-medium text-muted"> Today</p>
-                                    </div>
-                                    <div>
-                                        <img class="align-self-center img-fluid"
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/6.webp"
-                                            width="250">
-                                    </div>
-                                </div>
-                                <ul id="progressbar-1" class="px-0 pt-0 pb-2 mx-0 mt-0 mb-1">
-                                    <div class="row d-flex justify-content-center">
-                                        <div class="col-12">
-                                            <ul id="progressbar" class="text-center">
-                                                <li class=" active step0"><span class="font-semibold">
-                                                        Order<br>Pending</span></li>
-                                                <li class="active step0"><span class="font-semibold">
-                                                        Order<br>Confirmed</span></li>
-                                                <li class="active step0"><span class="font-semibold"> Order<br>On The
-                                                        Way</span></li>
-                                                <li class="active step0"><span class="font-semibold">
-                                                        Order<br>Delivered</span></li>
-                                                <li class="step0"><span class="font-semibold"> Order<br>Picked Up</span>
-                                                </li>
-                                            </ul>
+                                {% for od in orderDetail %}
+                                <div class="mb-4 border card shadow-0">
+                                    <div class="card-body">
+                                        <div class="row flex justify-between">
+                                            <div class="col-md-2 pl-5">
+                                                <img src="{{od.product.image_set.all.0.image.url}}" style="height: 100px;" class="object-contain img-fluid">
+                                            </div>
+                                            <div class="text-left col-md-2 d-flex justify-content-center align-items-center">
+                                                <p class="mb-0 font-semibold">{{od.product.name|truncatechars:35}}</p>
+                                            </div>
+
+                                            <div class="p-2 pl-4 ml-6">
+                                                <span class="mr-2 text-xl font-medium ">Rent</span>
+                                                <p class="flex items-center mb-1 ">
+                                                    <span class="mr-1 text-xl font-medium text-blue-500 " style="font-family: none; ">&#x20B9;</span>
+                                                    <span class="text-lg font-medium text-blue-500 ">{{od.rent_price}}</span>
+
+                                                </p>
+
+                                                <span class="pt-4 mr-2 text-xl font-medium">Refundable Deposit</span>
+                                                <p class="flex items-center ">
+                                                    <span class="mr-1 text-xl font-medium text-blue-500 " style="font-family: none; ">&#x20B9;</span>
+                                                    <span class="text-lg font-medium text-blue-500 ">{{od.deposit}} /Unit</span></p>
+
+
+                                            </div>
+                                            <div class="p-2 pl-4 ml-6">
+
+                                                <span class="pt-2 mt-2 text-xl font-medium">Delivery Charges</span>
+                                                <p class="flex items-center mb-1 ">
+                                                    <span class="mr-1 text-xl font-medium text-blue-500 " style="font-family: none; ">&#x20B9;</span>
+                                                    <span class="text-lg font-medium text-blue-500 ">{{od.delivery_pickup_charge}}/Unit</span>
+
+                                                </p> <span class="pt-4 mr-2 text-xl font-medium">Rental Period</span>
+                                                <p class="flex items-center ">
+                                                    <span class="text-lg font-medium ">From {{od.start_date|date:"d-m-y"}} TO {{od.end_date|date:"d-m-y"}}</span>
+                                                </p>
+                                            </div>
+                                            <div class="p-2 pl-4 ml-6 w-36">
+                                                <span class="pt-2 mt-2 text-xl font-medium">QTY</span>
+                                                <p class="flex items-center mb-1 ml-3">
+                                                    <span class="text-lg font-medium "><b>{{od.quantity}}</b></span>
+                                                </p>
+                                                {%if od.status.status != "cancelled" and od.status.status != "on the way" %}
+                                                <a class="-ml-4 font-bold text-danger" href="{%url 'cancellation' od.id %}">Cancel</a>
+                                                {%endif%}
+                                            </div>
                                         </div>
 
+                                        <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-2">
+                                                <p class="mb-0 text-muted small">Track Order</p>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="progress" style="height: 6px; border-radius: 16px;">
+                                                    <div class="progress-bar" role="progressbar"
+                                                    {% if od.status.status == "pending"%} style="width: 8%; border-radius: 16px; background-color: #39f ;" {%endif%}
+                                                    {% if od.status.status == "confirmed"%} style="width: 25%; border-radius: 16px; background-color: #39f ;" {%endif%}
+                                                    {% if od.status.status == "cancelled"%} style="width: 42%; border-radius: 16px; background-color: #39f ;" {%endif%}
+                                                    {% if od.status.status == "on the way"%} style="width: 59%; border-radius: 16px; background-color: #39f ;" {%endif%}
+                                                    {% if od.status.status == "delivered"%} style="width: 75%; border-radius: 16px; background-color: #39f ;" {%endif%}
+                                                    {% if od.status.status == "pickedup"%} style="width: 100%; border-radius: 16px; background-color: #39f ;" {%endif%}
+                                                    
+                                                    aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="mb-1 d-flex justify-content-around">
+                                                    <p class="mt-1 mb-0 text-muted small ms-xl-5">Pending</p>
+                                                    <p class="mt-1 mb-0 text-muted small ms-xl-5">Confirmed</p>
+                                                    <p class="mt-1 mb-0 text-muted small ms-xl-5">Cancelled</p>
+                                                    <p class="mt-1 mb-0 text-muted small ms-xl-5">On The Way</p>
+                                                    <p class="mt-1 mb-0 text-muted small ms-xl-5">Delivered</p>
+                                                    <p class="mt-1 mb-0 text-muted small ms-xl-5">Picked Up</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
+                                {%endfor%}
+                               
+                                <div class="pt-2 d-flex justify-content-between">
+                                    <p class="mb-0 text-3xl font-semibold text-gray-700 ">Order Details</p>
+                                    <p class="mb-0 text-muted"><span class="font-semibold me-4"></span> &#x20B9;</p>
+                                </div>
 
+                                <div class="pt-2 d-flex justify-content-between">
+                                    <p class="mb-0 text-muted">Invoice Number : 788152</p>
+                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">Total Rent </span>&#x20B9;{{orderDetail|totalRent}}</p>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0 text-muted">Invoice Date : 22 Dec,2019</p>
+                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">GST 18%</span> 123</p>
+                                </div>
+
+                                <div class="mb-5 d-flex justify-content-between">
+                                    <p class="mb-0 text-muted">Recepits Voucher : 18KU-62IIK</p>
+                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">Delivery Charges</span> {{orderDetail|totalRent}}</p>
+                                </div>
                             </div>
-
-                            </ul>
-                        </div>
-                        <div class="p-4 card-footer odd:">
-                            <div class="d -flex justify-content-between ">
-
-                                <p class="mb-0 text-muted "><span class="mr-4 font-semibold">Total</span><span
-                                        style="font-family: none;">&#x20B9;</span>898.00</p>
+                            <div class="py-4 ml-0 border card-footer" style="background-color:  #39f; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                                <p class="mb-0 text-white d-flex align-items-center justify-content-end text-uppercase">Total paid: <span class="pl-2 mb-0 h5 ms-2 text-white">&#x20B9;{{order.tot_amount}}</span></p>
                             </div>
-
-                            <div class=" d-flex justify-content-between">
-
-                                <p class="mb-0 text-muted "><span class="mr-4 font-semibold">Discount</span>
-                                    &#x20B9;9.00</p>
-                            </div>
-
-                            <div class="d-flex justify-content-between ">
-
-                                <p class="mb-0 text-muted "><span class="mr-4 font-semibold">GST 18%</span> 123</p>
-                            </div>
-
-                            <div class="mb-0 d-flex justify-content-between ">
-
-                                <p class="mb-0 text-muted "><span class="mr-4 font-semibold">Delivery Charges</span>
-                                    Free</p>
-                            </div>
-                        </div>
-                        <div class="px-4 py-2 mb-2 border-0 card-footer "
-                            style="background-color:#39f; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; ">
-                            <h5 class="mb-0 text-white d-flex align-items-center justify-content-end text-uppercase ">
-                                Total paid: <span class="pl-2 mb-0 text-4xl font-semibold ms-2 "> &#x20B9; 1040</span>
-                            </h5>
                         </div>
                     </div>
                 </div>
             </div>
-    </div>
-    </div>
-    </section>
-    </div>
+        </section>
 </body>
 {%endblock%}

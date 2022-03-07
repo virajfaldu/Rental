@@ -1,3 +1,4 @@
+import imp
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
@@ -5,6 +6,7 @@ import datetime
 from accounts.models import *
 from accounts.decorators import notAllowed_users,allowed_users
 from adminside.views import invoice
+import math
 
 # Create your views here.
 
@@ -85,7 +87,6 @@ def addToCart(request,pk):
         qty=request.POST['qty']
 
     rent_amount=int(request.POST['amount'])
-    print(rent_amount)
     startDate=datetime.datetime.strptime(request.POST['startDate'],'%d/%m/%Y').date()
     endDate=datetime.datetime.strptime(request.POST['endDate'],'%d/%m/%Y').date()
 
@@ -95,8 +96,6 @@ def addToCart(request,pk):
         if c.product==product:
             if c.start_date==startDate and c.end_date==endDate:
                 c.quantity=qty+c.quantity
-                print(c.quantity)
-                print(rent_amount)
                 c.rent_amount=c.quantity*(rent_amount/qty)
                 c.deposit=c.quantity*product.deposit
                 c.delivery_pickup_charges=c.quantity*product.delivery_pickup_charges
@@ -146,7 +145,7 @@ def placeOrder(request,pk=None):
             product=Product.objects.filter(id=c.product.id).first()
             product.quantity=product.quantity-c.quantity
             product.save()
-            totalAmount+=(((c.rent_amount+c.deposit+c.delivery_pickup_charges)*18)/100)+(c.rent_amount+c.deposit+c.delivery_pickup_charges)
+            totalAmount+=math.floor((((c.rent_amount+c.deposit+c.delivery_pickup_charges)*18)/100)+(c.rent_amount+c.deposit+c.delivery_pickup_charges))
         order=Order.objects.create(date=datetime.datetime.now(),tot_amount=totalAmount,customer=request.user.customer)
 
         for c in cart:
@@ -204,12 +203,35 @@ def orderView(request,oid):
     order=Order.objects.filter(id=oid).first()
     orderDetail=ProductHasOrder.objects.filter(order=order)
     context={
+        'order':order,
         'orderDetail':orderDetail,
         'orderhistory':True
     }
     return render(request,'home/orderView.html',context)
 
+@allowed_users(allowed_roles=['customer'])
+def cancellation(request,odid):
 
+    status=OrderStatus.objects.filter(status="cancelled").first()
+    orderDetails = ProductHasOrder.objects.get(id=odid)
+    product=Product.objects.filter(id=orderDetails.product.id).first()
+    order=Order.objects.filter(id=orderDetails.order.id).first()
 
+    orderDetails.status=status
+    
+    orderDetails.cancel_date=datetime.datetime.now()
+    orderDetails.save()
 
+    delivery=DeliveryPickup.objects.filter(order=orderDetails)
+    if delivery!=None:
+        for d in delivery:
+            d.delete()
 
+    order.tot_amount=order.tot_amount-((orderDetails.rent_price+orderDetails.deposit+orderDetails.delivery_pickup_charge)+(((orderDetails.rent_price+orderDetails.deposit+orderDetails.delivery_pickup_charge)*18)/100))
+    order.save()
+
+    product.quantity+=orderDetails.quantity
+    product.save()
+    messages.success(request, "Order has been cancelled")
+
+    return redirect(request.META['HTTP_REFERER'])

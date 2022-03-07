@@ -635,7 +635,7 @@ def changeStatus(request):
             for d in delivery:
                 d.delete()
   
-        order.tot_amount=order.tot_amount-orderDetails.rent_price-orderDetails.deposit-orderDetails.delivery_pickup_charge
+        order.tot_amount=order.tot_amount-(((orderDetails.rent_price+orderDetails.deposit+orderDetails.delivery_pickup_charge)*18)/100)
         order.save()
 
         product.quantity+=orderDetails.quantity
@@ -866,7 +866,7 @@ def acceptProductRq(request,pk):
             RQ.status="accepted"
             RQ.save()
 
-            template=render_to_string('adminside/email/acceptProduct.html',{'name':RQ.customer.user.username})
+            template=render_to_string('adminside/email/acceptProduct.html',{'name':RQ.customer.user.username,'pk':pro.id,'siteUrl':settings.SITE_URL})
             sendEmail(request,RQ.customer.user,template)
 
             messages.success(request, "Product Added Successfully")
@@ -890,7 +890,7 @@ def declineProductRq(request,pk):
     RQ.status="declined"
     RQ.save()
 
-    template=render_to_string('adminside/email/declineProduct.html',{'name':RQ.customer.user.username})
+    template=render_to_string('adminside/email/declineProduct.html',{'name':RQ.customer.user.username,'siteUrl':settings.SITE_URL})
     sendEmail(request,RQ.customer.user,template)
 
     messages.success(request, "Record Saved Sucessfully")
