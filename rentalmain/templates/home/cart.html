@@ -47,11 +47,13 @@ rel='stylesheet'>
                                                 <a href="{%url 'productDetail' c.product.id %}"><h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{c.product.name}}</h1></a> 
 
 
-                                                    <div class=" mt-1">
+                                                    <form class=" mt-1" action="{%url 'updateQty' c.id %}" method="POST">
+                                                        {% csrf_token %}
                                                         <div class="inline-block w-full py-1 align-middle lg:w-36  ">
-                                                            <input type="number" name="qtyDrop" id="qtyDrop"  value="{{c.quantity}}" min="1" max="{{c.product.quantity}}" step="1" data-decimals="0">
-                                                        </div>
-                                                    </div>
+                                                            <input type="number" name="updateQtyButton" id="qtyDrop"  value="{{c.quantity}}" min="1" max="{{c.product.quantity}}" step="1" data-decimals="0">
+                                                        </div><br>
+                                                        <button class="mt-1 text-blue-400" type="submit">Update Qty</button>
+                                                    </form>
 
                                                 </td>
                                                 <td class="w-1/4 p-4 md:p-4">

@@ -1,4 +1,5 @@
 import imp
+from itertools import product
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
@@ -7,6 +8,8 @@ from accounts.models import *
 from accounts.decorators import notAllowed_users,allowed_users
 from adminside.views import invoice
 import math
+import json
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -136,6 +139,22 @@ def removeCart(request, pk):
     return redirect(request.META['HTTP_REFERER'])
 
 @allowed_users(allowed_roles=['customer'])
+def updateQty(request, pk):
+
+    try:
+        cart=Cart.objects.filter(id=pk).first()
+        qty=int(request.POST.get('updateQtyButton'))
+
+        cart.rent_amount=(cart.rent_amount/cart.quantity)*qty
+        cart.deposit=(cart.deposit/cart.quantity)*qty
+        cart.delivery_pickup_charges=(cart.delivery_pickup_charges/cart.quantity)*qty
+        cart.quantity=qty
+        cart.save()
+    except Exception:
+        messages.warning(request,"Something Went To Wrong")
+        return redirect(request.META['HTTP_REFERER'])
+
+@allowed_users(allowed_roles=['customer'])
 def placeOrder(request,pk=None):
 
     cart=Cart.objects.filter(customer=request.user.customer).all()
@@ -211,9 +230,10 @@ def orderView(request,oid):
 
 @allowed_users(allowed_roles=['customer'])
 def cancellation(request,odid):
-
+    data = json.loads(request.body)
     status=OrderStatus.objects.filter(status="cancelled").first()
-    orderDetails = ProductHasOrder.objects.get(id=odid)
+    
+    orderDetails = ProductHasOrder.objects.get(id=data['oid'])
     product=Product.objects.filter(id=orderDetails.product.id).first()
     order=Order.objects.filter(id=orderDetails.order.id).first()
 
@@ -233,5 +253,7 @@ def cancellation(request,odid):
     product.quantity+=orderDetails.quantity
     product.save()
     messages.success(request, "Order has been cancelled")
-
-    return redirect(request.META['HTTP_REFERER'])
+    context = {
+                'success': True
+    }
+    return JsonResponse(context)

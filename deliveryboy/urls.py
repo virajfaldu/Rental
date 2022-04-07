@@ -14,5 +14,7 @@ urlpatterns=[
     path('profile',views.boyProfile,name="boyProfile"),
     path('profile/imageUpload',views.imgUpload,name="imgUpload"),
 
+    path('productReview/<str:user>/<str:oid>',views.productReview,name="productReview"),
+    path('productReview/addReview',views.addReview,name="addReview"),
     
 ]

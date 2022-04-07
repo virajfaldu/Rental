@@ -18,6 +18,8 @@ urlpatterns=[
     path('addtocart/<int:pk>',views.addToCart,name="addToCart"),
     path('cartview',views.cartView,name="cartView"),
     path('cartview/removecart/<int:pk>',views.removeCart,name="removeCart"),
+    path('cartview/updateqty/<int:pk>',views.updateQty,name="updateQty"),
+
    
     path('quickview/<int:pk>',views.quickView,name="quickView"),
 

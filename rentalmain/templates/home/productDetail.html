@@ -271,11 +271,11 @@
             $(document).ready(function() {
                 
                 $(function() {
-                    $("#date1").datepicker({minDate: '-d'});
+                    $("#date1").datepicker({minDate: '+1d',maxDate: '+3D'});
                 });
     
                 $(function() {
-                    $("#date2").datepicker({minDate: '-d'});
+                    $("#date2").datepicker({minDate: '+1d'});
                 });
     
                 $('#date1').change(function() {
@@ -286,7 +286,7 @@
                 
                 $('#date2').change(function() {
                     endDate = $(this).datepicker('getDate');
-                    $("#date1").datepicker("option", "maxDate", endDate);
+                    $("#date1").datepicker("option");
                     evalDays()
                 })
                 

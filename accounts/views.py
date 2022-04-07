@@ -61,8 +61,12 @@ def login(request):
         password=request.POST['password']
 
         user=authenticate(request,username=username,password=password)
-
+        print(user)
         if user is not None:
+            if user.is_active==False:
+                messages.warning(request,"Currently You are blocked by admin")
+                return render(request,'account/signin.html')
+
             auth_login(request,user)
             if user.groups.filter(name='deliveryboy'):
                 return redirect('panel')

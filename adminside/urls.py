@@ -76,5 +76,6 @@ urlpatterns=[
     path('report/<str:report>',views.Reports,name="reports"),
     path('report/invoice/<int:oid>',views.invoice,name="invoice"),
     
+    path('checkuser/<str:user>',views.userCheck,name="checkuUser"),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

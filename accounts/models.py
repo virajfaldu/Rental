@@ -220,12 +220,13 @@ class DjangoSession(models.Model):
     expire_date = models.DateTimeField()
 
 class FeedbackRating(models.Model):
-    date = models.DateField()
+    date = models.DateField(default=datetime.datetime.now)
     comment = models.TextField(max_length=200, blank=True, null=True)
     rating = models.FloatField(blank=True, null=True)
     publish=models.BooleanField()
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)  # Field name made lowercase.
     product = models.ForeignKey('Product',on_delete=models.CASCADE)
+    orderProduct = models.ForeignKey('ProductHasOrder',on_delete=models.CASCADE)
 
 
 
@@ -310,9 +311,7 @@ class OrderStatus(models.Model):
         return self.status
 
 class ProductHasOrder(models.Model):
-    
-    class Meta:
-        unique_together = (('order', 'product'),)
+
 
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     order = models.ForeignKey(Order,on_delete=models.CASCADE)

@@ -5,7 +5,6 @@ for (let i = 0; i < userDeleteBtn.length; i++) {
     token = e.target.dataset.token;
     url = e.target.dataset.url;
     returnurl = e.target.dataset.return;
-    console.log(e.target.dataset.url,uid,token);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -145,7 +144,6 @@ for (let i = 0; i < orderStatus.length; i++) {
     url = e.target.dataset.url;
     returnurl = e.target.dataset.return;
     
-    console.log(oid,pid,token,url,returnurl)
     fetch(url, {
       method: "POST",
       headers: {

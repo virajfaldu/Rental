@@ -1,15 +1,21 @@
 
+import imp
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import messages
 import datetime
 
+from adminside.filters import customerFilter
+from .encrypt import decrypt, encrypt
+from django.template.loader import render_to_string
+
 from accounts.decorators import allowed_users
 from accounts.models import *
 from .filters import *
-from adminside.views import get_page
+from adminside.views import get_page, publish,sendEmail
 from .forms import *
-
+from django.conf import settings
 
 # Create your views here.
 @allowed_users(['deliveryboy'])
@@ -95,9 +101,14 @@ def confirm(request,dutyid):
     
     productHasOrder=ProductHasOrder.objects.filter(id=duty.order.id).first()
     
-    
+    oid=encrypt(duty.order.id)
+    uid=encrypt(duty.order.order.customer.user.id)
+
     if productHasOrder.status.status=="delivered":
+        template=render_to_string('deliveryboy/reviewEmail.html',{'name':duty.order.order.customer.user.username,'uid':uid,'siteUrl':settings.SITE_URL,'oid':oid})
+        sendEmail(request,duty.order.order.customer.user,template)
         productHasOrder.status=pickedup
+        print(duty.order.order.customer.user.username,"hello")
     else:
         productHasOrder.status=delivered
 
@@ -158,3 +169,46 @@ def imgUpload(request):
         boy.save()
         messages.success(request, "Records Save Successfully")
     return redirect('boyProfile')
+
+def productReview(request,user=None,oid=None):
+
+    uid=decrypt(user)
+    orid=decrypt(oid)
+    
+    user=User.objects.filter(id=uid).first()
+    orderTran=ProductHasOrder.objects.filter(id=orid).first()
+    product=Product.objects.filter(id=orderTran.product.id).first()
+    
+    rating=FeedbackRating.objects.filter(orderProduct=orderTran).first()
+    print(rating)
+    context={
+        'user':user.id,
+        'orid':orid,
+        'product':product,
+    }
+
+    if request.user.is_authenticated:
+        if request.user == user:
+            if rating!=None:
+                return HttpResponse("your review saved successfully............")
+            return render(request,"deliveryboy/review.html",context)
+        else:
+            return HttpResponse("you are not authorized")
+    return HttpResponse("you are not authorized")
+
+@allowed_users(['customer'])
+def addReview(request,user=None,oid=None):
+    rating=request.POST.get('rating')
+    comment=request.POST.get('comment')
+    user=request.POST.get('user')
+    orid=request.POST.get('orid')
+    product=int(request.POST.get('product'))
+
+    customer=Customer.objects.filter(user=user).first()
+    orderTran=ProductHasOrder.objects.filter(id=orid).first()
+    product=Product.objects.filter(id=product).first()
+
+    FeedbackRating.objects.create(comment=comment,rating=rating,customer=customer,product=product,orderProduct=orderTran,publish=False)
+   
+    return redirect(request.META['HTTP_REFERER'])
+    

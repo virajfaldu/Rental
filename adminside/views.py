@@ -1,5 +1,6 @@
 import datetime
 from multiprocessing import context
+from urllib import request
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -15,7 +16,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 
-from accounts.decorators import admin_only  # for use a decorators
+from accounts.decorators import admin_only, isAuthenticated  # for use a decorators
 from .forms import *
 from .filters import *
 from accounts.models import *
@@ -1192,8 +1193,9 @@ def get_page(request,obj, pages,page=None):
     return users
 
 
-@admin_only
+
 def sendEmail(request,user,template):
+    print("hellooooooooooooooo")
     send_mail(
         'thank you for send new product request',
         template,
@@ -1269,3 +1271,11 @@ def invoice(request,oid):
     }
 
     return render(request,'adminside/reports/invoice.html',context)
+
+def userCheck(request,user):
+
+    if request.user.username==user:
+        return HttpResponse("you area allowed")
+    else:
+        print(request.user.username)
+        return HttpResponse(request.user.username)
