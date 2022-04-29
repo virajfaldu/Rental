@@ -136,9 +136,11 @@ Home
                         </td>
                         <td>
                             {%if duty.pickup%}
-                                <a href="{%url 'confirm' duty.id %}" class="focus:outline-none text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:underline">pickedup</a>
+                                <button href="" class="confirmBtn focus:outline-none text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:underline"
+                                data-did="{{duty.id }}" data-token="{{ csrf_token }}" data-url="{% url 'confirm' %}" data-return="{%url 'duty' %}">pickedup</button>
                             {%elif not duty.pickup%}
-                                <a href="{%url 'confirm' duty.id %}" class="focus:outline-none text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:underline">delivered</a>
+                                <button href="" class="confirmBtn focus:outline-none text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:underline"
+                                data-did="{{duty.id }}" data-token="{{ csrf_token }}" data-url="{% url 'confirm' %}" data-return="{%url 'duty' %}">delivered</button>
                             {%endif%}
                         </td>
                     </tr>
@@ -208,5 +210,47 @@ Home
         {%endif%}
     </div>
 </div>
+{% block js %}
+<script>
+    confirmBtn = document.getElementsByClassName("confirmBtn");
+    for (let i = 0; i < confirmBtn.length; i++) {
+    confirmBtn[i].addEventListener("click", (e) => {
+        did = e.target.dataset.did;
+        token = e.target.dataset.token;
+        url = e.target.dataset.url;
+        returnurl = e.target.dataset.return;
+        Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#52cfd4",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes sure !",
+        }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(url, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": token,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                did: did,
+            }),
+            })
+            .then((result) => {
+                return result.json();
+            })
+            .then((data) => {
+                location.href = returnurl;
+            });
+        }
+        });
+    });
+    }
 
+</script>
+
+{% endblock %}
 {% endblock %}

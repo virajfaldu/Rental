@@ -5,7 +5,7 @@ urlpatterns=[
     path('',views.panel,name="panel"),
 
     path('duty/',views.duty,name="duty"),
-    path('duty/confirm/<int:dutyid>',views.confirm,name="confirm"),
+    path('duty/confirm/',views.confirm,name="confirm"),
     path('duty/address/<int:dutyid>',views.duty,name="address"),
 
 

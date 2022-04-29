@@ -325,7 +325,6 @@ class ProductHasOrder(models.Model):
     cancel_date = models.DateField(blank=True, null=True)
     cancelpay=models.BooleanField(blank=True,null=True,default=False)
 
-    # deliveryboy=models.ForeignKey(DeliveryBoy,on_delete=models.DO_NOTHING,blank=True,null=True)
 
     def __str__(self):
         return f"{self.order.customer.company_name} ordered {self.product.name}"

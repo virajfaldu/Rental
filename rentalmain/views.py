@@ -6,7 +6,7 @@ from django.shortcuts import render,redirect
 import datetime
 from accounts.models import *
 from accounts.decorators import notAllowed_users,allowed_users
-from adminside.views import invoice
+from adminside.views import invoice, publish
 import math
 import json
 from django.http import JsonResponse
@@ -62,11 +62,15 @@ def productDetail(request,pk):
     otherProducts=Product.objects.filter(subcategory=product.subcategory).all()
 
     ratings=FeedbackRating.objects.filter(product=product).all()
+    reviews=ratings.filter(publish=True).all()
+    reviewCnt=FeedbackRating.objects.filter(product=product).count()
 
     context={
         'product':product,
         'otherProducts':otherProducts,
         'ratings':ratings,
+        'reviews':reviews,
+        'reviewCnt':reviewCnt
     }
     return render(request,'home/productDetail.html',context)
 
@@ -152,7 +156,7 @@ def updateQty(request, pk):
         cart.save()
     except Exception:
         messages.warning(request,"Something Went To Wrong")
-        return redirect(request.META['HTTP_REFERER'])
+    return redirect(request.META['HTTP_REFERER'])
 
 @allowed_users(allowed_roles=['customer'])
 def placeOrder(request,pk=None):

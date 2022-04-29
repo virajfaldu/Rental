@@ -1,4 +1,5 @@
 
+from cgi import print_arguments
 import imp
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -16,6 +17,9 @@ from .filters import *
 from adminside.views import get_page, publish,sendEmail
 from .forms import *
 from django.conf import settings
+import json
+from django.http import JsonResponse
+
 
 # Create your views here.
 @allowed_users(['deliveryboy'])
@@ -93,19 +97,20 @@ def history(request):
     return render(request,"deliveryboy/history.html",context)
 
 @allowed_users(['deliveryboy'])
-def confirm(request,dutyid):
-    duty=DeliveryPickup.objects.filter(id=dutyid).first()
+def confirm(request ):
+    data = json.loads(request.body)
+    duty=DeliveryPickup.objects.filter(id=data['did']).first()
 
     delivered=OrderStatus.objects.filter(status="delivered").first()
     pickedup=OrderStatus.objects.filter(status="pickedup").first()
     
     productHasOrder=ProductHasOrder.objects.filter(id=duty.order.id).first()
-    
+
     oid=encrypt(duty.order.id)
     uid=encrypt(duty.order.order.customer.user.id)
 
     if productHasOrder.status.status=="delivered":
-        template=render_to_string('deliveryboy/reviewEmail.html',{'name':duty.order.order.customer.user.username,'uid':uid,'siteUrl':settings.SITE_URL,'oid':oid})
+        template=render_to_string('deliveryboy/reviewEmail.html',{'name':duty.order.order.customer.user.username,'product':duty.order.product.name,'uid':uid,'siteUrl':settings.SITE_URL,'oid':oid})
         sendEmail(request,duty.order.order.customer.user,template)
         productHasOrder.status=pickedup
         print(duty.order.order.customer.user.username,"hello")
@@ -117,7 +122,10 @@ def confirm(request,dutyid):
     duty.iscompleted=True
     duty.save()
 
-    return redirect('duty')
+    context = {
+                'success': True
+    }
+    return JsonResponse(context)
 
 @allowed_users(['deliveryboy'])
 def boyProfile(request):

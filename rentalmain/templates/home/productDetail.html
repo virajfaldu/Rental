@@ -183,7 +183,45 @@
                             </div>
                         </div>
                     </div>
+                    <section class="h-100 mb-20" >
 
+                        <div class="p-5 reviews">
+                            <h3 style="font-weight: 400;font-size: 20px;">Reviews ({{reviewCnt }})</h3>
+                            {% for review in reviews %}
+                            <div class="review">
+                                <div class="row no-gutters">
+                                    <div class="col-auto">
+                                        <h4><img class="profile-pic" src={{review.customer.image.url}}></h4>
+            
+                                    </div>
+                                    <!-- End .col -->
+                                    <div class="col">
+                                        <h4><span style="font-size: 20px;">{{review.customer.company_name}}</span></h4>
+                                        <div class="ratings-container">
+                                            <div class="ratings" style="margin-top: 0px;">
+                                                <div class="ratings-val" style="width: 80%;"></div>
+                                                <span class="text-muted" style="font-family: 'Poppins', sans-serif;">({{review.rating}})</span>
+                                                <!-- End .ratings-val -->
+                                            </div>
+                                            <!-- End .ratings -->
+                                        </div>
+                                        <div class="review-content">
+                                            <p>{{review.comment}}</p>
+                                        </div>
+                                        <!-- <p class="border-bottom"></p> -->
+            
+                                    </div>
+                                    <!-- End .col-auto -->
+                                </div>
+                                <!-- End .row -->
+                            </div>
+                            {%endfor%}
+                            <!-- End .review -->
+            
+                            
+                        </div>
+                    </section>
+            
                     <h2 class="mb-4 text-center title ">You May Also Like</h2>
 
                     <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl"

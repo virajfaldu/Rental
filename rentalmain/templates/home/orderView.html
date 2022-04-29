@@ -35,7 +35,7 @@
                                                 <span class="pt-4 mr-2 text-xl font-medium">Refundable Deposit</span>
                                                 <p class="flex items-center ">
                                                     <span class="mr-1 text-xl font-medium text-blue-500 " style="font-family: none; ">&#x20B9;</span>
-                                                    <span class="text-lg font-medium text-blue-500 ">{{od.deposit}} /Unit</span></p>
+                                                    <span class="text-lg font-medium text-blue-500 ">{{od.deposit}}</span></p>
 
 
                                             </div>
@@ -44,7 +44,7 @@
                                                 <span class="pt-2 mt-2 text-xl font-medium">Delivery Charges</span>
                                                 <p class="flex items-center mb-1 ">
                                                     <span class="mr-1 text-xl font-medium text-blue-500 " style="font-family: none; ">&#x20B9;</span>
-                                                    <span class="text-lg font-medium text-blue-500 ">{{od.delivery_pickup_charge}}/Unit</span>
+                                                    <span class="text-lg font-medium text-blue-500 ">{{od.delivery_pickup_charge}}</span>
 
                                                 </p> <span class="pt-4 mr-2 text-xl font-medium">Rental Period</span>
                                                 <p class="flex items-center ">
@@ -56,7 +56,7 @@
                                                 <p class="flex items-center mb-1 ml-3">
                                                     <span class="text-lg font-medium "><b>{{od.quantity}}</b></span>
                                                 </p>
-                                                {%if od.status.status != "cancelled" and od.status.status != "on the way" %}
+                                                {%if od.status.status == "pending" and od.status.status != "confirmed" %}
                                                 <a class="-ml-4 font-bold text-danger cancelBtn cursor-pointer" data-oid="{{od.id}}" data-token="{{ csrf_token }}" data-url="{% url 'cancellation' od.id %}" data-return="{%url 'orderView' order.id %}" >Cancel</a>
                                                 {%endif%}
                                             </div>
@@ -95,22 +95,26 @@
                                
                                 <div class="pt-2 d-flex justify-content-between">
                                     <p class="mb-0 text-3xl font-semibold text-gray-700 ">Order Details</p>
-                                    <p class="mb-0 text-muted"><span class="font-semibold me-4"></span> &#x20B9;</p>
+                                    <!-- <p class="mb-0 text-muted"><span class="font-semibold me-4"></span> &#x20B9;</p> -->
                                 </div>
 
                                 <div class="pt-2 d-flex justify-content-between">
-                                    <p class="mb-0 text-muted">Invoice Number : 788152</p>
-                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">Total Rent </span>&#x20B9;{{orderDetail|totalRent}}</p>
+                                    <p class="mb-0 text-muted">order Number : #{{order.id}}</p>
+                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">Total Rent </span> &#x20B9;{{orderDetail|totalRent}}</p>
                                 </div>
 
                                 <div class="d-flex justify-content-between">
-                                    <p class="mb-0 text-muted">Invoice Date : 22 Dec,2019</p>
-                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">GST 18%</span> 123</p>
+                                    <p class="mb-0 text-muted">order Date : {{order.date}}</p>
+                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">Total Deposit </span> &#x20B9;{{orderDetail|totalDeposit}}</p>
                                 </div>
 
+                                <div class=" d-flex justify-content-between">
+                                    <p class="mb-0 text-muted"></p>
+                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">Delivery Charges </span> &#x20B9;{{orderDetail|totalDeliveryCharge}} </p>
+                                </div>
                                 <div class="mb-5 d-flex justify-content-between">
-                                    <p class="mb-0 text-muted">Recepits Voucher : 18KU-62IIK</p>
-                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">Delivery Charges</span> {{orderDetail|totalRent}}</p>
+                                    <p class="mb-0 text-muted"></p>
+                                    <p class="mb-0 text-muted"><span class="font-semibold me-4">GST 18%</span>{{orderDetail|getTax}} </p>
                                 </div>
                             </div>
                             <div class="py-4 ml-0 border card-footer" style="background-color:  #39f; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
